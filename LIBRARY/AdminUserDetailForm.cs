@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibrarySystemBackEnd;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LibrarySystemBackEnd;
 
 
 namespace LIBRARY
@@ -83,12 +83,12 @@ namespace LIBRARY
         }
         private void UserInfoLoad()
         {
-            AcedemicText.Text = ClassBackEnd.Currentuser.School;
-            CreditLinkText.Text = ClassBackEnd.Currentuser.Credit.ToString();
-            IDText.Text = ClassBackEnd.Currentuser.Userid;
-            NameText.Text = ClassBackEnd.Currentuser.Username;
-            UserCategoryText.Text = ClassBackEnd.Currentuser.Usertype == USERTYPE.Student ? "学生" : "老师";
-            RegistTimeText.Text = ClassBackEnd.Currentuser.RegisterDate;
+            AcedemicText.Text = ClassBackEnd.Currentuser.UserBasic.School;
+            CreditLinkText.Text = ClassBackEnd.Currentuser.UserBasic.Credit.ToString();
+            IDText.Text = ClassBackEnd.Currentuser.UserBasic.Userid;
+            NameText.Text = ClassBackEnd.Currentuser.UserBasic.Username;
+            UserCategoryText.Text = ClassBackEnd.Currentuser.UserBasic.Usertype == USERTYPE.Student ? "学生" : "老师";
+            RegistTimeText.Text = ClassBackEnd.Currentuser.UserBasic.RegisterDateToString;
         }
         private void UserDetailAdminForm_Load(object sender, EventArgs e)
         {

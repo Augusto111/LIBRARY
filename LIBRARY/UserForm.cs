@@ -111,19 +111,19 @@ namespace LIBRARY
         }
         private void UserInfoLoad()
         {
-            WelTextBox.Text = "欢迎，" + ClassBackEnd.Currentuser.Username + "！";
-            AcedemicText.Text = ClassBackEnd.Currentuser.School;
-            CreditText.Text = ClassBackEnd.Currentuser.Credit.ToString();
-            MaxBorrowText.Text = ClassBackEnd.Currentuser.Currentmaxborrowableamount.ToString();
-            NowBorrowText.Text = ClassBackEnd.Currentuser.Currentborrowedamount.ToString();
-            NowOrderText.Text = ClassBackEnd.Currentuser.Currentscheduleamount.ToString();
+            WelTextBox.Text = "欢迎，" + ClassBackEnd.Currentuser.UserBasic.Username + "！";
+            AcedemicText.Text = ClassBackEnd.Currentuser.UserBasic.School;
+            CreditText.Text = ClassBackEnd.Currentuser.UserBasic.Credit.ToString();
+            MaxBorrowText.Text = ClassBackEnd.Currentuser.UserBasic.Currentmaxborrowableamount.ToString();
+            NowBorrowText.Text = ClassBackEnd.Currentuser.UserBasic.Currentborrowedamount.ToString();
+            NowOrderText.Text = ClassBackEnd.Currentuser.UserBasic.Currentscheduleamount.ToString();
             UserPicBox.Image = PickHeadImage();
         }
         private Image PickHeadImage()
         {
-            if (Char.IsLetter(ClassBackEnd.Currentuser.Username[0]))
+            if (Char.IsLetter(ClassBackEnd.Currentuser.UserBasic.Username[0]))
             {
-                switch (ClassBackEnd.Currentuser.Username[0])
+                switch (ClassBackEnd.Currentuser.UserBasic.Username[0])
                 {
                     case 'A':
                     case 'a':

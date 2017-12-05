@@ -301,11 +301,11 @@ namespace LibrarySystemBackEnd
 
 				foreach(ClassUser u in user)
 				{
-					sw.WriteLine(u.Userid);
-					sw.WriteLine(u.Username);
-					sw.WriteLine(u.Password);
-					sw.WriteLine(u.School);
-					sw.WriteLine(Convert.ToInt32(u.Usertype));
+					sw.WriteLine(u.UserBasic.Userid);
+					sw.WriteLine(u.UserBasic.Username);
+					sw.WriteLine(u.UserBasic.Password);
+					sw.WriteLine(u.UserBasic.School);
+					sw.WriteLine(Convert.ToInt32(u.UserBasic.Usertype));
 				}
 			}
 			catch(Exception)
@@ -453,7 +453,7 @@ namespace LibrarySystemBackEnd
 				sw=new StreamWriter(fs);
 				sw.WriteLine(ClassTime.systemTime);
 				if(currentadmin!=null) sw.WriteLine(currentadmin.Id);
-				else sw.WriteLine(currentuser.Userid);
+				else sw.WriteLine(currentuser.UserBasic.Userid);
 				sw.WriteLine(s);
 			}
 			catch { return; }
@@ -482,7 +482,7 @@ namespace LibrarySystemBackEnd
 		{
 			for(int i = 0;i<user.Count;i++)
 			{
-				if(user[i].Username==username&&user[i].Password==password)
+				if(user[i].UserBasic.Username==username&&user[i].UserBasic.Password==password)
 				{
 					Currentuser=user[i];
 					Usercategory=1;//用户
@@ -521,8 +521,8 @@ namespace LibrarySystemBackEnd
 		{
 			for(int i = 0;i<user.Count;i++)
 			{
-				if(user[i].Userid==userid) return 2;//id重复
-				if(user[i].Username==username) return 3;//用户名重复
+				if(user[i].UserBasic.Userid==userid) return 2;//id重复
+				if(user[i].UserBasic.Username==username) return 3;//用户名重复
 			}
 
 			ClassUser temp = new ClassUser(username, userid, password, school, usertype);
@@ -852,7 +852,7 @@ namespace LibrarySystemBackEnd
 		///// <returns>true是可借，false是不可借</returns>
 		//public static bool GetBookState(int i)
 		//{
-		//	if(Book[i].GetAnAvailableBook(Currentuser.Userid) != -1) return true;
+		//	if(Book[i].GetAnAvailableBook(Currentuser.UserBasic.Userid) != -1) return true;
 		//	else return false;
 		//}
 		/// <summary>
@@ -862,7 +862,7 @@ namespace LibrarySystemBackEnd
 		/// <returns>1可借，2可预约，3不可以</returns>
 		public static int GetBookState(int i)
 		{
-			if(Book[i].GetAnAvailableBook(Currentuser.Userid)!=-1) return 1;
+			if(Book[i].GetAnAvailableBook(Currentuser.UserBasic.Userid)!=-1) return 1;
 			else
 			{
 				if(Book[i].Scheduleable()) return 2;
@@ -878,11 +878,11 @@ namespace LibrarySystemBackEnd
 		public static int BorrowBook(int i)
 		{
 			Currentbook=Book[i];
-			int availbook = Currentbook.GetAnAvailableBook(Currentuser.Userid);
+			int availbook = Currentbook.GetAnAvailableBook(Currentuser.UserBasic.Userid);
 
 			if(Currentuser.BorrowBook(Currentbook.GetExIsbn(availbook), Currentbook.Bookname))
 			{
-				if(Currentbook.BorrowBook(availbook, Currentuser.Userid)==false)
+				if(Currentbook.BorrowBook(availbook, Currentuser.UserBasic.Userid)==false)
 				{
 					Currentuser.CancelBorrowBook();
 					return 0;//未知错误
@@ -910,24 +910,24 @@ namespace LibrarySystemBackEnd
 		/// <returns>成功1/失败（0未知错误2原密码错误）</returns>
 		public static int ChangePassword(string _oldpassword, string newpassword)
 		{
-			if(_oldpassword!=Currentuser.Password)
+			if(_oldpassword!=Currentuser.UserBasic.Password)
 			{
 				return 2;
 			}
 
 			if(Currentuser==null) return 0;
-			string oldpassword = Currentuser.Password;
-			Currentuser.Password=newpassword;
+			string oldpassword = Currentuser.UserBasic.Password;
+			Currentuser.UserBasic.Password=newpassword;
 
 			if(RefreshUserListFile()==true)
 			{
-				if(currentadmin!=null) WriteToLog("管理员重置用户"+currentuser.Userid+"密码成功！");
+				if(currentadmin!=null) WriteToLog("管理员重置用户"+currentuser.UserBasic.Userid+"密码成功！");
 				else WriteToLog("用户修改密码成功！");
 				return 1;
 			}
 			else
 			{
-				Currentuser.Password=oldpassword;
+				Currentuser.UserBasic.Password=oldpassword;
 				return 0;
 			}
 
@@ -943,7 +943,7 @@ namespace LibrarySystemBackEnd
 			Currentbook=Book[i];
 			if(Currentuser.ScheduleBook(Currentbook.Bookisbn, Currentbook.Bookname))
 			{
-				Currentbook.ScheduleBook(Currentuser.Userid);
+				Currentbook.ScheduleBook(Currentuser.UserBasic.Userid);
 
 				Currentuser.SaveDetailInformation(UserDetailDictory);
 				Currentbook.SaveDetailInformation(BookDirectory);
@@ -984,7 +984,7 @@ namespace LibrarySystemBackEnd
 		/// <returns>成功/失败</returns>
 		public static bool GetUserBorrowHistory()
 		{
-			string id = Currentuser.Userid;
+			string id = Currentuser.UserBasic.Userid;
 			if(Borrowhis.Any()) Borrowhis.Clear();
 
 			FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
@@ -1105,7 +1105,7 @@ namespace LibrarySystemBackEnd
 			if(Currentuser.ReturnBook(Currentbook.Bookisbn, Currentbook.Bookname))
 			{
 				Currentbook.LoadDetailInformation();
-				if(Currentbook.ReturnBook(Currentuser.Userid))
+				if(Currentbook.ReturnBook(Currentuser.UserBasic.Userid))
 				{
 					LoadBorrowedBook();
 
@@ -1200,7 +1200,7 @@ namespace LibrarySystemBackEnd
 
 			Currentbook=new ClassBook(bookisbn);
 
-			Currentbook.CancelScheduleBook(Currentuser.Userid);
+			Currentbook.CancelScheduleBook(Currentuser.UserBasic.Userid);
 			Currentuser.CancelScheduleBook(Currentbook.Bookisbn, Currentbook.Bookname);
 
 			Currentuser.SaveDetailInformation(UserDetailDictory);
@@ -1267,7 +1267,7 @@ namespace LibrarySystemBackEnd
 			if(UsersearchList.Any()) UsersearchList.Clear();
 			foreach(var a in user)
 			{
-				if(a.Username.Contains(s)||a.School.Contains(s)||a.Userid.Contains(s))
+				if(a.UserBasic.Username.Contains(s)||a.UserBasic.School.Contains(s)||a.UserBasic.Userid.Contains(s))
 				{
 					UsersearchList.Add(a);
 				}
@@ -1360,7 +1360,7 @@ namespace LibrarySystemBackEnd
 			credit.Clear();
 			if(currentuser==null) return false;
 
-			string id = Currentuser.Userid;
+			string id = Currentuser.UserBasic.Userid;
 
 			FileStream fs = null; StreamReader sr = null;
 			try

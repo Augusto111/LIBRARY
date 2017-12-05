@@ -127,6 +127,11 @@
             用户的搜索
             </summary>
         </member>
+        <member name="P:LibrarySystemBackEnd.ClassBackEnd.Bookhis">
+            <summary>
+            书籍历史数组
+            </summary>
+        </member>
         <member name="M:LibrarySystemBackEnd.ClassBackEnd.LoadUserInformation">
             <summary>
             加载除消息队列以外的用户信息（消息队列在进入个人中心时加载）
@@ -146,7 +151,7 @@
             更新系统文件信息
             </summary>
             <param name="n"></param>
-            <param name="cat">种类，0表示不更新读取后直接返回，1表示书籍数量，2表示用户数量，3表示借阅率的借阅数量，4表示借阅率的总数量</param>
+            <param name="cat">种类，0表示不更新读取后直接返回，1表示书籍数量，2表示用户数量，3表示借阅率的借阅数量</param>
             <returns>成功/失败</returns>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetBookList">
@@ -196,7 +201,7 @@
             <param name="lable3">标签3</param>
             <returns>成功/失败</returns>
         </member>
-        <member name="M:LibrarySystemBackEnd.ClassBackEnd.SearchBook(System.Int32,System.String,System.ComponentModel.BackgroundWorker)">
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.SearchBook(System.Int32,System.String,System.ComponentModel.BackgroundWorker,System.ComponentModel.DoWorkEventArgs)">
             <summary>
             书籍条件检索方法,将符合条件的书籍载入到book list中
             </summary>
@@ -254,7 +259,7 @@
             <param name="i">数组下标</param>
             <returns>是/否</returns>
         </member>
-        <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetBorrowHistory">
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetUserBorrowHistory">
             <summary>
             取得借阅历史记录，到borrowhis数组
             </summary>
@@ -265,7 +270,7 @@
             点击借阅历史中第i本书
             </summary>
             <param name="i">书的序号</param>
-            <returns>成功/失败</returns>
+            <returns>成功1/失败0/文件已被删除/2</returns>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetIntoPersonCenter">
             <summary>
@@ -386,6 +391,40 @@
             <param name="credit">数组，内部会清空</param>
             <returns>成功/失败</returns>
         </member>
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.DeleteBook(System.String@)">
+            <summary>
+            删除书籍，调用类内方法，删除图片，删除历史文件，删除书籍文件
+            </summary>
+            <returns>成功/失败</returns>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetBookHistory(System.Int32)">
+            <summary>
+            访问书籍的历史
+            </summary>
+            <param name="i">某一个书的第i本</param>
+            <returns>成功/失败</returns>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.AddBookAmount(System.Int32)">
+            <summary>
+            管理员添加某一本书籍的数量
+            </summary>
+            <param name="n">数量</param>
+            <returns>成功/失败</returns>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetGraphImformation(System.Collections.Generic.List{LibrarySystemBackEnd.ClassGraph}@)">
+            <summary>
+            获取生成图表需要的信息
+            </summary>
+            <param name="graph">图表数据数组</param>
+            <returns>成功/失败(尝试3次且文件均被占用)</returns>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBackEnd.GetLogImformation(System.Collections.Generic.List{LibrarySystemBackEnd.ClassLog}@)">
+            <summary>
+            读取日志文件
+            </summary>
+            <param name="log"></param>
+            <returns>成功/失败(尝试3次且文件均被占用)</returns>
+        </member>
         <member name="T:LibrarySystemBackEnd.BOOKSTATE">
             <summary>
             书籍状态 可借，已借，预约，不可用
@@ -406,7 +445,7 @@
             已被预约，等待取书
             </summary>
         </member>
-        <member name="F:LibrarySystemBackEnd.BOOKSTATE.Invailable">
+        <member name="F:LibrarySystemBackEnd.BOOKSTATE.Unavailable">
             <summary>
             不可用
             </summary>
@@ -577,14 +616,12 @@
             书籍标签第三个
             </summary>
         </member>
-        <member name="M:LibrarySystemBackEnd.ClassBook.UpdateHistory(System.String,System.DateTime,System.String,System.Int32)">
+        <member name="M:LibrarySystemBackEnd.ClassBook.UpdateHistory(System.String,LibrarySystemBackEnd.ClassBookHis)">
             <summary>
             写入历史文件
             </summary>
             <param name="bookid">书籍编号，带扩展编号</param>
-            <param name="time">操作发生时间</param>
-            <param name="userid">用户id</param>
-            <param name="cat">操作种类，0表示购入，1表示借阅，2表示归还，3表示预约，4表示取消预约，5表示管理员取走维护，6表示维护结束</param>
+            <param name="bh"></param>
             <returns>成功/失败</returns>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassBook.#ctor(System.String,System.String,System.Int32,System.DateTime,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
@@ -713,11 +750,12 @@
             <param name="i">book数组中第i个</param>
             <returns>扩展isbn号</returns>
         </member>
-        <member name="M:LibrarySystemBackEnd.ClassBook.ChangeBookState(System.Collections.Generic.List{LibrarySystemBackEnd.BOOKSTATE})">
+        <member name="M:LibrarySystemBackEnd.ClassBook.ChangeBookState(System.Collections.Generic.List{LibrarySystemBackEnd.BOOKSTATE},System.String)">
             <summary>
             修改书籍状态
             </summary>
             <param name="state">状态数组，保证长度为书籍数量</param>
+            <param name="Id">管理员Id</param>
             <returns>成功/失败</returns>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassBook.GetBookState(System.Collections.Generic.List{LibrarySystemBackEnd.BOOKSTATE}@)">
@@ -725,6 +763,53 @@
             获取书籍状态
             </summary>
             <param name="state">状态数组，函数内部会清空state</param>
+        </member>
+        <member name="T:LibrarySystemBackEnd.ClassBookHis">
+            <summary>
+            书籍历史记录类
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassBookHis.Bookid">
+            <summary>
+            书籍ID，扩展ISBN
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassBookHis.Time">
+            <summary>
+            操作发生时间
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassBookHis.Userid">
+            <summary>
+            与操作相关的用户ID
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassBookHis.Cat">
+            <summary>
+            操作种类号
+            操作种类：0表示购入，1表示借阅，2表示归还，3表示预约，4表示取消预约，
+            5表示管理员取走维护，6表示维护结束
+            </summary>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBookHis.#ctor(System.DateTime,System.String,System.Int32)">
+            <summary>
+            普通构造
+            </summary>
+            <param name="_time">操作发生时间</param>
+            <param name="_userid">与操作相关的用户ID</param>
+            <param name="_cat">操作种类：0表示购入，1表示借阅，2表示归还，3表示预约，4表示取消预约，5表示管理员取走维护，6表示维护结束</param>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBookHis.#ctor(System.IO.StreamReader)">
+            <summary>
+            文件构造
+            </summary>
+            <param name="sr">StreamReader</param>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBookHis.SaveToFile(System.IO.StreamWriter)">
+            <summary>
+            写入文件
+            </summary>
+            <param name="sw">StreamWriter</param>
         </member>
         <member name="T:LibrarySystemBackEnd.ClassBorrowedBook">
             <summary>
@@ -856,14 +941,64 @@
             </summary>
             <param name="sw">StreamWriter</param>
         </member>
+        <member name="T:LibrarySystemBackEnd.ClassGraph">
+            <summary>
+            生成图表用的类
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassGraph.Date">
+            <summary>
+            日期
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassGraph.UserComing">
+            <summary>
+            用户到馆数
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassGraph.LendingRate">
+            <summary>
+            借阅率
+            </summary>
+        </member>
+        <member name="T:LibrarySystemBackEnd.ClassLog">
+            <summary>
+            日志类
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassLog.Date">
+            <summary>
+            日期
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassLog.Inf">
+            <summary>
+            信息
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassLog.User">
+            <summary>
+            用户
+            </summary>
+        </member>
         <member name="T:LibrarySystemBackEnd.ClassTime">
             <summary>
-            系统时间
+            系统间时
+            </summary>
+        </member>
+        <member name="F:LibrarySystemBackEnd.ClassTime.userCome">
+            <summary>
+            用户到馆数量
             </summary>
         </member>
         <member name="P:LibrarySystemBackEnd.ClassTime.SystemTime">
             <summary>
-            get属性，set属性
+            系统时间
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.ClassTime.SystemTimeEng">
+            <summary>
+            系统时间-表示
             </summary>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassTime.inc">
@@ -876,26 +1011,6 @@
             获取下一本书的ISBN
             </summary>
             <returns>ISBN,10位,为年4+月2+日2+当天的书籍序号2</returns>
-        </member>
-        <member name="T:LibrarySystemBackEnd.USERTYPE">
-            <summary>
-            用户种类
-            </summary>
-        </member>
-        <member name="F:LibrarySystemBackEnd.USERTYPE.Student">
-            <summary>
-            学生
-            </summary>
-        </member>
-        <member name="F:LibrarySystemBackEnd.USERTYPE.Lecturer">
-            <summary>
-            老师
-            </summary>
-        </member>
-        <member name="F:LibrarySystemBackEnd.USERTYPE.Guest">
-            <summary>
-            访客
-            </summary>
         </member>
         <member name="T:LibrarySystemBackEnd.ClassBookAndDate">
             <summary>
@@ -919,12 +1034,17 @@
         </member>
         <member name="F:LibrarySystemBackEnd.ClassBookAndDate.rgdate">
             <summary>
-            应还/最晚取书日期
+            应还/预约日期
             </summary>
         </member>
         <member name="F:LibrarySystemBackEnd.ClassBookAndDate.delayed">
             <summary>
             是否已续借
+            </summary>
+        </member>
+        <member name="F:LibrarySystemBackEnd.ClassBookAndDate.deleted">
+            <summary>
+            书籍是否已删除
             </summary>
         </member>
         <member name="P:LibrarySystemBackEnd.ClassBookAndDate.Bookisbn">
@@ -952,7 +1072,12 @@
             是否已续借
             </summary>
         </member>
-        <member name="M:LibrarySystemBackEnd.ClassBookAndDate.#ctor(System.String,System.String,System.DateTime,System.DateTime,System.Boolean)">
+        <member name="P:LibrarySystemBackEnd.ClassBookAndDate.Deleted">
+            <summary>
+            指示书籍是否已被删除
+            </summary>
+        </member>
+        <member name="M:LibrarySystemBackEnd.ClassBookAndDate.#ctor(System.String,System.String,System.DateTime,System.DateTime,System.Boolean,System.Boolean)">
             <summary>
             构造函数
             </summary>
@@ -961,6 +1086,7 @@
             <param name="_bsdate">借/预约日期</param>
             <param name="_rgdate">应还日期</param>
             <param name="_delayed">是否已续借</param>
+            <param name="_deleted">是否已删除</param>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassBookAndDate.#ctor(System.IO.StreamReader)">
             <summary>
@@ -979,7 +1105,7 @@
             用户类
             </summary>
         </member>
-        <member name="F:LibrarySystemBackEnd.ClassUser.username">
+        <member name="F:LibrarySystemBackEnd.ClassUser.userBasic">
             <summary>
             用户信息
             
@@ -995,68 +1121,6 @@
             
             在加载用户信息时遍历生成消息队列
             
-            </summary>
-        </member>
-        <member name="F:LibrarySystemBackEnd.ClassUser.borrowedbook">
-            信用
-            满分100
-            每逾期3天还书信用减1
-            借书数量是信用百分比乘最大借书数量向上取整
-            交钱恢复信用一元一点信用
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Username">
-            <summary>
-            用户名
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Userid">
-            <summary>
-            用户id
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Password">
-            <summary>
-            用户密码
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.School">
-            <summary>
-            学院
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Usertype">
-            <summary>
-            用户种类 0学生1老师2访客
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Currentscheduleamount">
-            <summary>
-            当前预约书籍数量
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Maxborrowableamount">
-            <summary>
-            最大可借数量，依据用户种类而定
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Currentborrowedamount">
-            <summary>
-            当前借书数量
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Currentmaxborrowableamount">
-            <summary>
-            当前最大借书数量，最大借书数量乘以信用百分比
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.Credit">
-            <summary>
-            信用
-            </summary>
-        </member>
-        <member name="P:LibrarySystemBackEnd.ClassUser.RegisterDate">
-            <summary>
-            注册日期
             </summary>
         </member>
         <member name="M:LibrarySystemBackEnd.ClassUser.GetBorrowedBook">
@@ -1175,7 +1239,89 @@
             <summary>
             预约书籍到馆，更改状态为待取书
             </summary>
-            <param name="bookisbn"></param>
+            <param name="bookisbn">书籍编号，带扩展</param>
+        </member>
+        <member name="T:LibrarySystemBackEnd.USERTYPE">
+            <summary>
+            用户种类
+            </summary>
+        </member>
+        <member name="F:LibrarySystemBackEnd.USERTYPE.Student">
+            <summary>
+            学生
+            </summary>
+        </member>
+        <member name="F:LibrarySystemBackEnd.USERTYPE.Lecturer">
+            <summary>
+            老师
+            </summary>
+        </member>
+        <member name="F:LibrarySystemBackEnd.USERTYPE.Guest">
+            <summary>
+            访客
+            </summary>
+        </member>
+        <member name="F:LibrarySystemBackEnd.UserBasicInfo.registerDate">
+            信用
+            满分100
+            每逾期3天还书信用减1
+            借书数量是信用百分比乘最大借书数量向上取整
+            交钱恢复信用一元一点信用
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Username">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Userid">
+            <summary>
+            用户id
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Password">
+            <summary>
+            用户密码
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.School">
+            <summary>
+            学院
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Usertype">
+            <summary>
+            用户种类 学生 老师 访客
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Currentscheduleamount">
+            <summary>
+            当前预约书籍数量
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Maxborrowableamount">
+            <summary>
+            最大可借数量，依据用户种类而定
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Currentborrowedamount">
+            <summary>
+            当前借书数量
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Currentmaxborrowableamount">
+            <summary>
+            当前最大借书数量，最大借书数量乘以信用百分比
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.Credit">
+            <summary>
+            信用
+            </summary>
+        </member>
+        <member name="P:LibrarySystemBackEnd.UserBasicInfo.RegisterDateToString">
+            <summary>
+            注册日期
+            </summary>
         </member>
     </members>
 </doc>
