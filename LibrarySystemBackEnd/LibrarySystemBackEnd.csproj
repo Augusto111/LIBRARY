@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ABook.cs" />
     <Compile Include="ClassAdministrator.cs" />
     <Compile Include="ClassBackEnd.cs" />
     <Compile Include="ClassBook.cs" />

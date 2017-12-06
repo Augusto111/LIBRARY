@@ -37,6 +37,7 @@ namespace LibrarySystemBackEnd
 		/// 书籍是否已删除
 		/// </summary>
 		private bool deleted;
+
 		/// <summary>
 		/// 书号
 		/// </summary>
