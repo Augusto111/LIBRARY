@@ -33,199 +33,201 @@ namespace LibrarySystemBackEnd
 		public static readonly int MaxCredit = 100;
 
 		#region 私有属性
-		private string username;
-		private string userid;
-		private string password;
-		private string school;
-		private USERTYPE usertype;
-		private int currentscheduleamount;//当前已预约书数量
-		private int maxborrowableamount;//最大借书数量
-		private int currentborrowedamount;//当前借书数量
-		private int currentmaxborrowableamount;//当前最大可借数量
-		private int credit;///信用
+		private string userName;
+		private string userId;
+		private string userPassword;
+		private string userSchool;
+		private USERTYPE userType;
+		private int userCurrentScheduleAmount;//当前已预约书数量
+		private int userMaxBorrowableAmount;//最大借书数量
+		private int userCurrentBorrowedAmount;//当前借书数量
+		private int userCurrentMaxBorrowableAmount;//当前最大可借数量
+		private int userCredit;///信用
 						   ///满分100
 						   ///每逾期3天还书信用减1
 						   ///借书数量是信用百分比乘最大借书数量向上取整
 						   ///交钱恢复信用一元一点信用
-		private DateTime registerDate;
+		private DateTime userRegisterDate;
 		#endregion
 
 		#region 访问器
 		/// <summary>
 		/// 用户名
 		/// </summary>
-		public string Username
+		public string UserName
 		{
 			get
 			{
-				return username;
+				return userName;
 			}
 
 			internal set
 			{
-				username = value;
+				userName = value;
 			}
 		}
 		/// <summary>
 		/// 用户id
 		/// </summary>
-		public string Userid
+		public string UserId
 		{
 			get
 			{
-				return userid;
+				return userId;
 			}
 
 			internal set
 			{
-				userid = value;
+				userId = value;
 			}
 		}
 		/// <summary>
 		/// 用户密码
 		/// </summary>
-		public string Password
+		public string UserPassword
 		{
 			get
 			{
-				return password;
+				return userPassword;
 			}
 
 			internal set
 			{
-				password = value;
+				userPassword = value;
 			}
 		}
 		/// <summary>
 		/// 学院
 		/// </summary>
-		public string School
+		public string UserSchool
 		{
 			get
 			{
-				return school;
+				return userSchool;
 			}
 
 			internal set
 			{
-				school = value;
+				userSchool = value;
 			}
 		}
 		/// <summary>
 		/// 用户种类 学生 老师 访客
 		/// </summary>
-		public USERTYPE Usertype
+		public USERTYPE UserType
 		{
 			get
 			{
-				return usertype;
+				return userType;
 			}
 
 			internal set
 			{
-				usertype = value;
+				userType = value;
 			}
 		}
 		/// <summary>
 		/// 当前预约书籍数量
 		/// </summary>
-		public int Currentscheduleamount
+		public int UserCurrentScheduleAmount
 		{
 			get
 			{
-				return currentscheduleamount;
+				return userCurrentScheduleAmount;
 			}
 
 			internal set
 			{
-				currentscheduleamount = value;
+				userCurrentScheduleAmount = value;
 			}
 		}
 		/// <summary>
 		/// 最大可借数量，依据用户种类而定
 		/// </summary>
-		public int Maxborrowableamount
+		public int UserMaxBorrowableAmount
 		{
 			get
 			{
-				return maxborrowableamount;
+				return userMaxBorrowableAmount;
 			}
 
 			internal set
 			{
-				maxborrowableamount = value;
+				userMaxBorrowableAmount = value;
 			}
 		}
 		/// <summary>
 		/// 当前借书数量
 		/// </summary>
-		public int Currentborrowedamount
+		public int UserCurrentBorrowedAmount
 		{
 			get
 			{
-				return currentborrowedamount;
+				return userCurrentBorrowedAmount;
 			}
 
 			internal set
 			{
-				currentborrowedamount = value;
+				userCurrentBorrowedAmount = value;
 			}
 		}
 		/// <summary>
 		/// 当前最大借书数量，最大借书数量乘以信用百分比
 		/// </summary>
-		public int Currentmaxborrowableamount
+		public int UserCurrentMaxBorrowableAmount
 		{
 			get
 			{
-				return currentmaxborrowableamount;
+				return userCurrentMaxBorrowableAmount;
 			}
 
 			internal set
 			{
-				currentmaxborrowableamount = value;
+				userCurrentMaxBorrowableAmount = value;
 			}
 		}
 		/// <summary>
 		/// 信用
 		/// </summary>
-		public int Credit
+		public int UserCredit
 		{
 			get
 			{
-				return credit;
+				return userCredit;
 			}
 
 			internal set
 			{
-				if (value > 100) credit = 100;
-				else credit = value;
+				if (value > 100) userCredit = 100;
+				else userCredit = value;
 			}
 		}
 		/// <summary>
 		/// 注册日期
 		/// </summary>
-		public string RegisterDateToString
+		public string UserRegisterDateToString
 		{
 			get
 			{
-				var a = RegisterDate.Year.ToString("D4");
-				var b = RegisterDate.Month.ToString("D2");
-				var c = RegisterDate.Day.ToString("D2");
+				var a = UserRegisterDate.Year.ToString("D4");
+				var b = UserRegisterDate.Month.ToString("D2");
+				var c = UserRegisterDate.Day.ToString("D2");
 				return a + "-" + b + "-" + c;
 			}
 		}
-
-		public DateTime RegisterDate
+		/// <summary>
+		/// 注册日期
+		/// </summary>
+		public DateTime UserRegisterDate
 		{
 			get
 			{
-				return registerDate;
+				return userRegisterDate;
 			}
 
 			set
 			{
-				registerDate = value;
+				userRegisterDate = value;
 			}
 		}
 
@@ -234,20 +236,20 @@ namespace LibrarySystemBackEnd
 
 		public UserBasicInfo(string _username, string _userid, string _password, string _school, USERTYPE _usertype)
 		{
-			Username = _username;
-			Userid = _userid;
-			Password = _password;
-			School = _school;
-			Usertype = _usertype;
-			Credit = 100;
-			Currentborrowedamount = 0;
-			Currentscheduleamount = 0;
+			UserName = _username;
+			UserId = _userid;
+			UserPassword = _password;
+			UserSchool = _school;
+			UserType = _usertype;
+			UserCredit = 100;
+			UserCurrentBorrowedAmount = 0;
+			UserCurrentScheduleAmount = 0;
 
 
-			RegisterDate = ClassTime.systemTime;
-			if (usertype == USERTYPE.Guest) Currentmaxborrowableamount = Maxborrowableamount = 0;
-			else if (usertype == USERTYPE.Student) Currentmaxborrowableamount = Maxborrowableamount = 10;
-			else if (usertype == USERTYPE.Lecturer) Currentmaxborrowableamount = Maxborrowableamount = 20;
+			UserRegisterDate = ClassTime.systemTime;
+			if (userType == USERTYPE.Guest) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 0;
+			else if (userType == USERTYPE.Student) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 10;
+			else if (userType == USERTYPE.Lecturer) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 20;
 		}
 
 	}

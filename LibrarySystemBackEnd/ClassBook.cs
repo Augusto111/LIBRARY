@@ -10,155 +10,140 @@ using System.Reflection;
 
 namespace LibrarySystemBackEnd
 {
-	
-
 	/// <summary>
 	/// 书籍类
 	/// </summary>
 	public class ClassBook
 	{
 		#region PrivateProperty
-		/// <summary>
-		/// 书名
-		/// </summary>
-		private string bookname;
-		/// <summary>
-		/// 书号，不带扩展
-		/// </summary>
-		private string bookisbn;
-		/// <summary>
-		/// 出版社
-		/// </summary>
-		private string publisher;
-		/// <summary>
-		/// 作者
-		/// </summary>
-		private string author;
-		/// <summary>
-		/// 书籍封面文件地址
-		/// </summary>
-		private string bookimage;
-		/// <summary>
-		/// 简介
-		/// </summary>
-		private string introduction;
-		/// <summary>
-		/// 书籍数量
-		/// </summary>
-		private int bookamount;
-		private string[] booklable = new string[3];
-		/// <summary>
-		/// 每一本书
-		/// </summary>
-		private List<ABook> book = new List<ABook>();
+		private string bookName;
+		private string bookIsbn;//书籍号，不带扩展
+		private string bookPublisher;
+		private string bookAuthor;
+		private string bookImage;
 
-		private LinkedList<string> schedulequeue = new LinkedList<string>();//预约队列
+		private string bookIntroduction;
+		private int bookAmount;
+		private string[] bookLable;
+		private List<ABook> books;
+		private LinkedList<string> scheduleQueue;
+		#endregion
+
+		#region 访问器
 
 		/// <summary>
 		/// 书名
 		/// </summary>
-		public string Bookname
+		public string BookName
 		{
 			get
 			{
-				return bookname;
+				return bookName;
 			}
 
-			internal set
+			set
 			{
-				bookname = value;
+				bookName = value;
 			}
 		}
+
 		/// <summary>
 		/// 书号，不带扩展
 		/// </summary>
-		public string Bookisbn
+		public string BookIsbn
 		{
 			get
 			{
-				return bookisbn;
+				return bookIsbn;
 			}
 
 			internal set
 			{
-				bookisbn = value;
+				bookIsbn = value;
 			}
 		}
+
 		/// <summary>
 		/// 出版社
 		/// </summary>
-		public string Publisher
+		public string BookPublisher
 		{
 			get
 			{
-				return publisher;
+				return bookPublisher;
 			}
 
-			internal set
+			set
 			{
-				publisher = value;
+				bookPublisher = value;
 			}
 		}
+
 		/// <summary>
 		/// 作者
 		/// </summary>
-		public string Author
+		public string BookAuthor
 		{
 			get
 			{
-				return author;
+				return bookAuthor;
 			}
 
-			internal set
+			set
 			{
-				author = value;
+				bookAuthor = value;
 			}
 		}
+
 		/// <summary>
 		/// 书籍封面文件地址
 		/// </summary>
-		public string Bookimage
+		public string BookImage
 		{
 			get
 			{
-				return bookimage;
+				return bookImage;
 			}
 
-			internal set
+			set
 			{
-				bookimage = value;
+				bookImage = value;
 			}
 		}
+
+
 		/// <summary>
 		/// 简介
 		/// </summary>
-		public string Introduction
+		public string BookIntroduction
 		{
 			get
 			{
-				return introduction;
+				return bookIntroduction;
 			}
 
-			internal set
+			set
 			{
-				introduction = value;
+				bookIntroduction = value;
 			}
 		}
+
 		/// <summary>
 		/// 书籍数量
 		/// </summary>
-		public int Bookamount
+		public int BookAmount
 		{
 			get
 			{
-				return bookamount;
+				return bookAmount;
 			}
 
 			internal set
 			{
-				bookamount = value;
+				bookAmount = value;
 			}
 		}
+
 		/// <summary>
 		/// 每一本书
 		/// </summary>
@@ -166,52 +151,55 @@ namespace LibrarySystemBackEnd
 		{
 			get
 			{
-				return book;
+				return books;
 			}
 		}
+
 		/// <summary>
 		/// 书籍标签第一个
 		/// </summary>
-		public string Booklable1
+		public string BookLable1
 		{
 			get
 			{
-				return booklable[0];
+				return bookLable[0];
 			}
 
-			internal set
+			set
 			{
-				booklable[0] = value;
+				bookLable[0] = value;
 			}
 		}
+
 		/// <summary>
 		/// 书籍标签第二个
 		/// </summary>
-		public string Booklable2
+		public string BookLable2
 		{
 			get
 			{
-				return booklable[1];
+				return bookLable[1];
 			}
 
-			internal set
+			set
 			{
-				booklable[1] = value;
+				bookLable[1] = value;
 			}
 		}
+
 		/// <summary>
 		/// 书籍标签第三个
 		/// </summary>
-		public string Booklable3
+		public string BookLable3
 		{
 			get
 			{
-				return booklable[2];
+				return bookLable[2];
 			}
 
-			internal set
+			set
 			{
-				booklable[2] = value;
+				bookLable[2] = value;
 			}
 		}
 
@@ -231,7 +219,7 @@ namespace LibrarySystemBackEnd
 			string bookhisfile = ClassBackEnd.BookHisDirectory + bookid + ".his";
 			try
 			{
-				if(!File.Exists(bookhisfile))
+				if (!File.Exists(bookhisfile))
 				{
 					fs = File.Create(bookhisfile);
 					sw = new StreamWriter(fs);
@@ -245,11 +233,11 @@ namespace LibrarySystemBackEnd
 				return true;
 
 			}
-			catch(Exception e) { return false; }
+			catch (Exception e) { return false; }
 			finally
 			{
-				if(sw != null) sw.Close();
-				if(fs != null) fs.Close();
+				if (sw != null) sw.Close();
+				if (fs != null) fs.Close();
 			}
 		}
 
@@ -260,88 +248,104 @@ namespace LibrarySystemBackEnd
 		/// 构造函数 构造时 名字 isbn 数量 购入时间 不能为空 其余可以
 		/// 生成历史文件
 		/// </summary>
-		/// <param name="_name">书名</param>
-		/// <param name="_isbn">书号</param>
-		/// <param name="_amount">书的数量</param>
-		/// <param name="_broughttime">购入时间</param>
-		/// <param name="_publisher">出版社</param>
-		/// <param name="_auther">作者</param>
-		/// <param name="_introduction">简介</param>
-		/// <param name="_bookimage">书籍封面地址</param>
-		/// <param name="_adminid">管理员id</param>
-		/// <param name="_lable1">标签1</param>
-		/// <param name="_lable2">标签2</param>
-		/// <param name="_lable3">标签3</param>
-		internal ClassBook(string _name, string _isbn, int _amount, DateTime _broughttime, string _adminid, string _lable1, string _lable2, string _lable3, string _publisher = "", string _auther = "", string _bookimage = "", string _introduction = "")
+		/// <param name="bookName">书名</param>
+		/// <param name="bookIsbn">书号</param>
+		/// <param name="bookAmount">书的数量</param>
+		/// <param name="broughtTime">购入时间</param>
+		/// <param name="bookPublisher">出版社</param>
+		/// <param name="bookAuthor">作者</param>
+		/// <param name="bookIntroduction">简介</param>
+		/// <param name="bookImage">书籍封面地址</param>
+		/// <param name="adminId">管理员id</param>
+		/// <param name="bookLable1">标签1</param>
+		/// <param name="bookLable2">标签2</param>
+		/// <param name="bookLable3">标签3</param>
+		internal ClassBook(string bookName, string bookIsbn, int bookAmount, DateTime broughtTime, string adminId, string bookLable1, string bookLable2, string bookLable3, string bookPublisher, string bookAuthor, string bookImage, string bookIntroduction)
 		{
-			Bookname = _name; Bookisbn = _isbn; Bookamount = _amount;
-			Publisher = _publisher; Author = _auther; Introduction = _introduction; Bookimage = _bookimage; Booklable1 = _lable1; Booklable2 = _lable2; Booklable3 = _lable3;
-			for(int i = 0;i < Bookamount;i++)
+			this.bookName = bookName;
+			this.bookIsbn = bookIsbn;
+			this.bookPublisher = bookPublisher;
+			this.bookAuthor = bookAuthor;
+			this.bookImage = bookImage;
+			this.bookIntroduction = bookIntroduction;
+			this.bookAmount = bookAmount;
+			this.bookLable = new string[3] { bookLable1, bookLable2, bookLable3 };
+
+			this.books = new List<ABook>();
+			this.scheduleQueue = new LinkedList<string>();
+
+
+			for (int i = 0; i < BookAmount; i++)
 			{
-				Book.Add(new ABook(BOOKSTATE.Available, "", _broughttime, _isbn + i.ToString("D4")));
-				UpdateHistory(Book.Last().Extisbn.ToString(), new ClassBookHis(_broughttime, _adminid, 0));
+				Book.Add(new ABook(bookName, bookIsbn + i.ToString("D4"), bookPublisher, bookAuthor, bookImage, broughtTime));
+				UpdateHistory(Book.Last().BookIsbn, new ClassBookHis(broughtTime, adminId, 0));
 			}
 		}
+		#endregion
+
+
+
+
 		/// <summary>
 		/// 从文件构造类classbook，只载入基本信息
 		/// </summary>
 		/// <param name="sr">StreamReader</param>
 		internal ClassBook(StreamReader sr)
 		{
-			Bookisbn = sr.ReadLine();
-			Bookname = sr.ReadLine();
-			Publisher = sr.ReadLine();
-			Author = sr.ReadLine();
-			Booklable1 = sr.ReadLine();
-			Booklable2 = sr.ReadLine();
-			Booklable3 = sr.ReadLine();
+			BookIsbn = sr.ReadLine();
+			BookName = sr.ReadLine();
+			BookPublisher = sr.ReadLine();
+			BookAuthor = sr.ReadLine();
+			BookLable1 = sr.ReadLine();
+			BookLable2 = sr.ReadLine();
+			BookLable3 = sr.ReadLine();
 		}
 		/// <summary>
 		/// 载入详细信息，如果没有载入基本信息，会返回false
 		/// </summary>
 		internal bool LoadDetailInformation()
 		{
-			book.Clear();
-			schedulequeue.Clear();
+			books.Clear();
+			scheduleQueue.Clear();
 
-			if(Bookisbn == "") return false;
+			if (BookIsbn == "") return false;
 			FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
-			fs = new FileStream(ClassBackEnd.BookDirectory + Bookisbn + ".lbs", FileMode.Open);
+			fs = new FileStream(ClassBackEnd.BookDirectory + BookIsbn + ".lbs", FileMode.Open);
 			zip = new GZipStream(fs, CompressionMode.Decompress);
 			sr = new StreamReader(zip);
-			Bookisbn = sr.ReadLine();
-			Bookname = sr.ReadLine();
-			Publisher = sr.ReadLine();
-			Author = sr.ReadLine();
-			Booklable1 = sr.ReadLine();
-			Booklable2 = sr.ReadLine();
-			Booklable3 = sr.ReadLine();
-			Bookimage = sr.ReadLine();
+			BookIsbn = sr.ReadLine();
+			BookName = sr.ReadLine();
+			BookPublisher = sr.ReadLine();
+			BookAuthor = sr.ReadLine();
+			BookLable1 = sr.ReadLine();
+			BookLable2 = sr.ReadLine();
+			BookLable3 = sr.ReadLine();
+			BookImage = sr.ReadLine();
 			var a = Convert.ToInt32(sr.ReadLine());
 
-			Introduction = "";
-			while(a-- > 0)
+			BookIntroduction = "";
+			while (a-- > 0)
 			{
-				introduction += sr.ReadLine();
-				if(a != 0) introduction += "\r\n";
+				bookIntroduction += sr.ReadLine();
+				if (a != 0) bookIntroduction += "\r\n";
 			}
 
-			Bookamount = Convert.ToInt32(sr.ReadLine());
+			BookAmount = Convert.ToInt32(sr.ReadLine());
 
 			var count = Convert.ToInt32(sr.ReadLine());//each list amount
-			for(int i = 0;i < count;i++) //load bookstate list
+			for (int i = 0; i < count; i++) //load bookstate list
 			{
 				Book.Add(new ABook(sr));
 			}
 
 			count = Convert.ToInt32(sr.ReadLine());
-			for(int i = 0;i < count;i++) //load schedulequeue list
+			for (int i = 0; i < count; i++) //load schedulequeue list
 			{
-				schedulequeue.AddLast(sr.ReadLine());
+				scheduleQueue.AddLast(sr.ReadLine());
 			}
-			if(sr != null) sr.Close();
-			if(zip != null) zip.Close();
-			if(fs != null) fs.Close();
+			if (sr != null) sr.Close();
+			if (zip != null) zip.Close();
+			if (fs != null) fs.Close();
 			return true;
 		}
 		/// <summary>
@@ -358,46 +362,47 @@ namespace LibrarySystemBackEnd
 				zip = new GZipStream(fs, CompressionMode.Decompress);
 				sr = new StreamReader(zip);
 
-				Bookisbn = sr.ReadLine();
-				Bookname = sr.ReadLine();
-				Publisher = sr.ReadLine();
-				Author = sr.ReadLine();
-				Booklable1 = sr.ReadLine();
-				Booklable2 = sr.ReadLine();
-				Booklable3 = sr.ReadLine();
-				Bookimage = sr.ReadLine();
+				BookIsbn = sr.ReadLine();
+				BookName = sr.ReadLine();
+				BookPublisher = sr.ReadLine();
+				BookAuthor = sr.ReadLine();
+				BookLable1 = sr.ReadLine();
+				BookLable2 = sr.ReadLine();
+				BookLable3 = sr.ReadLine();
+				BookImage = sr.ReadLine();
 
 				var a = Convert.ToInt32(sr.ReadLine());
 
-				Introduction = "";
-				while(a-- > 0)
+				BookIntroduction = "";
+				while (a-- > 0)
 				{
-					introduction += sr.ReadLine();
-					if(a != 0) introduction += "\r\n";
+					bookIntroduction += sr.ReadLine();
+					if (a != 0) bookIntroduction += "\r\n";
 				}
 
-				Bookamount = Convert.ToInt32(sr.ReadLine());
+				BookAmount = Convert.ToInt32(sr.ReadLine());
 
 				var count = Convert.ToInt32(sr.ReadLine());//each list amount
-				for(int i = 0;i < count;i++) //load bookstate list
+				for (int i = 0; i < count; i++) //load bookstate list
 				{
 					Book.Add(new ABook(sr));
 				}
 
 				count = Convert.ToInt32(sr.ReadLine());
-				for(int i = 0;i < count;i++) //load schedulequeue list
+				for (int i = 0; i < count; i++) //load schedulequeue list
 				{
-					schedulequeue.AddLast(sr.ReadLine());
+					scheduleQueue.AddLast(sr.ReadLine());
 				}
 			}
-			catch(Exception e) { return; }
+			catch (Exception e) { return; }
 			finally
 			{
-				if(sr != null) sr.Close();
-				if(zip != null) zip.Close();
-				if(fs != null) fs.Close();
+				if (sr != null) sr.Close();
+				if (zip != null) zip.Close();
+				if (fs != null) fs.Close();
 			}
 		}
+
 		/// <summary>
 		/// 将类classbook存入文件中,并且覆盖源文件
 		/// </summary>
@@ -405,46 +410,46 @@ namespace LibrarySystemBackEnd
 		/// <returns>存储成功返回true</returns>
 		internal bool SaveDetailInformation(string path)
 		{
-			path = path + Bookisbn + ".lbs";
+			path = path + BookIsbn + ".lbs";
 			FileStream fs = null; GZipStream zip = null; StreamWriter sw = null;
 
 			fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 			zip = new GZipStream(fs, CompressionMode.Compress);
 			sw = new StreamWriter(zip);
-			sw.WriteLine(Bookisbn);
-			sw.WriteLine(Bookname);
-			sw.WriteLine(Publisher);
-			sw.WriteLine(Author);
-			sw.WriteLine(Booklable1);
-			sw.WriteLine(Booklable2);
-			sw.WriteLine(Booklable3);
-			sw.WriteLine(Bookimage);
+			sw.WriteLine(BookIsbn);
+			sw.WriteLine(BookName);
+			sw.WriteLine(BookPublisher);
+			sw.WriteLine(BookAuthor);
+			sw.WriteLine(BookLable1);
+			sw.WriteLine(BookLable2);
+			sw.WriteLine(BookLable3);
+			sw.WriteLine(BookImage);
 			int tmp = 1;
-			for(int i = 0;i < introduction.Length;i++)
+			for (int i = 0; i < bookIntroduction.Length; i++)
 			{
-				if(introduction[i] == '\n')
+				if (bookIntroduction[i] == '\n')
 					tmp++;
 			}
 			sw.WriteLine(tmp);
-			sw.WriteLine(Introduction);
-			sw.WriteLine(Bookamount.ToString());
+			sw.WriteLine(BookIntroduction);
+			sw.WriteLine(BookAmount.ToString());
 
 			sw.WriteLine(Book.Count.ToString());
-			foreach(var a in Book)
+			foreach (var a in Book)
 			{
 				a.SaveToFile(sw);
 			}
 
-			sw.WriteLine(schedulequeue.Count.ToString());
-			foreach(var tt in schedulequeue)
+			sw.WriteLine(scheduleQueue.Count.ToString());
+			foreach (var tt in scheduleQueue)
 			{
 				sw.WriteLine(tt);
 			}
 
 
-			if(sw != null) sw.Close();
-			if(zip != null) zip.Close();
-			if(fs != null) fs.Close();
+			if (sw != null) sw.Close();
+			if (zip != null) zip.Close();
+			if (fs != null) fs.Close();
 			return true;
 		}
 		/// <summary>
@@ -453,13 +458,13 @@ namespace LibrarySystemBackEnd
 		/// <param name="sw">StreamWriter</param>
 		internal void SaveBasicInformation(StreamWriter sw)
 		{
-			sw.WriteLine(Bookisbn);
-			sw.WriteLine(Bookname);
-			sw.WriteLine(Publisher);
-			sw.WriteLine(Author);
-			sw.WriteLine(Booklable1);
-			sw.WriteLine(Booklable2);
-			sw.WriteLine(Booklable3);
+			sw.WriteLine(BookIsbn);
+			sw.WriteLine(BookName);
+			sw.WriteLine(BookPublisher);
+			sw.WriteLine(BookAuthor);
+			sw.WriteLine(BookLable1);
+			sw.WriteLine(BookLable2);
+			sw.WriteLine(BookLable3);
 
 		}
 		/// <summary>
@@ -471,18 +476,18 @@ namespace LibrarySystemBackEnd
 		internal void AddBook(int n, DateTime time, string _adminid)
 		{
 			int oldamount = Book.Count;
-			Bookamount += n;
+			BookAmount += n;
 
 			int lastisbn = Convert.ToInt32((Book.Last().Extisbn).Substring(10, 4));
-			for(int i = 0;i < n;i++)
+			for (int i = 0; i < n; i++)
 			{
 				lastisbn++;
-				Book.Add(new ABook(BOOKSTATE.Available, "", time, Bookisbn + lastisbn.ToString("D4")));
+				Book.Add(new ABook(BOOKSTATE.Available, "", time, BookIsbn + lastisbn.ToString("D4")));
 				UpdateHistory(Book.Last().Extisbn, new ClassBookHis(time, _adminid, 0));
 			}
 
 			//通知预约者
-			for(int i = oldamount;i < Bookamount;i++)
+			for (int i = oldamount; i < BookAmount; i++)
 			{
 				InformToScheduler(i);
 			}
@@ -495,24 +500,24 @@ namespace LibrarySystemBackEnd
 		internal bool DeleteBook(int n)
 		{
 			int tt = 0;
-			for(int i = 0;i < Bookamount;i++)
+			for (int i = 0; i < BookAmount; i++)
 			{
-				if(Book[i].Bookstate == BOOKSTATE.Available)
+				if (Book[i].Bookstate == BOOKSTATE.Available)
 				{
 					tt++;
 				}
 			}
-			if(tt < n) return false;
+			if (tt < n) return false;
 			else
 			{
-				for(int i = Bookamount - 1;i >= 0;i--)
+				for (int i = BookAmount - 1; i >= 0; i--)
 				{
-					if(Book[i].Bookstate == BOOKSTATE.Available)
+					if (Book[i].Bookstate == BOOKSTATE.Available)
 					{
 						Book.RemoveAt(i);
 					}
 				}
-				Bookamount -= n;
+				BookAmount -= n;
 				return true;
 			}
 		}
@@ -522,13 +527,13 @@ namespace LibrarySystemBackEnd
 		/// <returns>序号</returns>
 		internal int GetAnAvailableBook(string id)
 		{
-			for(int i = 0;i < Bookamount;i++)
+			for (int i = 0; i < BookAmount; i++)
 			{
-				if(Book[i].Bookstate == BOOKSTATE.Scheduled && Book[i].Borrowuserid == id) return i;
+				if (Book[i].Bookstate == BOOKSTATE.Scheduled && Book[i].Borrowuserid == id) return i;
 			}
-			for(int i = 0;i < Bookamount;i++)
+			for (int i = 0; i < BookAmount; i++)
 			{
-				if(Book[i].Bookstate == BOOKSTATE.Available) return i;
+				if (Book[i].Bookstate == BOOKSTATE.Available) return i;
 			}
 			return -1;
 		}
@@ -539,13 +544,13 @@ namespace LibrarySystemBackEnd
 		internal bool Scheduleable()
 		{
 			int k = 0;
-			for(int i = 0;i < book.Count;i++)
+			for (int i = 0; i < books.Count; i++)
 			{
-				if(book[i].Bookstate != BOOKSTATE.Unavailable)
+				if (books[i].Bookstate != BOOKSTATE.Unavailable)
 					k++;
 			}
-			int sch = schedulequeue.Count;
-			if(sch > 2 * k) return false;
+			int sch = scheduleQueue.Count;
+			if (sch > 2 * k) return false;
 			else return true;
 		}
 		/// <summary>
@@ -556,9 +561,9 @@ namespace LibrarySystemBackEnd
 		/// <returns>成功返回1，失败(n越界)返回0</returns>
 		internal bool BorrowBook(int n, string userid)
 		{
-			if(n < 0 || n >= Bookamount) return false;
+			if (n < 0 || n >= BookAmount) return false;
 
-			if(Book[n].Bookstate == BOOKSTATE.Available ||
+			if (Book[n].Bookstate == BOOKSTATE.Available ||
 				(Book[n].Bookstate == BOOKSTATE.Scheduled && Book[n].Borrowuserid == userid))
 			{
 				Book[n].Bookstate = BOOKSTATE.Borrowed;
@@ -576,7 +581,7 @@ namespace LibrarySystemBackEnd
 		/// <returns></returns>
 		internal void ScheduleBook(string userid)
 		{
-			schedulequeue.AddLast(userid);
+			scheduleQueue.AddLast(userid);
 		}
 		/// <summary>
 		/// 还书
@@ -586,13 +591,13 @@ namespace LibrarySystemBackEnd
 		internal bool ReturnBook(string userid)
 		{
 			int id = -1;
-			for(int i = 0;i < Bookamount;i++)
-				if(Book[i].Borrowuserid == userid)
+			for (int i = 0; i < BookAmount; i++)
+				if (Book[i].Borrowuserid == userid)
 				{
 					id = i;
 					break;
 				}
-			if(id == -1) return false;
+			if (id == -1) return false;
 			Book[id].Bookstate = BOOKSTATE.Available;
 			Book[id].Borrowuserid = "";
 
@@ -608,11 +613,11 @@ namespace LibrarySystemBackEnd
 		/// <returns></returns>
 		private bool InformToScheduler(int bookid)
 		{
-			if(schedulequeue.Any())
+			if (scheduleQueue.Any())
 			{
 				Book[bookid].Bookstate = BOOKSTATE.Scheduled;
-				string ss = schedulequeue.First();
-				schedulequeue.RemoveFirst();
+				string ss = scheduleQueue.First();
+				scheduleQueue.RemoveFirst();
 				Book[bookid].Borrowuserid = ss;
 
 				UpdateHistory(Book[bookid].Extisbn, new ClassBookHis(ClassTime.systemTime, ss, 3));
@@ -620,7 +625,7 @@ namespace LibrarySystemBackEnd
 				//通知预约者，写入文件
 				ClassUser us = new ClassUser("", ss, "", "", USERTYPE.Guest);
 				us.ReadDetailInformation(ClassBackEnd.UserDetailDictory);
-				us.bookget(Bookisbn);
+				us.bookget(BookIsbn);
 				us.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
 
 				return true;
@@ -634,9 +639,9 @@ namespace LibrarySystemBackEnd
 		/// <returns>成功返回1，失败(没找到用户的预约)返回0</returns>
 		internal bool GetScheduledBook(string userid)
 		{
-			for(int i = 0;i < Bookamount;i++)
+			for (int i = 0; i < BookAmount; i++)
 			{
-				if(Book[i].Borrowuserid == userid && Book[i].Bookstate == BOOKSTATE.Scheduled)
+				if (Book[i].Borrowuserid == userid && Book[i].Bookstate == BOOKSTATE.Scheduled)
 				{
 					Book[i].Bookstate = BOOKSTATE.Borrowed;
 					UpdateHistory(Book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 1));
@@ -652,23 +657,23 @@ namespace LibrarySystemBackEnd
 		/// <returns>成功返回1，失败(没找到该用户的预约)返回0</returns>
 		internal bool CancelScheduleBook(string userid)
 		{
-			for(int i = 0;i < Bookamount;i++)
+			for (int i = 0; i < BookAmount; i++)
 			{
-				if(Book[i].Bookstate == BOOKSTATE.Scheduled)
-					if(Book[i].Borrowuserid == userid)
+				if (Book[i].Bookstate == BOOKSTATE.Scheduled)
+					if (Book[i].Borrowuserid == userid)
 					{
 						Book[i].Borrowuserid = "";
-						schedulequeue.Remove(userid);
+						scheduleQueue.Remove(userid);
 						UpdateHistory(Book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 4));
 
-						if(!InformToScheduler(i))
+						if (!InformToScheduler(i))
 						{
 							Book[i].Bookstate = BOOKSTATE.Available;
 						}
 						return true;
 					}
 			}
-			return schedulequeue.Remove(userid);
+			return scheduleQueue.Remove(userid);
 		}
 		/// <summary>
 		/// 获取扩展isbn号
@@ -685,42 +690,42 @@ namespace LibrarySystemBackEnd
 		/// <param name="state">状态数组，保证长度为书籍数量</param>
 		/// <param name="Id">管理员Id</param>
 		/// <returns>成功/失败</returns>
-		internal bool ChangeBookState(List<BOOKSTATE> state,string Id)
+		internal bool ChangeBookState(List<BOOKSTATE> state, string Id)
 		{
-			if(state.Count != Book.Count) return false;
-			for(int i = 0;i < Book.Count;i++)
+			if (state.Count != Book.Count) return false;
+			for (int i = 0; i < Book.Count; i++)
 			{
-				if(state[i] == BOOKSTATE.Unavailable && book[i].Bookstate != BOOKSTATE.Borrowed)
+				if (state[i] == BOOKSTATE.Unavailable && books[i].Bookstate != BOOKSTATE.Borrowed)
 				{
 
-					if(book[i].Bookstate == BOOKSTATE.Scheduled)
+					if (books[i].Bookstate == BOOKSTATE.Scheduled)
 					{
-						schedulequeue.AddFirst(book[i].Borrowuserid);
-						UpdateHistory(book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, book[i].Borrowuserid, 4));
-						ClassUser tmp = new ClassUser(book[i].Borrowuserid);
+						scheduleQueue.AddFirst(books[i].Borrowuserid);
+						UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, books[i].Borrowuserid, 4));
+						ClassUser tmp = new ClassUser(books[i].Borrowuserid);
 						tmp.ReadDetailInformation(ClassBackEnd.UserDetailDictory);
-						tmp.MaintainSheduleBook(book[i].Extisbn);
+						tmp.MaintainSheduleBook(books[i].Extisbn);
 						tmp.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
 
 					}
-					if(book[i].Bookstate != BOOKSTATE.Unavailable)
+					if (books[i].Bookstate != BOOKSTATE.Unavailable)
 					{
-						book[i].Bookstate = BOOKSTATE.Unavailable;
-						UpdateHistory(book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 5));
+						books[i].Bookstate = BOOKSTATE.Unavailable;
+						UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 5));
 					}
 
 
 				}
 			}
-			for(int i = 0;i < Book.Count;i++)
+			for (int i = 0; i < Book.Count; i++)
 			{
-				if(book[i].Bookstate == BOOKSTATE.Unavailable && state[i] == BOOKSTATE.Available)
+				if (books[i].Bookstate == BOOKSTATE.Unavailable && state[i] == BOOKSTATE.Available)
 				{
-					book[i].Bookstate = BOOKSTATE.Available;
-					UpdateHistory(book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 6));
+					books[i].Bookstate = BOOKSTATE.Available;
+					UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 6));
 					InformToScheduler(i);
 				}
-				if(book[i].Bookstate == BOOKSTATE.Available)
+				if (books[i].Bookstate == BOOKSTATE.Available)
 				{
 					InformToScheduler(i);
 				}
@@ -735,28 +740,27 @@ namespace LibrarySystemBackEnd
 		internal void GetBookState(ref List<BOOKSTATE> state)
 		{
 			state.Clear();
-			foreach(ABook tmp in book)
+			foreach (ABook tmp in books)
 			{
 				state.Add(tmp.Bookstate);
 			}
 		}
 		internal bool DelBook()
 		{
-			foreach(ABook tmp in book)
+			foreach (ABook tmp in books)
 			{
-				if(tmp.Bookstate != BOOKSTATE.Unavailable)
+				if (tmp.Bookstate != BOOKSTATE.Unavailable)
 				{
 					return false;
 				}
 			}
-			foreach(string person in schedulequeue)
+			foreach (string person in scheduleQueue)
 			{
 				ClassUser tmp = new ClassUser(person);
-				tmp.deletebook(this.Bookisbn);
+				tmp.deletebook(this.BookIsbn);
 				tmp.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
 			}
 			return true;
 		}
-		#endregion
 	}
 }

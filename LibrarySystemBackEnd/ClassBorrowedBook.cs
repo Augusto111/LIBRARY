@@ -119,7 +119,7 @@ namespace LibrarySystemBackEnd
 			bsdate = _bsdate;
 			rgdate = _rgdate;
 		}
-		internal ClassBorrowedBook(ClassBookAndDate bad,bool _isborrowed)
+		internal ClassBorrowedBook(ABook bad,bool _isborrowed)
 		{
 			Bookisbn = bad.Bookisbn;
 			Bookname = bad.Bookname;

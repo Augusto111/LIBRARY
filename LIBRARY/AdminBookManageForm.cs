@@ -57,10 +57,10 @@ namespace LIBRARY
                 var c = ClassBackEnd.Book[i];
                 DataGridViewRow row = (DataGridViewRow)ResultDataSheet.RowTemplate.Clone();
                 int index = ResultDataSheet.Rows.Add(row);
-                ResultDataSheet.Rows[index].Cells[0].Value = c.Bookisbn;
-                ResultDataSheet.Rows[index].Cells[1].Value = c.Bookname;
-                ResultDataSheet.Rows[index].Cells[2].Value = c.Author;
-                ResultDataSheet.Rows[index].Cells[3].Value = c.Publisher;
+                ResultDataSheet.Rows[index].Cells[0].Value = c.BookIsbn;
+                ResultDataSheet.Rows[index].Cells[1].Value = c.BookName;
+                ResultDataSheet.Rows[index].Cells[2].Value = c.BookAuthor;
+                ResultDataSheet.Rows[index].Cells[3].Value = c.BookPublisher;
                 ResultDataSheet.Rows[index].Cells[4].Value = "详情";
             }
             LoadGIFBox.Hide();

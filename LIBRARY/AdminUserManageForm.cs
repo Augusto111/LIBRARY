@@ -85,7 +85,7 @@ namespace LIBRARY
                 pic.Click += new EventHandler(Pic_Click);
                 pic.MouseMove += new MouseEventHandler(Pic_MouseMove);
                 pic.MouseLeave += new EventHandler(Pic_MouseLeave);
-                pic.Image = PublicVar.LoadHeadImage(ClassBackEnd.UsersearchList[i - 1].UserBasic.Username);//image load
+                pic.Image = PublicVar.LoadHeadImage(ClassBackEnd.UsersearchList[i - 1].UserBasic.UserName);//image load
 
                 Label lab = new Label();
                 lab.AutoSize = true;
@@ -98,7 +98,7 @@ namespace LIBRARY
                 lab.Click += new EventHandler(Label_Click);
                 lab.MouseMove += new MouseEventHandler(Label_MouseMove);
                 lab.MouseLeave += new EventHandler(Label_MouseLeave);
-                lab.Text = ClassBackEnd.UsersearchList[i - 1].UserBasic.Username;//user name load
+                lab.Text = ClassBackEnd.UsersearchList[i - 1].UserBasic.UserName;//user name load
 
                 Label lab1 = new Label();
                 lab1.AutoSize = true;
@@ -111,7 +111,7 @@ namespace LIBRARY
                 lab1.Click += new EventHandler(Label_Click);
                 lab1.MouseMove += new MouseEventHandler(Label_MouseMove);
                 lab1.MouseLeave += new EventHandler(Label_MouseLeave);
-                lab1.Text = ClassBackEnd.UsersearchList[i - 1].UserBasic.Userid;//load user id
+                lab1.Text = ClassBackEnd.UsersearchList[i - 1].UserBasic.UserId;//load user id
 
                 Label lab2 = new Label();
                 lab2.AutoSize = true;
@@ -124,7 +124,7 @@ namespace LIBRARY
                 lab2.Click += new EventHandler(Label_Click);
                 lab2.MouseMove += new MouseEventHandler(Label_MouseMove);
                 lab2.MouseLeave += new EventHandler(Label_MouseLeave);
-                lab2.Text = ClassBackEnd.UsersearchList[i - 1].UserBasic.School;//load acedemic name
+                lab2.Text = ClassBackEnd.UsersearchList[i - 1].UserBasic.UserSchool;//load acedemic name
 
                 UserPanel.Controls.Add(pic);
                 UserPanel.Controls.Add(lab);

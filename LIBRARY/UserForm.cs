@@ -111,19 +111,19 @@ namespace LIBRARY
         }
         private void UserInfoLoad()
         {
-            WelTextBox.Text = "欢迎，" + ClassBackEnd.Currentuser.UserBasic.Username + "！";
-            AcedemicText.Text = ClassBackEnd.Currentuser.UserBasic.School;
-            CreditText.Text = ClassBackEnd.Currentuser.UserBasic.Credit.ToString();
-            MaxBorrowText.Text = ClassBackEnd.Currentuser.UserBasic.Currentmaxborrowableamount.ToString();
-            NowBorrowText.Text = ClassBackEnd.Currentuser.UserBasic.Currentborrowedamount.ToString();
-            NowOrderText.Text = ClassBackEnd.Currentuser.UserBasic.Currentscheduleamount.ToString();
+            WelTextBox.Text = "欢迎，" + ClassBackEnd.Currentuser.UserBasic.UserName + "！";
+            AcedemicText.Text = ClassBackEnd.Currentuser.UserBasic.UserSchool;
+            CreditText.Text = ClassBackEnd.Currentuser.UserBasic.UserCredit.ToString();
+            MaxBorrowText.Text = ClassBackEnd.Currentuser.UserBasic.UserCurrentMaxBorrowableAmount.ToString();
+            NowBorrowText.Text = ClassBackEnd.Currentuser.UserBasic.UserCurrentBorrowedAmount.ToString();
+            NowOrderText.Text = ClassBackEnd.Currentuser.UserBasic.UserCurrentScheduleAmount.ToString();
             UserPicBox.Image = PickHeadImage();
         }
         private Image PickHeadImage()
         {
-            if (Char.IsLetter(ClassBackEnd.Currentuser.UserBasic.Username[0]))
+            if (Char.IsLetter(ClassBackEnd.Currentuser.UserBasic.UserName[0]))
             {
-                switch (ClassBackEnd.Currentuser.UserBasic.Username[0])
+                switch (ClassBackEnd.Currentuser.UserBasic.UserName[0])
                 {
                     case 'A':
                     case 'a':

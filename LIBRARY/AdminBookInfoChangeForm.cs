@@ -12,7 +12,7 @@ namespace LIBRARY
 
         private void BookInfoChangeForm_Loaf(object sender, EventArgs e)
         {
-            BookInfoText.Text = ClassBackEnd.Currentbook.Introduction;
+            BookInfoText.Text = ClassBackEnd.Currentbook.BookIntroduction;
 
         }
 

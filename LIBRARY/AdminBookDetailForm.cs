@@ -26,7 +26,7 @@ namespace LIBRARY
         public void BookListRefresh()
         {
             ResultDataSheet.Rows.Clear();
-            for (int i = 0; i < ClassBackEnd.Currentbook.Bookamount; i++)
+            for (int i = 0; i < ClassBackEnd.Currentbook.BookAmount; i++)
             {
                 DataGridViewRow row = new DataGridViewRow();
                 int index = ResultDataSheet.Rows.Add(row);
@@ -58,26 +58,26 @@ namespace LIBRARY
         private void BookDetailLoad()
         {
             ClassBackEnd.LoadSearchResult(bookIndex);
-            BookNameLabel.Text = ClassBackEnd.Currentbook.Bookname;
-            AuthorText.Text = ClassBackEnd.Currentbook.Author;
-            BookIDText.Text = ClassBackEnd.Currentbook.Bookisbn;
-            PublisherText.Text = ClassBackEnd.Currentbook.Publisher;
-            AmountText.Text = ClassBackEnd.Currentbook.Bookamount.ToString();
-            Label1Text.Text = ClassBackEnd.Currentbook.Booklable1;
-            Label2Text.Text = ClassBackEnd.Currentbook.Booklable2;
-            Label3Text.Text = ClassBackEnd.Currentbook.Booklable3;
+            BookNameLabel.Text = ClassBackEnd.Currentbook.BookName;
+            AuthorText.Text = ClassBackEnd.Currentbook.BookAuthor;
+            BookIDText.Text = ClassBackEnd.Currentbook.BookIsbn;
+            PublisherText.Text = ClassBackEnd.Currentbook.BookPublisher;
+            AmountText.Text = ClassBackEnd.Currentbook.BookAmount.ToString();
+            Label1Text.Text = ClassBackEnd.Currentbook.BookLable1;
+            Label2Text.Text = ClassBackEnd.Currentbook.BookLable2;
+            Label3Text.Text = ClassBackEnd.Currentbook.BookLable3;
 
-            if (ClassBackEnd.Currentbook.Introduction == "")
+            if (ClassBackEnd.Currentbook.BookIntroduction == "")
             {
                 BookInfoTextbox.Text = "该书暂无相关简介。";
             }
             else
             {
-                BookInfoTextbox.Text = ClassBackEnd.Currentbook.Introduction;
+                BookInfoTextbox.Text = ClassBackEnd.Currentbook.BookIntroduction;
             }
             try
             {
-                BookPictureBox.Image = Image.FromFile(ClassBackEnd.Currentbook.Bookimage);
+                BookPictureBox.Image = Image.FromFile(ClassBackEnd.Currentbook.BookImage);
             }
             catch
             {

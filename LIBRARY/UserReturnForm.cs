@@ -54,15 +54,15 @@ namespace LIBRARY
         #endregion
         private void BookDetailLoad()
         {
-            BookNameText.Text = ClassBackEnd.Currentbook.Bookname;
-            AuthorText.Text = ClassBackEnd.Currentbook.Author;
-            BookIDText.Text = ClassBackEnd.Currentbook.Bookisbn;
-            PublisherText.Text = ClassBackEnd.Currentbook.Publisher;
+            BookNameText.Text = ClassBackEnd.Currentbook.BookName;
+            AuthorText.Text = ClassBackEnd.Currentbook.BookAuthor;
+            BookIDText.Text = ClassBackEnd.Currentbook.BookIsbn;
+            PublisherText.Text = ClassBackEnd.Currentbook.BookPublisher;
             BorrowDateText.Text = ClassBackEnd.BorrowedBookI.Bsdate;
             ReturnDateText.Text = ClassBackEnd.BorrowedBookI.Rgdate;
             try
             {
-                BookPictureBox.Image = Image.FromFile(ClassBackEnd.Currentbook.Bookimage);
+                BookPictureBox.Image = Image.FromFile(ClassBackEnd.Currentbook.BookImage);
             }
             catch
             {

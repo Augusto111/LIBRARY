@@ -11,170 +11,171 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 为用户封装的已借图书类
 	/// </summary>
-	public class ClassBookAndDate
-	{
-		/// <summary>
-		/// 书号
-		/// </summary>
-		private string bookisbn;
-		/// <summary>
-		/// 书名
-		/// </summary>
-		private string bookname;
-		/// <summary>
-		/// 借阅/预约日期
-		/// </summary>
-		internal DateTime bsdate;
-		/// <summary>
-		/// 应还/预约日期
-		/// </summary>
-		internal DateTime rgdate;
-		/// <summary>
-		/// 是否已续借
-		/// </summary>
-		private bool delayed;
-		/// <summary>
-		/// 书籍是否已删除
-		/// </summary>
-		private bool deleted;
+	//public class ABook
+	//{
+	//	/// <summary>
+	//	/// 书号
+	//	/// </summary>
+	//	private string bookisbn;
+	//	/// <summary>
+	//	/// 书名
+	//	/// </summary>
+	//	private string bookname;
+	//	/// <summary>
+	//	/// 借阅/预约日期
+	//	/// </summary>
+	//	internal DateTime BorrowTime;
+	//	/// <summary>
+	//	/// 应还/预约日期
+	//	/// </summary>
+	//	internal DateTime ReturnTime;
+	//	/// <summary>
+	//	/// 是否已续借
+	//	/// </summary>
+	//	private bool delayed;
+	//	/// <summary>
+	//	/// 书籍是否已删除
+	//	/// </summary>
+	//	private bool deleted;
 
-		/// <summary>
-		/// 书号
-		/// </summary>
-		public string Bookisbn
-		{
-			get
-			{
-				return bookisbn;
-			}
+	//	/// <summary>
+	//	/// 书号
+	//	/// </summary>
+	//	public string BookIsbn
+	//	{
+	//		get
+	//		{
+	//			return bookisbn;
+	//		}
 
-			internal set
-			{
-				bookisbn = value;
-			}
-		}
-		/// <summary>
-		/// 书名
-		/// </summary>
-		public string Bookname
-		{
-			get
-			{
-				return bookname;
-			}
+	//		internal set
+	//		{
+	//			bookisbn = value;
+	//		}
+	//	}
+	//	/// <summary>
+	//	/// 书名
+	//	/// </summary>
+	//	public string BookName
+	//	{
+	//		get
+	//		{
+	//			return bookname;
+	//		}
 
-			internal set
-			{
-				bookname = value;
-			}
-		}
-		/// <summary>
-		/// 借阅/预约日期
-		/// </summary>
-		public string Bsdate
-		{
-			get
-			{
-				var a = bsdate.Year.ToString("D4");
-				var b = bsdate.Month.ToString("D2");
-				var c = bsdate.Day.ToString("D2");
-				return a + "-" + b + "-" + c;
-			}
-
-
-		}
-		/// <summary>
-		/// 应还/最晚取书日期
-		/// </summary>
-		public string Rgdate
-		{
-			get
-			{
-				var a = rgdate.Year.ToString("D4");
-				var b = rgdate.Month.ToString("D2");
-				var c = rgdate.Day.ToString("D2");
-				return a + "-" + b + "-" + c;
-			}
+	//		internal set
+	//		{
+	//			bookname = value;
+	//		}
+	//	}
+	//	/// <summary>
+	//	/// 借阅/预约日期
+	//	/// </summary>
+	//	public string BorrowTime
+	//	{
+	//		get
+	//		{
+	//			var a = BorrowTime.Year.ToString("D4");
+	//			var b = BorrowTime.Month.ToString("D2");
+	//			var c = BorrowTime.Day.ToString("D2");
+	//			return a + "-" + b + "-" + c;
+	//		}
 
 
-		}
-		/// <summary>
-		/// 是否已续借
-		/// </summary>
-		public bool Delayed
-		{
-			get
-			{
-				return delayed;
-			}
+	//	}
+	//	/// <summary>
+	//	/// 应还/最晚取书日期
+	//	/// </summary>
+	//	public string ReturnTime
+	//	{
+	//		get
+	//		{
+	//			var a = ReturnTime.Year.ToString("D4");
+	//			var b = ReturnTime.Month.ToString("D2");
+	//			var c = ReturnTime.Day.ToString("D2");
+	//			return a + "-" + b + "-" + c;
+	//		}
 
-			internal set
-			{
-				delayed = value;
-			}
-		}
-		/// <summary>
-		/// 指示书籍是否已被删除
-		/// </summary>
-		public bool Deleted
-		{
-			get
-			{
-				return deleted;
-			}
 
-			internal set
-			{
-				deleted = value;
-			}
-		}
+	//	}
+	//	/// <summary>
+	//	/// 是否已续借
+	//	/// </summary>
+	//	public bool Delayed
+	//	{
+	//		get
+	//		{
+	//			return delayed;
+	//		}
 
-		/// <summary>
-		/// 构造函数
-		/// </summary>
-		/// <param name="_bookisbn">书号isbn</param>
-		/// <param name="_bookname">书名</param>
-		/// <param name="_bsdate">借/预约日期</param>
-		/// <param name="_rgdate">应还日期</param>
-		/// <param name="_delayed">是否已续借</param>
-		/// <param name="_deleted">是否已删除</param>
-		internal ClassBookAndDate(string _bookisbn, string _bookname, DateTime _bsdate, DateTime _rgdate, bool _delayed = false, bool _deleted = false)
-		{
-			Bookisbn = _bookisbn;
-			Bookname = _bookname;
-			bsdate = _bsdate;
-			rgdate = _rgdate;
-			Delayed = _delayed;
-			deleted = _deleted;
-		}
-		/// <summary>
-		/// 从文件读入
-		/// </summary>
-		/// <param name="sr">读入文件流</param>
-		internal ClassBookAndDate(StreamReader sr)
-		{
-			Bookisbn = sr.ReadLine();
-			Bookname = sr.ReadLine();
-			bsdate = DateTime.Parse(sr.ReadLine());
-			rgdate = DateTime.Parse(sr.ReadLine());
-			Delayed = Convert.ToBoolean(sr.ReadLine());
-			Deleted = Convert.ToBoolean(sr.ReadLine());
+	//		internal set
+	//		{
+	//			delayed = value;
+	//		}
+	//	}
+	//	/// <summary>
+	//	/// 指示书籍是否已被删除
+	//	/// </summary>
+	//	public bool Deleted
+	//	{
+	//		get
+	//		{
+	//			return deleted;
+	//		}
 
-		}
-		/// <summary>
-		/// 写入到文件
-		/// </summary>
-		/// <param name="sw">写入文件流</param>
-		internal void WriteToFile(StreamWriter sw)
-		{
-			sw.WriteLine(Bookisbn);
-			sw.WriteLine(Bookname);
-			sw.WriteLine(bsdate.ToString());
-			sw.WriteLine(rgdate.ToString());
-			sw.WriteLine(Delayed);
-			sw.WriteLine(Deleted);
-		}
-	}
+	//		internal set
+	//		{
+	//			deleted = value;
+	//		}
+	//	}
+
+	//	/// <summary>
+	//	/// 构造函数
+	//	/// </summary>
+	//	/// <param name="_bookisbn">书号isbn</param>
+	//	/// <param name="_bookname">书名</param>
+	//	/// <param name="_bsdate">借/预约日期</param>
+	//	/// <param name="_rgdate">应还日期</param>
+	//	/// <param name="_delayed">是否已续借</param>
+	//	/// <param name="_deleted">是否已删除</param>
+	//	internal ABook(string _bookisbn, string _bookname, DateTime _bsdate, DateTime _rgdate, bool _delayed = false, bool _deleted = false)
+	//	{
+	//		BookIsbn = _bookisbn;
+	//		BookName = _bookname;
+	//		BorrowTime = _bsdate;
+	//		ReturnTime = _rgdate;
+	//		Delayed = _delayed;
+	//		deleted = _deleted;
+	//	}
+	//	/// <summary>
+	//	/// 从文件读入
+	//	/// </summary>
+	//	/// <param name="sr">读入文件流</param>
+	//	internal ABook(StreamReader sr)
+	//	{
+	//		BookIsbn = sr.ReadLine();
+	//		BookName = sr.ReadLine();
+	//		BorrowTime = DateTime.Parse(sr.ReadLine());
+	//		ReturnTime = DateTime.Parse(sr.ReadLine());
+	//		Delayed = Convert.ToBoolean(sr.ReadLine());
+	//		Deleted = Convert.ToBoolean(sr.ReadLine());
+
+	//	}
+	//	/// <summary>
+	//	/// 写入到文件
+	//	/// </summary>
+	//	/// <param name="sw">写入文件流</param>
+	//	internal void WriteToFile(StreamWriter sw)
+	//	{
+	//		sw.WriteLine(BookIsbn);
+	//		sw.WriteLine(BookName);
+	//		sw.WriteLine(BorrowTime.ToString());
+	//		sw.WriteLine(ReturnTime.ToString());
+	//		sw.WriteLine(Delayed);
+	//		sw.WriteLine(Deleted);
+	//	}
+	//}
+
 	/// <summary>
 	/// 用户类
 	/// </summary>
@@ -189,17 +190,17 @@ namespace LibrarySystemBackEnd
 		/// 
 		/// 在data\usersdetail\“name.lbs”里面 储存：
 		/// 当前信用 最大借书数量 当前最大可借数量 当前借书数量
-		/// 然后是当前借的书 一行四个串 bookisbn bsdate rgdate delayed
+		/// 然后是当前借的书 一行四个串 bookisbn BorrowTime ReturnTime delayed
 		/// 
 		/// 然后是当前已预约书数量
-		/// 然后是当前预约的书 一行四个串 bookisbn bsdate rgdate delayed
+		/// 然后是当前预约的书 一行四个串 bookisbn BorrowTime ReturnTime delayed
 		/// 
 		/// 在加载用户信息时遍历生成消息队列
 		/// 
 		/// </summary>
 		private UserBasicInfo userBasic;
-		private List<ClassBookAndDate> borrowedBook;
-		private List<ClassBookAndDate> scheduleBook;
+		private List<ABook> borrowedBook;
+		private List<ABook> scheduleBook;
 
 		#endregion
 
@@ -221,7 +222,7 @@ namespace LibrarySystemBackEnd
 		/// 返回
 		/// </summary>
 		/// <returns></returns>
-		public IReadOnlyList<ClassBookAndDate> GetBorrowedBook() { return borrowedBook.AsReadOnly(); }
+		public IReadOnlyList<ABook> GetBorrowedBook() { return borrowedBook.AsReadOnly(); }
 
 		#endregion
 
@@ -229,12 +230,12 @@ namespace LibrarySystemBackEnd
 
 		private void UpdateCurrentMaxBorrowableAmount()
 		{
-			UserBasic.Currentmaxborrowableamount = (int)Math.Ceiling(UserBasic.Maxborrowableamount * (UserBasic.Credit < 0 ? 0 : UserBasic.Credit) / 100.0);
+			UserBasic.UserCurrentMaxBorrowableAmount = (int)Math.Ceiling(UserBasic.UserMaxBorrowableAmount * (UserBasic.UserCredit < 0 ? 0 : UserBasic.UserCredit) / 100.0);
 		}
 		private void UpdateBorrowHistory(string _bookisbn, string _bookname, DateTime _borrowdate, DateTime _returndate)
 		{
-			string oldpath = ClassBackEnd.UserHistoryDictory + UserBasic.Userid + ".his";
-			string newpath = ClassBackEnd.UserHistoryDictory + UserBasic.Userid + ".tmphis";
+			string oldpath = ClassBackEnd.UserHistoryDictory + UserBasic.UserId + ".his";
+			string newpath = ClassBackEnd.UserHistoryDictory + UserBasic.UserId + ".tmphis";
 
 			FileStream fso = null; GZipStream zipo = null; StreamReader sro = null;
 			FileStream fsn = null; GZipStream zipn = null; StreamWriter swn = null;
@@ -286,7 +287,7 @@ namespace LibrarySystemBackEnd
 			FileStream fs = null; StreamWriter sw = null;
 			try
 			{
-				fs = new FileStream(ClassBackEnd.UserCerditDictory + UserBasic.Userid + @".cre", FileMode.Append);
+				fs = new FileStream(ClassBackEnd.UserCerditDictory + UserBasic.UserId + @".cre", FileMode.Append);
 				sw = new StreamWriter(fs);
 				sw.WriteLine(s);
 				return;
@@ -312,12 +313,12 @@ namespace LibrarySystemBackEnd
 		internal ClassUser(string _username, string _userid, string _password, string _school, USERTYPE _usertype)
 		{
 			this.userBasic = new UserBasicInfo(_username, _userid, _password, _school, _usertype);
-			borrowedBook = new List<ClassBookAndDate>();
-			scheduleBook = new List<ClassBookAndDate>();
+			borrowedBook = new List<ABook>();
+			scheduleBook = new List<ABook>();
 
-			if (!File.Exists(ClassBackEnd.UserCerditDictory + UserBasic.Userid + @".cre"))
+			if (!File.Exists(ClassBackEnd.UserCerditDictory + UserBasic.UserId + @".cre"))
 			{
-				(File.Create(ClassBackEnd.UserCerditDictory + UserBasic.Userid + @".cre")).Close();
+				(File.Create(ClassBackEnd.UserCerditDictory + UserBasic.UserId + @".cre")).Close();
 			}
 		}
 		/// <summary>
@@ -330,39 +331,39 @@ namespace LibrarySystemBackEnd
 			borrowedBook.Clear();
 			scheduleBook.Clear();
 
-			path = path + UserBasic.Userid + ".lbs";
+			path = path + UserBasic.UserId + ".lbs";
 			FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
 			try
 			{
 				fs = new FileStream(path, FileMode.Open);
 				zip = new GZipStream(fs, CompressionMode.Decompress);
 				sr = new StreamReader(zip);
-				UserBasic.Currentscheduleamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Maxborrowableamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Currentborrowedamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Currentmaxborrowableamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Credit = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCurrentScheduleAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCurrentBorrowedAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCurrentMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCredit = Convert.ToInt32(sr.ReadLine());
 
 				int a, b, c;
 				a = Convert.ToInt32(sr.ReadLine());
 				b = Convert.ToInt32(sr.ReadLine());
 				c = Convert.ToInt32(sr.ReadLine());
-				UserBasic.RegisterDate = new DateTime(a, b, c);
+				UserBasic.UserRegisterDate = new DateTime(a, b, c);
 
 				int t1; t1 = Convert.ToInt32(sr.ReadLine());
 				while (t1-- > 0)
 				{
-					borrowedBook.Add(new ClassBookAndDate(sr));
+					borrowedBook.Add(new ABook(sr));
 				}
 
 				t1 = Convert.ToInt32(sr.ReadLine());
 				while (t1-- > 0)
 				{
-					scheduleBook.Add(new ClassBookAndDate(sr));
+					scheduleBook.Add(new ABook(sr));
 					if (scheduleBook.Last().Deleted == true)
 					{
 						var tmp = ClassTime.systemTime;
-						if (scheduleBook.Last().rgdate + TimeSpan.FromDays(5.0) < tmp)
+						if (scheduleBook.Last().ReturnTime + TimeSpan.FromDays(5.0) < tmp)
 						{
 							scheduleBook.Remove(scheduleBook.Last());
 						}
@@ -383,22 +384,22 @@ namespace LibrarySystemBackEnd
 		}
 		internal bool SaveDetailInformation(string path)
 		{
-			path = path + UserBasic.Userid + ".lbs";
+			path = path + UserBasic.UserId + ".lbs";
 			FileStream fs = null; GZipStream zip = null; StreamWriter sw = null;
 			try
 			{
 				fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 				zip = new GZipStream(fs, CompressionMode.Compress);
 				sw = new StreamWriter(zip);
-				sw.WriteLine(UserBasic.Currentscheduleamount);
-				sw.WriteLine(UserBasic.Maxborrowableamount);
-				sw.WriteLine(UserBasic.Currentborrowedamount);
-				sw.WriteLine(UserBasic.Currentmaxborrowableamount);
-				sw.WriteLine(UserBasic.Credit);
+				sw.WriteLine(UserBasic.UserCurrentScheduleAmount);
+				sw.WriteLine(UserBasic.UserMaxBorrowableAmount);
+				sw.WriteLine(UserBasic.UserCurrentBorrowedAmount);
+				sw.WriteLine(UserBasic.UserCurrentMaxBorrowableAmount);
+				sw.WriteLine(UserBasic.UserCredit);
 
-				sw.WriteLine(UserBasic.RegisterDate.Year);
-				sw.WriteLine(UserBasic.RegisterDate.Month);
-				sw.WriteLine(UserBasic.RegisterDate.Day);
+				sw.WriteLine(UserBasic.UserRegisterDate.Year);
+				sw.WriteLine(UserBasic.UserRegisterDate.Month);
+				sw.WriteLine(UserBasic.UserRegisterDate.Day);
 
 				sw.WriteLine(borrowedBook.Count());
 				for (int i = 0; i < borrowedBook.Count(); i++)
@@ -426,7 +427,7 @@ namespace LibrarySystemBackEnd
 		}
 		internal ClassUser(string id)
 		{
-			UserBasic.Userid = id;
+			UserBasic.UserId = id;
 
 			string path = ClassBackEnd.UserDetailDictory + id + ".lbs";
 			FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
@@ -435,32 +436,32 @@ namespace LibrarySystemBackEnd
 				fs = new FileStream(path, FileMode.Open);
 				zip = new GZipStream(fs, CompressionMode.Decompress);
 				sr = new StreamReader(zip);
-				UserBasic.Currentscheduleamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Maxborrowableamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Currentborrowedamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Currentmaxborrowableamount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.Credit = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCurrentScheduleAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCurrentBorrowedAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCurrentMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
+				UserBasic.UserCredit = Convert.ToInt32(sr.ReadLine());
 
 				int a, b, c;
 				a = Convert.ToInt32(sr.ReadLine());
 				b = Convert.ToInt32(sr.ReadLine());
 				c = Convert.ToInt32(sr.ReadLine());
-				UserBasic.RegisterDate = new DateTime(a, b, c);
+				UserBasic.UserRegisterDate = new DateTime(a, b, c);
 
 				int t1; t1 = Convert.ToInt32(sr.ReadLine());
 				while (t1-- > 0)
 				{
-					borrowedBook.Add(new ClassBookAndDate(sr));
+					borrowedBook.Add(new ABook(sr));
 				}
 
 				t1 = Convert.ToInt32(sr.ReadLine());
 				while (t1-- > 0)
 				{
-					scheduleBook.Add(new ClassBookAndDate(sr));
+					scheduleBook.Add(new ABook(sr));
 					//if(schedulebook.Last().Deleted == true)
 					//{
 					//	var tmp = ClassTime.systemTime;
-					//	if(schedulebook.Last().rgdate + TimeSpan.FromDays(5.0) < tmp)
+					//	if(schedulebook.Last().ReturnTime + TimeSpan.FromDays(5.0) < tmp)
 					//	{
 					//		schedulebook.Remove(schedulebook.Last());
 					//	}
@@ -486,19 +487,19 @@ namespace LibrarySystemBackEnd
 		/// <returns>借书成功返回1，失败(已达借书上限)返回0</returns>
 		internal bool BorrowBook(string bookisbn, string bookname)
 		{
-			if (UserBasic.Currentborrowedamount < UserBasic.Currentmaxborrowableamount)
+			if (UserBasic.UserCurrentBorrowedAmount < UserBasic.UserCurrentMaxBorrowableAmount)
 			{
-				UserBasic.Currentborrowedamount++;
+				UserBasic.UserCurrentBorrowedAmount++;
 
-				borrowedBook.Add(new ClassBookAndDate(bookisbn, bookname, ClassTime.systemTime, ClassTime.systemTime.Add(UserBasicInfo.DefaultDate)));
+				borrowedBook.Add(new ABook(bookisbn, bookname, ClassTime.systemTime, ClassTime.systemTime.Add(UserBasicInfo.DefaultDate)));
 
 				//移除预约列表里面的书
 				for (int i = 0; i < scheduleBook.Count; i++)
 				{
-					if (bookisbn.Contains(scheduleBook[i].Bookisbn))
+					if (bookisbn.Contains(scheduleBook[i].BookIsbn))
 					{
 						scheduleBook.RemoveAt(i);
-						UserBasic.Currentscheduleamount--;
+						UserBasic.UserCurrentScheduleAmount--;
 						break;
 					}
 				}
@@ -511,7 +512,7 @@ namespace LibrarySystemBackEnd
 		/// </summary>
 		internal void CancelBorrowBook()
 		{
-			UserBasic.Currentborrowedamount--;
+			UserBasic.UserCurrentBorrowedAmount--;
 			borrowedBook.RemoveAt(borrowedBook.Count - 1);
 		}
 		/// <summary>
@@ -524,11 +525,11 @@ namespace LibrarySystemBackEnd
 		/// <returns>预约成功返回1，失败(已达上限)返回0</returns>
 		internal bool ScheduleBook(string bookisbn, string bookname)
 		{
-			if (UserBasic.Currentscheduleamount < UserBasicInfo.MaxScheduleAmount)
+			if (UserBasic.UserCurrentScheduleAmount < UserBasicInfo.MaxScheduleAmount)
 			{
-				UserBasic.Currentscheduleamount++;
+				UserBasic.UserCurrentScheduleAmount++;
 
-				scheduleBook.Add(new ClassBookAndDate(bookisbn, bookname, ClassTime.systemTime, ClassTime.systemTime));
+				scheduleBook.Add(new ABook(bookisbn, bookname, ClassTime.systemTime, ClassTime.systemTime));
 
 				return true;
 			}
@@ -544,23 +545,23 @@ namespace LibrarySystemBackEnd
 		{
 			for (int i = 0; i < borrowedBook.Count; i++)
 			{
-				if (borrowedBook[i].Bookisbn.Contains(bookisbn))
+				if (borrowedBook[i].BookIsbn.Contains(bookisbn))
 				{
 					var a = ClassTime.systemTime;
-					var b = borrowedBook[i].rgdate;
+					var b = borrowedBook[i].ReturnTime;
 
 					//处理日期问题，信用按天计算就改成TotalDays
 					var c = Convert.ToInt32(Math.Floor((a - b).TotalDays));
 
-					var d = borrowedBook[i].bsdate;
+					var d = borrowedBook[i].BorrowTime;
 					if (c > 0)
 					{
-						UserBasic.Credit = UserBasic.Credit - c;
+						UserBasic.UserCredit = UserBasic.UserCredit - c;
 						UpdateCurrentMaxBorrowableAmount();
-						RefreshCreditFile("用户于" + borrowedBook[i].Bsdate + "借阅了书籍《" + borrowedBook[i].Bookname + "》(" + borrowedBook[i].Bookisbn + ")，于" + ClassTime.SystemTimeEng + "归还了书籍。扣除信用" + c + "。");
+						RefreshCreditFile("用户于" + borrowedBook[i].BorrowTime + "借阅了书籍《" + borrowedBook[i].BookName + "》(" + borrowedBook[i].BookIsbn + ")，于" + ClassTime.SystemTimeEng + "归还了书籍。扣除信用" + c + "。");
 					}
 
-					UserBasic.Currentborrowedamount--;
+					UserBasic.UserCurrentBorrowedAmount--;
 					borrowedBook.RemoveAt(i);
 
 					UpdateBorrowHistory(bookisbn, bookname, d, a);
@@ -580,9 +581,9 @@ namespace LibrarySystemBackEnd
 		{
 			for (int i = 0; i < scheduleBook.Count; i++)
 			{
-				if (scheduleBook[i].Bookisbn == bookisbn)
+				if (scheduleBook[i].BookIsbn == bookisbn)
 				{
-					UserBasic.Currentscheduleamount--;
+					UserBasic.UserCurrentScheduleAmount--;
 					scheduleBook.RemoveAt(i);
 					return true;
 				}
@@ -609,17 +610,17 @@ namespace LibrarySystemBackEnd
 		{
 			for (int i = 0; i < borrowedBook.Count; i++)
 			{
-				if (borrowedBook[i].Bookisbn.Contains(bookisbn))
+				if (borrowedBook[i].BookIsbn.Contains(bookisbn))
 				{
 					if (borrowedBook[i].Delayed == true) return 2;//已续借过，不能续借
 					var a = ClassTime.systemTime;
-					var b = borrowedBook[i].rgdate;
+					var b = borrowedBook[i].ReturnTime;
 					var c = Convert.ToInt32(Math.Floor((b - a).TotalDays));
 					if (c < 0) return 3;//过了应还日期不能续借
 					if (c > 5) return 4;//应还日期5天以上不能续借
 
 					borrowedBook[i].Delayed = true;
-					borrowedBook[i].rgdate += UserBasicInfo.DefaultDelay;
+					borrowedBook[i].ReturnTime += UserBasicInfo.DefaultDelay;
 					return 1;
 				}
 			}
@@ -632,18 +633,18 @@ namespace LibrarySystemBackEnd
 		/// <returns>返回最终信用</returns>
 		internal int Charge(int money)
 		{
-			if (money < 0) return UserBasic.Credit;
-			if (UserBasic.Credit + money > 100)
+			if (money < 0) return UserBasic.UserCredit;
+			if (UserBasic.UserCredit + money > 100)
 			{
-				UserBasic.Credit = 100;
+				UserBasic.UserCredit = 100;
 			}
-			else UserBasic.Credit += money;
+			else UserBasic.UserCredit += money;
 
-			RefreshCreditFile("用户于" + ClassTime.SystemTimeEng + "充值信用" + money + "，当前信用" + UserBasic.Credit.ToString() + "。");
+			RefreshCreditFile("用户于" + ClassTime.SystemTimeEng + "充值信用" + money + "，当前信用" + UserBasic.UserCredit.ToString() + "。");
 
 			UpdateCurrentMaxBorrowableAmount();
 
-			return UserBasic.Credit;
+			return UserBasic.UserCredit;
 		}
 		/// <summary>
 		/// 返回是否借过这本书
@@ -654,7 +655,7 @@ namespace LibrarySystemBackEnd
 		{
 			foreach (var t in borrowedBook)
 			{
-				if (t.Bookisbn.Contains(bookisbn)) return true;
+				if (t.BookIsbn.Contains(bookisbn)) return true;
 			}
 			return false;
 		}
@@ -667,7 +668,7 @@ namespace LibrarySystemBackEnd
 		{
 			foreach (var t in scheduleBook)
 			{
-				if (t.Bookisbn == bookisbn) return true;
+				if (t.BookIsbn == bookisbn) return true;
 			}
 			return false;
 		}
@@ -679,27 +680,27 @@ namespace LibrarySystemBackEnd
 		{
 			if (mes.Any()) mes.Clear();
 
-			foreach (ClassBookAndDate bk in borrowedBook)
+			foreach (ABook bk in borrowedBook)
 			{
-				TimeSpan ts = bk.rgdate - ClassTime.systemTime;
+				TimeSpan ts = bk.ReturnTime - ClassTime.systemTime;
 				if (ts < TimeSpan.FromDays(5.0) && ts >= TimeSpan.Zero)
 				{
-					mes.Add("您借的书籍《" + bk.Bookname + "》将于" + bk.Rgdate + "到期，请尽快归还！");
+					mes.Add("您借的书籍《" + bk.BookName + "》将于" + bk.ReturnTime + "到期，请尽快归还！");
 				}
 				else if (ts < TimeSpan.Zero)
 				{
-					mes.Add("您借的书籍《" + bk.Bookname + "》已过期，请尽快归还！");
+					mes.Add("您借的书籍《" + bk.BookName + "》已过期，请尽快归还！");
 				}
 			}
-			foreach (ClassBookAndDate bk in scheduleBook)
+			foreach (ABook bk in scheduleBook)
 			{
 				if (bk.Delayed == true)
 				{
-					mes.Add("您预约的书籍《" + bk.Bookname + "》已经到馆，请尽快借阅！");
+					mes.Add("您预约的书籍《" + bk.BookName + "》已经到馆，请尽快借阅！");
 				}
 				if (bk.Deleted == true)
 				{
-					mes.Add("您预约的书籍《" + bk.Bookname + "》已被管理员删除！");
+					mes.Add("您预约的书籍《" + bk.BookName + "》已被管理员删除！");
 				}
 			}
 		}
@@ -712,13 +713,13 @@ namespace LibrarySystemBackEnd
 		{
 			if (bk.Any()) bk.Clear();
 
-			foreach (ClassBookAndDate cba in borrowedBook)
+			foreach (ABook cba in borrowedBook)
 			{
 				bk.Add(new ClassBorrowedBook(cba, true));
 			}
 			if (!borrowedonly)
 			{
-				foreach (ClassBookAndDate cba in scheduleBook)
+				foreach (ABook cba in scheduleBook)
 				{
 					if (cba.Deleted == false)
 						bk.Add(new ClassBorrowedBook(cba, false));
@@ -731,9 +732,9 @@ namespace LibrarySystemBackEnd
 		/// <param name="bookisbn">书籍编号，带扩展</param>
 		internal void bookget(string bookisbn)
 		{
-			foreach (ClassBookAndDate bad in scheduleBook)
+			foreach (ABook bad in scheduleBook)
 			{
-				if (bad.Bookisbn == bookisbn)
+				if (bad.BookIsbn == bookisbn)
 				{
 					bad.Delayed = true;
 					return;
@@ -742,9 +743,9 @@ namespace LibrarySystemBackEnd
 		}
 		internal void deletebook(string bookisbn)
 		{
-			foreach (ClassBookAndDate bad in scheduleBook)
+			foreach (ABook bad in scheduleBook)
 			{
-				if (bad.Bookisbn == bookisbn)
+				if (bad.BookIsbn == bookisbn)
 				{
 					bad.Deleted = true;
 					return;
@@ -753,9 +754,9 @@ namespace LibrarySystemBackEnd
 		}
 		internal void MaintainSheduleBook(string bookisbn)
 		{
-			foreach (ClassBookAndDate cbad in scheduleBook)
+			foreach (ABook cbad in scheduleBook)
 			{
-				if (bookisbn.Contains(cbad.Bookisbn))
+				if (bookisbn.Contains(cbad.BookIsbn))
 					cbad.Delayed = false;
 			}
 		}

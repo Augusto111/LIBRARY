@@ -33,7 +33,7 @@ namespace LIBRARY
         public void BookListRefresh()
         {
             ResultDataSheet.Rows.Clear();//清空上一次搜索表
-            for (int i = 0; i < ClassBackEnd.Currentbook.Bookamount; i++)
+            for (int i = 0; i < ClassBackEnd.Currentbook.BookAmount; i++)
             {
                 DataGridViewRow row = new DataGridViewRow();
                 int index = ResultDataSheet.Rows.Add(row);
@@ -65,18 +65,18 @@ namespace LIBRARY
         private void BookDetailLoad()
         {
             ClassBackEnd.LoadSearchResult(bookIndex);
-            BookNameLabel.Text = ClassBackEnd.Currentbook.Bookname;
-            AuthorText.Text = ClassBackEnd.Currentbook.Author;
-            BookIDText.Text = ClassBackEnd.Currentbook.Bookisbn;
-            PublisherText.Text = ClassBackEnd.Currentbook.Publisher;
-            BookInfoTextbox.Text = ClassBackEnd.Currentbook.Introduction;
-            AmountText.Text = ClassBackEnd.Currentbook.Bookamount.ToString();
-            Label1Text.Text = ClassBackEnd.Currentbook.Booklable1;
-            Label2Text.Text = ClassBackEnd.Currentbook.Booklable2;
-            Label3Text.Text = ClassBackEnd.Currentbook.Booklable3;
+            BookNameLabel.Text = ClassBackEnd.Currentbook.BookName;
+            AuthorText.Text = ClassBackEnd.Currentbook.BookAuthor;
+            BookIDText.Text = ClassBackEnd.Currentbook.BookIsbn;
+            PublisherText.Text = ClassBackEnd.Currentbook.BookPublisher;
+            BookInfoTextbox.Text = ClassBackEnd.Currentbook.BookIntroduction;
+            AmountText.Text = ClassBackEnd.Currentbook.BookAmount.ToString();
+            Label1Text.Text = ClassBackEnd.Currentbook.BookLable1;
+            Label2Text.Text = ClassBackEnd.Currentbook.BookLable2;
+            Label3Text.Text = ClassBackEnd.Currentbook.BookLable3;
             try
             {
-                BookPictureBox.Image = Image.FromFile(ClassBackEnd.Currentbook.Bookimage);
+                BookPictureBox.Image = Image.FromFile(ClassBackEnd.Currentbook.BookImage);
             }
             catch
             {

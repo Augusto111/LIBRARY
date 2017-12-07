@@ -37,133 +37,303 @@ namespace LibrarySystemBackEnd
 	{
 		#region PrivateProperty
 
-		/// <summary>
-		/// 书籍状态，BOOKSTATE类型
-		/// </summary>
-		private BOOKSTATE bookState;
-
-		/// <summary>
-		/// 完整的isbn
-		/// </summary>
-		private string extIsbn;
-
 		private string bookName;
 
-		/// <summary>
-		/// 借阅的用户id，没人借就是空
-		/// </summary>
-		private string borrowUserId;
+		private string bookIsbn;// 完整的isbn
+
+		private string bookPublisher;
+
+		private string bookAuthor;
+
+		private string bookImage;
+
+		private DateTime broughtTime;// 购买时间
+
+		private BOOKSTATE bookState;// 书籍状态
+
+		private string borrowUserId;// 借阅的用户id，没人借就是空
 
 		private DateTime borrowTime;
 
 		private DateTime returnTime;
 
-		/// <summary>
-		/// 购买时间
-		/// </summary>
-		private DateTime broughtTime;
+		private bool delayed;//是否已续借
+
+		private bool deleted;//书籍是否已被删除
 
 		#endregion
 
 		#region 访问器
 		/// <summary>
-		/// 书籍状态，BOOKSTATE类型
+		/// 书名
 		/// </summary>
-		public BOOKSTATE Bookstate
+		public string BookName
+		{
+			get
+			{
+				return bookName;
+			}
+
+			set
+			{
+				bookName = value;
+			}
+		}
+
+		/// <summary>
+		/// ISBN，带扩展的书号
+		/// </summary>
+		public string BookIsbn
+		{
+			get
+			{
+				return bookIsbn;
+			}
+
+			set
+			{
+				bookIsbn = value;
+			}
+		}
+
+		/// <summary>
+		/// 出版社
+		/// </summary>
+		public string BookPublisher
+		{
+			get
+			{
+				return bookPublisher;
+			}
+
+			set
+			{
+				bookPublisher = value;
+			}
+		}
+
+		/// <summary>
+		/// 书籍作者
+		/// </summary>
+		public string BookAuthor
+		{
+			get
+			{
+				return bookAuthor;
+			}
+
+			set
+			{
+				bookAuthor = value;
+			}
+		}
+
+		/// <summary>
+		/// 书籍图片地址
+		/// </summary>
+		public string BookImage
+		{
+			get
+			{
+				return bookImage;
+			}
+
+			set
+			{
+				bookImage = value;
+			}
+		}
+
+		/// <summary>
+		/// 书籍购入时间
+		/// </summary>
+		public DateTime BroughtTime
+		{
+			get
+			{
+				return broughtTime;
+			}
+
+			set
+			{
+				broughtTime = value;
+			}
+		}
+
+		/// <summary>
+		/// 书籍状态
+		/// </summary>
+		public BOOKSTATE BookState
 		{
 			get
 			{
 				return bookState;
 			}
 
-			internal set
+			set
 			{
 				bookState = value;
 			}
 		}
+
 		/// <summary>
-		/// 借阅的用户id，没人借就是空
+		/// 书籍的借阅者或预约者，不存在即为空
 		/// </summary>
-		public string Borrowuserid
+		public string BorrowUserId
 		{
 			get
 			{
 				return borrowUserId;
 			}
 
-			internal set
+			set
 			{
 				borrowUserId = value;
 			}
 		}
+
 		/// <summary>
-		/// 借阅时间，没人借就是空
+		/// 书籍的借出时间，不存在即为空
 		/// </summary>
-		public string Broughttime
+		public DateTime BorrowTime
 		{
 			get
 			{
-				var a = broughtTime.Year.ToString("D4");
-				var b = broughtTime.Month.ToString("D2");
-				var c = broughtTime.Day.ToString("D2");
-				return a + "-" + b + "-" + c;
+				return borrowTime;
+			}
+
+			set
+			{
+				borrowTime = value;
 			}
 		}
+
 		/// <summary>
-		/// 完整的isbn
+		/// 书籍的应归还时间，不存在即为空
 		/// </summary>
-		public string Extisbn
+		public DateTime ReturnTime
 		{
 			get
 			{
-				return extIsbn;
+				return returnTime;
 			}
 
-			internal set
+			set
 			{
-				extIsbn = value;
+				returnTime = value;
 			}
 		}
 
+		/// <summary>
+		/// 书籍是否已被续借
+		/// </summary>
+		public bool Delayed
+		{
+			get
+			{
+				return delayed;
+			}
 
+			set
+			{
+				delayed = value;
+			}
+		}
 
+		/// <summary>
+		/// 书籍是否已被管理员回收
+		/// </summary>
+		public bool Deleted
+		{
+			get
+			{
+				return deleted;
+			}
+
+			set
+			{
+				deleted = value;
+			}
+		}
+		
 		#endregion
+		
+		///// <summary>
+		///// 写入文件函数
+		///// </summary>
+		///// <param name="sw">streamwriter类型</param>
+		//internal void SaveToFile(StreamWriter sw)
+		//{
+		//	sw.WriteLine(Convert.ToInt32(Bookstate));
+		//	sw.WriteLine(Borrowuserid);
+		//	sw.WriteLine(BroughtTime.ToString());
+		//	sw.WriteLine(Extisbn);
+		//}
+		///// <summary>
+		///// 从文件的构造函数
+		///// </summary>
+		///// <param name="sr">streamreader类型</param>
+		//internal ABook(StreamReader sr)
+		//{
+		//	Bookstate = (BOOKSTATE)(System.Enum.Parse(typeof(BOOKSTATE), Convert.ToInt16(sr.ReadLine()).ToString()));
+		//	Borrowuserid = sr.ReadLine();
+		//	BroughtTime = Convert.ToDateTime(sr.ReadLine());
+		//	Extisbn = sr.ReadLine();
+		//}
+
+		/// <summary>
+		/// 完整的构造函数
+		/// </summary>
+		/// <param name="bookName">书名</param>
+		/// <param name="bookIsbn">完整ISBN</param>
+		/// <param name="bookPublisher">出版社</param>
+		/// <param name="bookAuthor">作者</param>
+		/// <param name="bookImage">图片地址</param>
+		/// <param name="broughtTime">购买时间</param>
+		/// <param name="bookState">书籍状态</param>
+		/// <param name="borrowUserId">借阅用户ID</param>
+		/// <param name="borrowTime">借出时间</param>
+		/// <param name="returnTime">应归还时间</param>
+		/// <param name="delayed">是否已续借</param>
+		/// <param name="deleted">是否已被管理员回收</param>
+		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, string bookImage, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted)
+		{
+			this.BookName = bookName;
+			this.BookIsbn = bookIsbn;
+			this.BookPublisher = bookPublisher;
+			this.BookAuthor = bookAuthor;
+			this.BookImage = bookImage;
+			this.BroughtTime = broughtTime;
+			this.BookState = bookState;
+			this.BorrowUserId = borrowUserId;
+			this.BorrowTime = borrowTime;
+			this.ReturnTime = returnTime;
+			this.Delayed = delayed;
+			this.Deleted = deleted;
+		}
 
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-		/// <param name="_bookstate">书籍状态，枚举类型</param>
-		/// <param name="_borrowuserid">借书用户id，没借为空</param>
-		/// <param name="_broughttime">结借书时间</param>
-		/// <param name="_extisbn">完整的isbn</param>
-		internal ABook(BOOKSTATE _bookstate, string _borrowuserid, DateTime _broughttime, string _extisbn)
+		/// <param name="bookName">书名</param>
+		/// <param name="bookIsbn">完整ISBN</param>
+		/// <param name="bookPublisher">出版社</param>
+		/// <param name="bookAuthor">作者</param>
+		/// <param name="bookImage">图片地址</param>
+		/// <param name="broughtTime">购买时间</param>
+		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, string bookImage, DateTime broughtTime)
 		{
-			Bookstate = _bookstate;
-			Borrowuserid = _borrowuserid;
-			broughtTime = _broughttime;
-			Extisbn = _extisbn;
-		}
-		/// <summary>
-		/// 写入文件函数
-		/// </summary>
-		/// <param name="sw">streamwriter类型</param>
-		internal void SaveToFile(StreamWriter sw)
-		{
-			sw.WriteLine(Convert.ToInt32(Bookstate));
-			sw.WriteLine(Borrowuserid);
-			sw.WriteLine(broughtTime.ToString());
-			sw.WriteLine(Extisbn);
-		}
-		/// <summary>
-		/// 从文件的构造函数
-		/// </summary>
-		/// <param name="sr">streamreader类型</param>
-		internal ABook(StreamReader sr)
-		{
-			Bookstate = (BOOKSTATE)(System.Enum.Parse(typeof(BOOKSTATE), Convert.ToInt16(sr.ReadLine()).ToString()));
-			Borrowuserid = sr.ReadLine();
-			broughtTime = Convert.ToDateTime(sr.ReadLine());
-			Extisbn = sr.ReadLine();
+			this.BookName = bookName;
+			this.BookIsbn = bookIsbn;
+			this.BookPublisher = bookPublisher;
+			this.BookAuthor = bookAuthor;
+			this.BookImage = bookImage;
+			this.BroughtTime = broughtTime;
+
+			this.BookState = BOOKSTATE.Available;
+			this.BorrowUserId = null;
+			this.Delayed = false;
+			this.Deleted = false;
 		}
 	}
 }

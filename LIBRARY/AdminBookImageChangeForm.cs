@@ -26,7 +26,7 @@ namespace LIBRARY
 
             try
             {
-                OldImageBox.Image = Image.FromFile(ClassBackEnd.Currentbook.Bookimage);
+                OldImageBox.Image = Image.FromFile(ClassBackEnd.Currentbook.BookImage);
             }
             catch
             {
@@ -79,7 +79,7 @@ namespace LIBRARY
 
         private void OKButton_Click(object sender, EventArgs e)
         {
-            PublicVar.DeletePath = ClassBackEnd.Currentbook.Bookimage;
+            PublicVar.DeletePath = ClassBackEnd.Currentbook.BookImage;
             if (OpenPath != "" && SavePath != "")
                 System.IO.File.Copy(OpenPath, SavePath, true);
             ClassBackEnd.ChangeBookImage(SavePath);
