@@ -17,7 +17,9 @@ namespace LibrarySystemBackEnd
 		private static string sqlName;
 		private static string loginName;
 		private static string loginPassword;
-		private static Sq
+		private static string initialCatalog;
+		private static SqlConnectionStringBuilder builder;
+		private static SqlConnection con;
 		
 		static SQL()
 		{
@@ -28,13 +30,26 @@ namespace LibrarySystemBackEnd
 			sqlName = sqlNode.SelectSingleNode("sqlname").Value;
 			loginName = sqlNode.SelectSingleNode("loginname").Value;
 			loginPassword = sqlNode.SelectSingleNode("loginpassword").Value;
-
+			initialCatalog = sqlNode.SelectSingleNode("initialcatalog").Value;
+			builder.DataSource = sqlName;
+			builder.UserID = loginName;
+			builder.Password = loginPassword;
+			builder.InitialCatalog = initialCatalog;
 		}
 		public static void Print()
 		{
 			Console.WriteLine(sqlName + "\n" + loginName + "\n" + loginPassword);
 		}
 
-		static DataSet Query
+		public static DataSet Query(string SQLstr,string tableName)
+		{
+			using (SqlConnection con = new SqlConnection(builder.ConnectionString)) 
+			{
+				con.Open();
+				SqlDataAdapter SQLda = new SqlDataAdapter(SQLstr, con);
+				SQLda.Fill(,)
+			}
+
+		}
 	}
 }
