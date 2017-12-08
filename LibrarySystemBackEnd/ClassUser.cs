@@ -312,7 +312,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="_usertype">用户类别，默认Guest</param>
 		internal ClassUser(string _username, string _userid, string _password, string _school, USERTYPE _usertype)
 		{
-			this.userBasic = new UserBasicInfo(_username, _userid, _password, _school, _usertype);
+			this.userBasic = new UserBasicInfo( _userid,_username, _password, _school, _usertype);
 			borrowedBook = new List<ABook>();
 			scheduleBook = new List<ABook>();
 

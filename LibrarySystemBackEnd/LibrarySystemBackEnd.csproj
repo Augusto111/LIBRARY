@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C6368479-15B7-4803-B229-5B6281C0C56A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LibrarySystemBackEnd</RootNamespace>
     <AssemblyName>LibrarySystemBackEnd</AssemblyName>
@@ -54,7 +54,7 @@
     <Compile Include="ClassBorrowHistory.cs" />
     <Compile Include="ClassGraph.cs" />
     <Compile Include="ClassLog.cs" />
-    <Compile Include="ClassTime.cs" />
+    <Compile Include="ClassMain.cs" />
     <Compile Include="ClassUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQL.cs" />

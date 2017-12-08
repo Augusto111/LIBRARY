@@ -478,20 +478,11 @@ namespace LibrarySystemBackEnd
 		/// <param name="username">用户名</param>
 		/// <param name="password">密码</param>
 		/// <returns>管理员登录成功返回2，用户登录成功返回1,失败返回0(用户名不存在，密码不正确)</returns>
-		public static int LogIn(string username, string password)
+		public static int LogIn(string userid, string password)
 		{
-			for(int i = 0;i<user.Count;i++)
-			{
-				if(user[i].UserBasic.UserName==username&&user[i].UserBasic.UserPassword==password)
-				{
-					Currentuser=user[i];
-					Usercategory=1;//用户
-					ClassTime.IncUserVis();
-					WriteToLog("用户登录成功！");
-					if(!LoadUserInformation()) return 0;
-					else return 1;
-				}
-			}
+			UserBasicInfo user = SQL.getUsersBasic(userid);
+			if (user == null) return 0;
+			else 
 			for(int i = 0;i<admin.Count;i++)
 			{
 				if(admin[i].Name==username&&admin[i].Password==password)
@@ -519,6 +510,7 @@ namespace LibrarySystemBackEnd
 		/// <returns>返回值：0用户种类错误，1成功，2id重复，3用户名重复，4其他错误</returns>
 		public static int Register(string userid, string username, string password, USERTYPE usertype, string school = "")
 		{
+
 			for(int i = 0;i<user.Count;i++)
 			{
 				if(user[i].UserBasic.UserId==userid) return 2;//id重复
@@ -1210,54 +1202,7 @@ namespace LibrarySystemBackEnd
 
 		#endregion
 
-		/// <summary>
-		/// 程序启动时调用，从文件读取时间
-		/// </summary>
-		public static string StartTime()
-		{
-			FileStream fs = null; StreamReader sr = null;
-			try
-			{
-				fs=new FileStream(@"data\time.lbs", FileMode.OpenOrCreate);
-				sr=new StreamReader(fs);
-				//ClassTime.ReadFromFile(sr,true);
-				return ClassTime.SystemTime;
-			}
-			catch(Exception)
-			{
-				return ClassTime.SystemTime;
-			}
-			finally
-			{
-				if(sr!=null) sr.Close();
-				if(fs!=null) fs.Close();
-			}
-
-		}
-
-		/// <summary>
-		/// 程序停止时调用，将时间写入文件
-		/// </summary>
-		public static void StopTime()
-		{
-			FileStream fs = null; StreamWriter sw = null;
-			try
-			{
-				fs=new FileStream(TimeFile, FileMode.OpenOrCreate);
-				sw=new StreamWriter(fs);
-				ClassTime.SaveToFile(sw);
-			}
-			catch(Exception)
-			{
-				return;
-			}
-			finally
-			{
-				if(sw!=null) sw.Close();
-				if(fs!=null) fs.Close();
-			}
-		}
-
+		#region 其他方法
 		/// <summary>
 		/// 管理员搜索用户
 		/// </summary>
@@ -1560,5 +1505,6 @@ namespace LibrarySystemBackEnd
 			}
 			return flag;
 		}
+		#endregion
 	}
 }

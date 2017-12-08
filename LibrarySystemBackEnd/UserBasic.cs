@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,15 +16,15 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 学生
 		/// </summary>
-		Student,
+		Student=0,
 		/// <summary>
 		/// 老师
 		/// </summary>
-		Lecturer,
+		Lecturer=1,
 		/// <summary>
 		/// 访客
 		/// </summary>
-		Guest
+		Guest=2
 	};
 
 	public class UserBasicInfo
@@ -33,8 +35,8 @@ namespace LibrarySystemBackEnd
 		public static readonly int MaxCredit = 100;
 
 		#region 私有属性
-		private string userName;
 		private string userId;
+		private string userName;
 		private string userPassword;
 		private string userSchool;
 		private USERTYPE userType;
@@ -234,23 +236,41 @@ namespace LibrarySystemBackEnd
 
 		#endregion
 
-		public UserBasicInfo(string _username, string _userid, string _password, string _school, USERTYPE _usertype)
+		public UserBasicInfo(string userId, string userName, string userPassword, string userSchool, USERTYPE userType)
 		{
-			UserName = _username;
-			UserId = _userid;
-			UserPassword = _password;
-			UserSchool = _school;
-			UserType = _usertype;
+			UserName = userName;
+			UserId = userId;
+			UserPassword = userPassword;
+			UserSchool = userSchool;
+			UserType = userType;
 			UserCredit = 100;
 			UserCurrentBorrowedAmount = 0;
 			UserCurrentScheduleAmount = 0;
 
 
-			UserRegisterDate = ClassTime.systemTime;
-			if (userType == USERTYPE.Guest) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 0;
-			else if (userType == USERTYPE.Student) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 10;
-			else if (userType == USERTYPE.Lecturer) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 20;
+			UserRegisterDate = DateTime.Now;//ClassTime.systemTime;
+			if (this.userType == USERTYPE.Guest) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 0;
+			else if (this.userType == USERTYPE.Student) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 10;
+			else if (this.userType == USERTYPE.Lecturer) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 20;
 		}
 
+		/// <summary>
+		/// 数据库构造函数
+		/// </summary>
+		/// <param name="dr">数据库阅读器</param>
+		public UserBasicInfo(DbDataReader dr)
+		{
+			this.userId = dr["userId"].ToString();
+			this.userName = dr["userName"].ToString();
+			this.userPassword = dr["userPassword"].ToString();
+			this.userSchool = dr["userSchool"].ToString();
+			this.userType = (USERTYPE)Enum.ToObject(typeof(USERTYPE),dr["userType"]);
+			this.userCurrentScheduleAmount = (int)dr["userCurrentScheduleAmount"];
+			this.userMaxBorrowableAmount = (int)dr["userMaxBorrowableAmount"];
+			this.userCurrentBorrowedAmount = (int)dr["userCurrentBorrowedAmount"];
+			this.userCurrentMaxBorrowableAmount = (int)dr["userCurrentMaxBorrowableAmount"];
+			this.userCredit = (int)dr["userCredit"];
+			this.userRegisterDate = (DateTime)dr["userRegisterDate"];
+		}
 	}
 }
