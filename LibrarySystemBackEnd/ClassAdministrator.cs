@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,12 +12,15 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 管理员类
 	/// </summary>
-	public class ClassAdministrator
+	public class ClassAdmin
 	{
 		#region PrivateProperty
 		private string id;
 		private string name;
 		private string password;
+		private USERTYPE type;
+		private DateTime registerDate;
+
 		/// <summary>
 		/// 管理员ID
 		/// </summary>
@@ -61,31 +66,59 @@ namespace LibrarySystemBackEnd
 				password = value;
 			}
 		}
+		/// <summary>
+		/// 类型，管理员2，书籍管理员3
+		/// </summary>
+		public USERTYPE Type
+		{
+			get
+			{
+				return type;
+			}
+
+			set
+			{
+				type = value;
+			}
+		}
+		/// <summary>
+		/// 注册日期
+		/// </summary>
+		public DateTime RegisterDate
+		{
+			get
+			{
+				return registerDate;
+			}
+
+			internal set
+			{
+				registerDate = value;
+			}
+		}
 		#endregion
 
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-		/// <param name="_id">id</param>
-		/// <param name="_name">姓名</param>
-		/// <param name="_password">密码</param>
-		internal ClassAdministrator(string _id,string _name,string _password)
+		/// <param name="id">id</param>
+		/// <param name="name">姓名</param>
+		/// <param name="password">密码</param>
+		internal ClassAdmin(string id,string name,string password,USERTYPE type)
 		{
-			Id = _id;
-			Name = _name;
-			Password = _password;
+			this.id = id;
+			this.name = name;
+			this.password = password;
+			this.type = type;
+			this.registerDate = DateTime.Now;
 		}
-		internal ClassAdministrator(StreamReader sr)
+		internal ClassAdmin(DbDataReader dr)
 		{
-			Id = sr.ReadLine();
-			Name = sr.ReadLine();
-			Password = sr.ReadLine();
-		}
-		internal void SaveToFile(StreamWriter sw)
-		{
-			sw.WriteLine(Id);
-			sw.WriteLine(Name);
-			sw.WriteLine(Password);
+			this.id = dr["id"].ToString();
+			this.name = dr["name"].ToString();
+			this.password = dr["password"].ToString();
+			this.type = (USERTYPE)Enum.ToObject(typeof(USERTYPE), dr["type"]);
+			this.registerDate = (DateTime)dr["registerdate"];
 		}
 	}
 }

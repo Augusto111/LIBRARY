@@ -198,14 +198,14 @@ namespace LibrarySystemBackEnd
 		/// 在加载用户信息时遍历生成消息队列
 		/// 
 		/// </summary>
-		private UserBasicInfo userBasic;
+		private ClassUserBasicInfo userBasic;
 		private List<ABook> borrowedBook;
 		private List<ABook> scheduleBook;
 
 		#endregion
 
 		#region PublicGetPropertyMethod
-		public UserBasicInfo UserBasic
+		public ClassUserBasicInfo UserBasic
 		{
 			get
 			{
@@ -312,7 +312,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="_usertype">用户类别，默认Guest</param>
 		internal ClassUser(string _username, string _userid, string _password, string _school, USERTYPE _usertype)
 		{
-			this.userBasic = new UserBasicInfo( _userid,_username, _password, _school, _usertype);
+			this.userBasic = new ClassUserBasicInfo( _userid,_username, _password, _school, _usertype);
 			borrowedBook = new List<ABook>();
 			scheduleBook = new List<ABook>();
 
@@ -491,7 +491,7 @@ namespace LibrarySystemBackEnd
 			{
 				UserBasic.UserCurrentBorrowedAmount++;
 
-				borrowedBook.Add(new ABook(bookisbn, bookname, ClassTime.systemTime, ClassTime.systemTime.Add(UserBasicInfo.DefaultDate)));
+				borrowedBook.Add(new ABook(bookisbn, bookname, ClassTime.systemTime, ClassTime.systemTime.Add(ClassUserBasicInfo.DefaultDate)));
 
 				//移除预约列表里面的书
 				for (int i = 0; i < scheduleBook.Count; i++)
@@ -525,7 +525,7 @@ namespace LibrarySystemBackEnd
 		/// <returns>预约成功返回1，失败(已达上限)返回0</returns>
 		internal bool ScheduleBook(string bookisbn, string bookname)
 		{
-			if (UserBasic.UserCurrentScheduleAmount < UserBasicInfo.MaxScheduleAmount)
+			if (UserBasic.UserCurrentScheduleAmount < ClassUserBasicInfo.MaxScheduleAmount)
 			{
 				UserBasic.UserCurrentScheduleAmount++;
 
@@ -620,7 +620,7 @@ namespace LibrarySystemBackEnd
 					if (c > 5) return 4;//应还日期5天以上不能续借
 
 					borrowedBook[i].Delayed = true;
-					borrowedBook[i].ReturnTime += UserBasicInfo.DefaultDelay;
+					borrowedBook[i].ReturnTime += ClassUserBasicInfo.DefaultDelay;
 					return 1;
 				}
 			}

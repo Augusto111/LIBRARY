@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,27 +39,17 @@ namespace LibrarySystemBackEnd
 		#region PrivateProperty
 
 		private string bookName;
-
 		private string bookIsbn;// 完整的isbn
-
 		private string bookPublisher;
-
 		private string bookAuthor;
-
-		private string bookImage;
-
-		private DateTime broughtTime;// 购买时间
-
+		private byte[] bookImage;
+		private DateTime bookPublishDate;
+		private DateTime bookBroughtTime;// 购买时间
 		private BOOKSTATE bookState;// 书籍状态
-
 		private string borrowUserId;// 借阅的用户id，没人借就是空
-
 		private DateTime borrowTime;
-
 		private DateTime returnTime;
-
 		private bool delayed;//是否已续借
-
 		private bool deleted;//书籍是否已被删除
 
 		#endregion
@@ -131,7 +122,7 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍图片地址
 		/// </summary>
-		public string BookImage
+		public byte[] BookImage
 		{
 			get
 			{
@@ -147,16 +138,16 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍购入时间
 		/// </summary>
-		public DateTime BroughtTime
+		public DateTime BookBroughtTime
 		{
 			get
 			{
-				return broughtTime;
+				return bookBroughtTime;
 			}
 
 			set
 			{
-				broughtTime = value;
+				bookBroughtTime = value;
 			}
 		}
 
@@ -255,9 +246,22 @@ namespace LibrarySystemBackEnd
 				deleted = value;
 			}
 		}
-		
+
+		public DateTime BookPublishDate
+		{
+			get
+			{
+				return bookPublishDate;
+			}
+
+			set
+			{
+				bookPublishDate = value;
+			}
+		}
+
 		#endregion
-		
+
 		///// <summary>
 		///// 写入文件函数
 		///// </summary>
@@ -289,6 +293,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="bookPublisher">出版社</param>
 		/// <param name="bookAuthor">作者</param>
 		/// <param name="bookImage">图片地址</param>
+		/// <param name="bookPublishDate">出版日期</param>
 		/// <param name="broughtTime">购买时间</param>
 		/// <param name="bookState">书籍状态</param>
 		/// <param name="borrowUserId">借阅用户ID</param>
@@ -296,14 +301,15 @@ namespace LibrarySystemBackEnd
 		/// <param name="returnTime">应归还时间</param>
 		/// <param name="delayed">是否已续借</param>
 		/// <param name="deleted">是否已被管理员回收</param>
-		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, string bookImage, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted)
+		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted)
 		{
 			this.BookName = bookName;
 			this.BookIsbn = bookIsbn;
 			this.BookPublisher = bookPublisher;
 			this.BookAuthor = bookAuthor;
 			this.BookImage = bookImage;
-			this.BroughtTime = broughtTime;
+			this.BookPublishDate = bookPublishDate;
+			this.BookBroughtTime = broughtTime;
 			this.BookState = bookState;
 			this.BorrowUserId = borrowUserId;
 			this.BorrowTime = borrowTime;
@@ -320,20 +326,42 @@ namespace LibrarySystemBackEnd
 		/// <param name="bookPublisher">出版社</param>
 		/// <param name="bookAuthor">作者</param>
 		/// <param name="bookImage">图片地址</param>
+		/// <param name="bookPublishDate">出版时间</param>
 		/// <param name="broughtTime">购买时间</param>
-		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, string bookImage, DateTime broughtTime)
+		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime)
 		{
 			this.BookName = bookName;
 			this.BookIsbn = bookIsbn;
 			this.BookPublisher = bookPublisher;
 			this.BookAuthor = bookAuthor;
 			this.BookImage = bookImage;
-			this.BroughtTime = broughtTime;
+			this.BookPublishDate = bookPublishDate;
+			this.BookBroughtTime = broughtTime;
 
 			this.BookState = BOOKSTATE.Available;
-			this.BorrowUserId = null;
+			this.BorrowUserId = "";
+			this.BorrowTime = DateTime.Now;
+			this.ReturnTime = DateTime.Now;
 			this.Delayed = false;
 			this.Deleted = false;
+		}
+
+		internal ABook(DbDataReader dr)
+		{
+			this.BookName = dr["bookName"].ToString();
+			this.BookIsbn = dr["bookIsbn"].ToString();
+			this.BookPublisher = dr["bookPublisher"].ToString();
+			this.BookAuthor = dr["bookAuthor"].ToString();
+			this.BookImage = (byte[])dr["bookImage"];
+			this.BookPublishDate = (DateTime)dr["bookPublishDate"];
+			this.BookBroughtTime = (DateTime)dr["broughtTime"];
+
+			this.BookState = (BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), dr["bookState"]);
+			this.BorrowUserId = dr["borrowUserId"].ToString();
+			this.BorrowTime = (DateTime)dr["borrowTime"];
+			this.ReturnTime = (DateTime)dr["returnTime"];
+			this.Delayed = (bool)dr["delayed"];
+			this.Deleted = (bool)dr["deleted"];
 		}
 	}
 }

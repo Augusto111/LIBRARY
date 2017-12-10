@@ -9,25 +9,33 @@ using System.Threading.Tasks;
 namespace LibrarySystemBackEnd
 {
 	/// <summary>
-	/// 用户种类
+	/// 用户种类,0学生1老师2管理员3书籍管理员4访客
 	/// </summary>
 	public enum USERTYPE
 	{
 		/// <summary>
 		/// 学生
 		/// </summary>
-		Student=0,
+		Student = 0,
 		/// <summary>
 		/// 老师
 		/// </summary>
-		Lecturer=1,
+		Lecturer = 1,
+		/// <summary>
+		/// 管理员
+		/// </summary>
+		Admin = 2,
+		/// <summary>
+		/// 书籍管理员
+		/// </summary>
+		AdminBook=3,
 		/// <summary>
 		/// 访客
 		/// </summary>
-		Guest=2
+		Guest = 4
 	};
 
-	public class UserBasicInfo
+	public class ClassUserBasicInfo
 	{
 		public static readonly TimeSpan DefaultDate = new TimeSpan(30, 0, 0, 0, 0);
 		public static readonly TimeSpan DefaultDelay = new TimeSpan(15, 0, 0, 0, 0);
@@ -45,10 +53,10 @@ namespace LibrarySystemBackEnd
 		private int userCurrentBorrowedAmount;//当前借书数量
 		private int userCurrentMaxBorrowableAmount;//当前最大可借数量
 		private int userCredit;///信用
-						   ///满分100
-						   ///每逾期3天还书信用减1
-						   ///借书数量是信用百分比乘最大借书数量向上取整
-						   ///交钱恢复信用一元一点信用
+							   ///满分100
+							   ///每逾期3天还书信用减1
+							   ///借书数量是信用百分比乘最大借书数量向上取整
+							   ///交钱恢复信用一元一点信用
 		private DateTime userRegisterDate;
 		#endregion
 
@@ -227,7 +235,7 @@ namespace LibrarySystemBackEnd
 				return userRegisterDate;
 			}
 
-			set
+			internal set
 			{
 				userRegisterDate = value;
 			}
@@ -236,7 +244,7 @@ namespace LibrarySystemBackEnd
 
 		#endregion
 
-		public UserBasicInfo(string userId, string userName, string userPassword, string userSchool, USERTYPE userType)
+		internal ClassUserBasicInfo(string userId, string userName, string userPassword, string userSchool, USERTYPE userType)
 		{
 			UserName = userName;
 			UserId = userId;
@@ -258,13 +266,13 @@ namespace LibrarySystemBackEnd
 		/// 数据库构造函数
 		/// </summary>
 		/// <param name="dr">数据库阅读器</param>
-		public UserBasicInfo(DbDataReader dr)
+		internal ClassUserBasicInfo(DbDataReader dr)
 		{
 			this.userId = dr["userId"].ToString();
 			this.userName = dr["userName"].ToString();
 			this.userPassword = dr["userPassword"].ToString();
 			this.userSchool = dr["userSchool"].ToString();
-			this.userType = (USERTYPE)Enum.ToObject(typeof(USERTYPE),dr["userType"]);
+			this.userType = (USERTYPE)Enum.ToObject(typeof(USERTYPE), dr["userType"]);
 			this.userCurrentScheduleAmount = (int)dr["userCurrentScheduleAmount"];
 			this.userMaxBorrowableAmount = (int)dr["userMaxBorrowableAmount"];
 			this.userCurrentBorrowedAmount = (int)dr["userCurrentBorrowedAmount"];
