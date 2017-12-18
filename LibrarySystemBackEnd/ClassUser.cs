@@ -37,6 +37,7 @@ namespace LibrarySystemBackEnd
 		#endregion
 
 		#region PublicGetPropertyMethod
+
 		/// <summary>
 		/// 获取基本用户信息
 		/// </summary>
@@ -65,7 +66,11 @@ namespace LibrarySystemBackEnd
 
 		private void UpdateCurrentMaxBorrowableAmount()
 		{
-			UserBasic.UserCurrentMaxBorrowableAmount = (int)Math.Ceiling(UserBasic.UserMaxBorrowableAmount * (UserBasic.UserCredit < 0 ? 0 : UserBasic.UserCredit) / 100.0);
+			UserBasic.UserCurrentMaxBorrowableAmount = 
+				(int)Math.Ceiling(
+					UserBasic.UserMaxBorrowableAmount * 
+					(UserBasic.UserCredit < 0 ? 0 : UserBasic.UserCredit) 
+					/ 100.0);
 		}
 		private void UpdateBorrowHistory(string _bookisbn, string _bookname, DateTime _borrowdate, DateTime _returndate)
 		{
