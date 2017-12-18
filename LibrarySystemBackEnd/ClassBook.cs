@@ -26,7 +26,7 @@ namespace LibrarySystemBackEnd
 		private DateTime bookPublishTime;
 		private int bookAmount;
 		private string[] bookLable;
-		private List<ABook> books;
+		private List<ClassABook> books;
 		private LinkedList<string> scheduleQueue;
 		#endregion
 
@@ -148,7 +148,7 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 每一本书
 		/// </summary>
-		public List<ABook> Book
+		public List<ClassABook> Book
 		{
 			get
 			{
@@ -286,13 +286,13 @@ namespace LibrarySystemBackEnd
 			this.bookPublishTime = publishTime;
 			this.bookLable = new string[3] { bookLable1, bookLable2, bookLable3 };
 
-			this.books = new List<ABook>();
+			this.books = new List<ClassABook>();
 			this.scheduleQueue = new LinkedList<string>();
 
 
 			for (int i = 0; i < BookAmount; i++)
 			{
-				Book.Add(new ABook(bookName, bookIsbn + i.ToString("D4"), bookPublisher, bookAuthor, bookImage, publishTime, broughtTime));
+				Book.Add(new ClassABook(bookName, bookIsbn + i.ToString("D4"), bookPublisher, bookAuthor, bookImage, publishTime, broughtTime));
 				//UpdateHistory(Book.Last().BookIsbn, new ClassBookHis(broughtTime, adminId, 0));
 			}
 		}

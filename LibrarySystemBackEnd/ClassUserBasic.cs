@@ -260,6 +260,7 @@ namespace LibrarySystemBackEnd
 			if (this.userType == USERTYPE.Guest) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 0;
 			else if (this.userType == USERTYPE.Student) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 10;
 			else if (this.userType == USERTYPE.Lecturer) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 20;
+			else UserCurrentMaxBorrowableAmount = 0;
 		}
 
 		/// <summary>

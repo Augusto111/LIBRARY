@@ -168,6 +168,11 @@ namespace LibrarySystemBackEnd
 					return false;
 			}
 		}
+		/// <summary>
+		/// 向数据库中添加书籍，采用数据库事物
+		/// </summary>
+		/// <param name="bk">书籍类</param>
+		/// <returns>成功/失败</returns>
 		public bool AddBook(ClassBook bk)
 		{
 			bool res = false;
@@ -199,7 +204,7 @@ namespace LibrarySystemBackEnd
 
 					if (cmd.ExecuteNonQuery() < 0)
 						throw new Exception();
-					foreach (ABook abk in bk.Book)
+					foreach (ClassABook abk in bk.Book)
 					{
 						cmd.CommandType = CommandType.Text;
 						cmd.CommandText = "insert into dt_abook values(@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m)";

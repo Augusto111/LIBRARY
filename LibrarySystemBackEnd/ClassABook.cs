@@ -34,7 +34,7 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 单一的一本书
 	/// </summary>
-	public class ABook
+	public class ClassABook
 	{
 		#region PrivateProperty
 
@@ -301,7 +301,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="returnTime">应归还时间</param>
 		/// <param name="delayed">是否已续借</param>
 		/// <param name="deleted">是否已被管理员回收</param>
-		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted)
+		public ClassABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted)
 		{
 			this.BookName = bookName;
 			this.BookIsbn = bookIsbn;
@@ -328,7 +328,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="bookImage">图片地址</param>
 		/// <param name="bookPublishDate">出版时间</param>
 		/// <param name="broughtTime">购买时间</param>
-		public ABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime)
+		public ClassABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime)
 		{
 			this.BookName = bookName;
 			this.BookIsbn = bookIsbn;
@@ -346,7 +346,7 @@ namespace LibrarySystemBackEnd
 			this.Deleted = false;
 		}
 
-		internal ABook(DbDataReader dr)
+		internal ClassABook(DbDataReader dr)
 		{
 			this.BookName = dr["bookName"].ToString();
 			this.BookIsbn = dr["bookIsbn"].ToString();
