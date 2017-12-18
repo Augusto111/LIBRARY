@@ -67,7 +67,13 @@ namespace LibrarySystemBackEnd
 			bool fl = sql.AddAdmin(new ClassAdmin(id, name, password, type));
 			return fl;
 		}
-
+		/// <summary>
+		/// 借书
+		/// </summary>
+		/// <param name="userid">用户id</param>
+		/// <param name="password">用户密码</param>
+		/// <param name="bookid">书籍id</param>
+		/// <returns>返回：0借书成功，1用户借书数量上限，2没有可借书籍，3用户已经借阅过，4</returns>
 		public int BorrowBook(string userid, string password, string bookid)
 		{
 			int res = 0;
@@ -78,7 +84,7 @@ namespace LibrarySystemBackEnd
 				try
 				{
 					tra = con.BeginTransaction();
-					string sqlstr = "select *from dt_UserBasic where userId='" + userid + "' and userPassword='" + password + "'";
+					string sqlstr = "select *from dt_UserBasic with(TABLOCKX) where userId='" + userid + "' and userPassword='" + password + "'";
 					DataSet ds = new DataSet();
 					SqlDataAdapter adp = new SqlDataAdapter(sqlstr, con);
 					adp.SelectCommand.Transaction = tra;
@@ -101,7 +107,7 @@ namespace LibrarySystemBackEnd
 					ds.AcceptChanges();
 
 
-					sqlstr = "select *from dt_abook where bookIsbn like '" + bookid + "%'";
+					sqlstr = "select *from dt_abook with(TABLOCKX) where bookIsbn like '" + bookid + "%'";
 					ds = new DataSet();
 					adp = new SqlDataAdapter(sqlstr, con);
 					adp.SelectCommand.Transaction = tra;
@@ -113,31 +119,45 @@ namespace LibrarySystemBackEnd
 						res = 2;//没书可借
 						throw new Exception();
 					}
+
 					bool hasfin = false;
 					foreach (DataRow rowtmp in ds.Tables[0].Rows)
 					{
 						if (rowtmp["borrorUserId"].ToString() == userid)
 						{
+							BOOKSTATE thisstate = (BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), rowtmp["bookState"]);
+							if (thisstate == BOOKSTATE.Borrowed || thisstate == BOOKSTATE.Unavailable)
+							{
+								res = 3;
+								throw new Exception();
+							}
 							hasfin = true;
 							rowtmp["bookState"] = BOOKSTATE.Borrowed;
 							rowtmp["borrorUserId"] = userid;
 							rowtmp["borrowTime"] = DateTime.Now;
 							rowtmp["returnTime"] = DateTime.Now + ClassUserBasicInfo.DefaultDate;
+							break;
 						}
 					}
-					if(!hasfin)
+					if (!hasfin)
 					{
 						foreach (DataRow rowtmp in ds.Tables[0].Rows)
 						{
-							if (rowtmp["bookState"] == userid)
+							if ((BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), rowtmp["bookState"]) == BOOKSTATE.Available)
 							{
 								hasfin = true;
 								rowtmp["bookState"] = BOOKSTATE.Borrowed;
 								rowtmp["borrorUserId"] = userid;
 								rowtmp["borrowTime"] = DateTime.Now;
 								rowtmp["returnTime"] = DateTime.Now + ClassUserBasicInfo.DefaultDate;
+								break;
 							}
 						}
+					}
+					if (!hasfin)
+					{
+						res = 4;
+						throw new Exception();
 					}
 					adp.Update(ds.GetChanges());
 					ds.AcceptChanges();
@@ -147,7 +167,7 @@ namespace LibrarySystemBackEnd
 				catch (Exception e)
 				{
 					if (res == 0)
-						res = 3;
+						res = 4;
 					tra.Rollback();
 				}
 			}
