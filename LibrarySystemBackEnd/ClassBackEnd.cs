@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,5 +67,93 @@ namespace LibrarySystemBackEnd
 			bool fl = sql.AddAdmin(new ClassAdmin(id, name, password, type));
 			return fl;
 		}
+
+		public int BorrowBook(string userid, string password, string bookid)
+		{
+			int res = 0;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlTransaction tra = null;
+				try
+				{
+					tra = con.BeginTransaction();
+					string sqlstr = "select *from dt_UserBasic where userId='" + userid + "' and userPassword='" + password + "'";
+					DataSet ds = new DataSet();
+					SqlDataAdapter adp = new SqlDataAdapter(sqlstr, con);
+					adp.SelectCommand.Transaction = tra;
+
+					SqlCommandBuilder cb = new SqlCommandBuilder(adp);
+					adp.Fill(ds);
+
+					DataRow dr = ds.Tables[0].Rows[0];
+					int tmp1 = Convert.ToInt32(dr["userCurrentBorrowedAmount"]);
+					int tmp2 = Convert.ToInt32(dr["userCurrentMaxBorrowableAmount"]);
+					if (tmp1 >= tmp2)
+					{
+						res = 1;//借阅数量上限
+						throw new Exception();
+					}
+					tmp1++;
+					dr["userCurrentBorrowedAmount"] = tmp1.ToString();
+
+					adp.Update(ds.GetChanges());
+					ds.AcceptChanges();
+
+
+					sqlstr = "select *from dt_abook where bookIsbn like '" + bookid + "%'";
+					ds = new DataSet();
+					adp = new SqlDataAdapter(sqlstr, con);
+					adp.SelectCommand.Transaction = tra;
+
+					cb = new SqlCommandBuilder(adp);
+					adp.Fill(ds);
+					if (ds.Tables[0].Rows.Count == 0)
+					{
+						res = 2;//没书可借
+						throw new Exception();
+					}
+					bool hasfin = false;
+					foreach (DataRow rowtmp in ds.Tables[0].Rows)
+					{
+						if (rowtmp["borrorUserId"].ToString() == userid)
+						{
+							hasfin = true;
+							rowtmp["bookState"] = BOOKSTATE.Borrowed;
+							rowtmp["borrorUserId"] = userid;
+							rowtmp["borrowTime"] = DateTime.Now;
+							rowtmp["returnTime"] = DateTime.Now + ClassUserBasicInfo.DefaultDate;
+						}
+					}
+					if(!hasfin)
+					{
+						foreach (DataRow rowtmp in ds.Tables[0].Rows)
+						{
+							if (rowtmp["bookState"] == userid)
+							{
+								hasfin = true;
+								rowtmp["bookState"] = BOOKSTATE.Borrowed;
+								rowtmp["borrorUserId"] = userid;
+								rowtmp["borrowTime"] = DateTime.Now;
+								rowtmp["returnTime"] = DateTime.Now + ClassUserBasicInfo.DefaultDate;
+							}
+						}
+					}
+					adp.Update(ds.GetChanges());
+					ds.AcceptChanges();
+					tra.Commit();
+					res = 0;
+				}
+				catch (Exception e)
+				{
+					if (res == 0)
+						res = 3;
+					tra.Rollback();
+				}
+			}
+			return res;
+		}
+
+
 	}
 }

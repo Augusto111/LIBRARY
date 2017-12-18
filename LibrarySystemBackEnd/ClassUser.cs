@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -66,10 +68,10 @@ namespace LibrarySystemBackEnd
 
 		private void UpdateCurrentMaxBorrowableAmount()
 		{
-			UserBasic.UserCurrentMaxBorrowableAmount = 
+			UserBasic.UserCurrentMaxBorrowableAmount =
 				(int)Math.Ceiling(
-					UserBasic.UserMaxBorrowableAmount * 
-					(UserBasic.UserCredit < 0 ? 0 : UserBasic.UserCredit) 
+					UserBasic.UserMaxBorrowableAmount *
+					(UserBasic.UserCredit < 0 ? 0 : UserBasic.UserCredit)
 					/ 100.0);
 		}
 		private void UpdateBorrowHistory(string _bookisbn, string _bookname, DateTime _borrowdate, DateTime _returndate)
@@ -145,76 +147,73 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-		/// <param name="_username">用户名</param>
-		/// <param name="_userid">用户学号</param>
-		/// <param name="_password">用户密码</param>
-		/// <param name="_school">用户学院，可以为空</param>
-		/// <param name="_usertype">用户类别，默认Guest</param>
-		internal ClassUser(string _username, string _userid, string _password, string _school, USERTYPE _usertype)
+		/// <param name="userName">用户名</param>
+		/// <param name="userId">用户学号</param>
+		/// <param name="userPassword">用户密码</param>
+		/// <param name="userSchool">用户学院</param>
+		/// <param name="userType">用户类别</param>
+		internal ClassUser(string userId, string userName, string userPassword, string userSchool, USERTYPE userType)
 		{
-			this.userBasic = new ClassUserBasicInfo( _userid,_username, _password, _school, _usertype);
+			this.userBasic = new ClassUserBasicInfo(userId, userName, userPassword, userSchool, userType);
 			borrowedBook = new List<ClassABook>();
 			scheduleBook = new List<ClassABook>();
 		}
 		/// <summary>
 		/// 从数据库添加用户类的详细信息
 		/// </summary>
-		/// <param name="path">文件路径</param>
-		/// <returns>成功返回1出现异常返回0</returns>
-		internal bool ReadDetailInformation(string path)
+		/// <param name="id">id</param>
+		/// <param name="password">密码</param>
+		/// <param name="sqllink">SQL连接</param>
+		internal ClassUser(string id, string password, ClassSQL sqllink)
 		{
-			borrowedBook.Clear();
-			scheduleBook.Clear();
-
-			path = path + UserBasic.UserId + ".lbs";
-			FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
-			try
+			using (SqlConnection con = new SqlConnection(sqllink.Builder.ConnectionString))
 			{
-				fs = new FileStream(path, FileMode.Open);
-				zip = new GZipStream(fs, CompressionMode.Decompress);
-				sr = new StreamReader(zip);
-				UserBasic.UserCurrentScheduleAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserCurrentBorrowedAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserCurrentMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserCredit = Convert.ToInt32(sr.ReadLine());
+				SqlCommand cmd = con.CreateCommand();
+				cmd.CommandText = "select *from dt_UserBasic where userId=@a";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", id);
 
-				int a, b, c;
-				a = Convert.ToInt32(sr.ReadLine());
-				b = Convert.ToInt32(sr.ReadLine());
-				c = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserRegisterDate = new DateTime(a, b, c);
-
-				int t1; t1 = Convert.ToInt32(sr.ReadLine());
-				while (t1-- > 0)
+				con.Open();
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
 				{
-					borrowedBook.Add(new ClassABook(sr));
+					dr.Read();
+					this.UserBasic = new ClassUserBasicInfo(dr);
 				}
+			}
 
-				t1 = Convert.ToInt32(sr.ReadLine());
-				while (t1-- > 0)
+			borrowedBook = new List<ClassABook>();
+			using (SqlConnection con = new SqlConnection(sqllink.Builder.ConnectionString))
+			{
+				SqlCommand cmd = con.CreateCommand();
+				cmd.CommandText = "select *from dt_BorrowList where userId=@a";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", id);
+
+				con.Open();
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
 				{
-					scheduleBook.Add(new ClassABook(sr));
-					if (scheduleBook.Last().Deleted == true)
-					{
-						var tmp = ClassTime.systemTime;
-						if (scheduleBook.Last().ReturnTime + TimeSpan.FromDays(5.0) < tmp)
-						{
-							scheduleBook.Remove(scheduleBook.Last());
-						}
-					}
+					while (dr.Read())
+						this.borrowedBook.Add(new ClassABook(dr));
 				}
-				return true;
 			}
-			catch (Exception)
+
+			scheduleBook = new List<ClassABook>();
+			using (SqlConnection con = new SqlConnection(sqllink.Builder.ConnectionString))
 			{
-				return false;
-			}
-			finally
-			{
-				if (sr != null) sr.Close();
-				if (zip != null) zip.Close();
-				if (fs != null) fs.Close();
+				SqlCommand cmd = con.CreateCommand();
+				cmd.CommandText = "select *from dt_ScheduleList where userId=@a";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", id);
+
+				con.Open();
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+						this.scheduleBook.Add(new ClassABook(dr));
+				}
 			}
 		}
 		internal bool SaveDetailInformation(string path)
@@ -256,60 +255,6 @@ namespace LibrarySystemBackEnd
 			finally
 			{
 				if (sw != null) sw.Close();
-				if (zip != null) zip.Close();
-				if (fs != null) fs.Close();
-			}
-		}
-		internal ClassUser(string id)
-		{
-			UserBasic.UserId = id;
-
-			string path = ClassBackEnd.UserDetailDictory + id + ".lbs";
-			FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
-			try
-			{
-				fs = new FileStream(path, FileMode.Open);
-				zip = new GZipStream(fs, CompressionMode.Decompress);
-				sr = new StreamReader(zip);
-				UserBasic.UserCurrentScheduleAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserCurrentBorrowedAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserCurrentMaxBorrowableAmount = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserCredit = Convert.ToInt32(sr.ReadLine());
-
-				int a, b, c;
-				a = Convert.ToInt32(sr.ReadLine());
-				b = Convert.ToInt32(sr.ReadLine());
-				c = Convert.ToInt32(sr.ReadLine());
-				UserBasic.UserRegisterDate = new DateTime(a, b, c);
-
-				int t1; t1 = Convert.ToInt32(sr.ReadLine());
-				while (t1-- > 0)
-				{
-					borrowedBook.Add(new ClassABook(sr));
-				}
-
-				t1 = Convert.ToInt32(sr.ReadLine());
-				while (t1-- > 0)
-				{
-					scheduleBook.Add(new ClassABook(sr));
-					//if(schedulebook.Last().Deleted == true)
-					//{
-					//	var tmp = ClassTime.systemTime;
-					//	if(schedulebook.Last().ReturnTime + TimeSpan.FromDays(5.0) < tmp)
-					//	{
-					//		schedulebook.Remove(schedulebook.Last());
-					//	}
-					//}
-				}
-			}
-			catch (Exception)
-			{
-
-			}
-			finally
-			{
-				if (sr != null) sr.Close();
 				if (zip != null) zip.Close();
 				if (fs != null) fs.Close();
 			}

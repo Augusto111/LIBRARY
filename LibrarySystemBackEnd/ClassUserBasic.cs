@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍管理员
 		/// </summary>
-		AdminBook=3,
+		AdminBook = 3,
 		/// <summary>
 		/// 访客
 		/// </summary>
@@ -244,13 +245,13 @@ namespace LibrarySystemBackEnd
 
 		#endregion
 
-		internal ClassUserBasicInfo(string userId, string userName, string userPassword, string userSchool, USERTYPE userType)
+		internal ClassUserBasicInfo(string id, string name, string password, string school, USERTYPE type)
 		{
-			UserName = userName;
-			UserId = userId;
-			UserPassword = userPassword;
-			UserSchool = userSchool;
-			UserType = userType;
+			UserId = id;
+			UserName = name;
+			UserPassword = password;
+			UserSchool = school;
+			UserType = type;
 			UserCredit = 100;
 			UserCurrentBorrowedAmount = 0;
 			UserCurrentScheduleAmount = 0;

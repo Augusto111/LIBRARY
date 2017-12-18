@@ -20,6 +20,19 @@ namespace LibrarySystemBackEnd
 		private string initialCatalog;
 		private SqlConnectionStringBuilder builder;
 
+		public SqlConnectionStringBuilder Builder
+		{
+			get
+			{
+				return builder;
+			}
+
+			set
+			{
+				builder = value;
+			}
+		}
+
 		public ClassSQL()
 		{
 			XmlDocument doc = new XmlDocument();
@@ -30,11 +43,11 @@ namespace LibrarySystemBackEnd
 			loginName = sqlNode.SelectSingleNode("loginname").InnerText;
 			loginPassword = sqlNode.SelectSingleNode("loginpassword").InnerText;
 			initialCatalog = sqlNode.SelectSingleNode("initialcatalog").InnerText;
-			builder = new SqlConnectionStringBuilder();
-			builder.DataSource = sqlName;
-			builder.UserID = loginName;
-			builder.Password = loginPassword;
-			builder.InitialCatalog = initialCatalog;
+			Builder = new SqlConnectionStringBuilder();
+			Builder.DataSource = sqlName;
+			Builder.UserID = loginName;
+			Builder.Password = loginPassword;
+			Builder.InitialCatalog = initialCatalog;
 		}
 		public void Print()
 		{
@@ -44,7 +57,7 @@ namespace LibrarySystemBackEnd
 		public DataSet Query(string SQLstr, string tableName)
 		{
 			DataSet ds = new DataSet();
-			using (SqlConnection con = new SqlConnection(builder.ConnectionString))
+			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
 			{
 				con.Open();
 				SqlDataAdapter SQLda = new SqlDataAdapter(SQLstr, con);
@@ -60,7 +73,7 @@ namespace LibrarySystemBackEnd
 		public ClassUserBasicInfo getUsersBasic(string userid)
 		{
 			ClassUserBasicInfo users = null;
-			using (SqlConnection con = new SqlConnection(builder.ConnectionString))
+			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
 			{
 				SqlCommand cmd = con.CreateCommand();
 				cmd.CommandText = "select *from dt_UserBasic where userId=@a";
@@ -87,7 +100,7 @@ namespace LibrarySystemBackEnd
 		public ClassAdmin getAdmin(string id)
 		{
 			ClassAdmin admin = null;
-			using (SqlConnection con = new SqlConnection(builder.ConnectionString))
+			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
 			{
 				SqlCommand cmd = con.CreateCommand();
 				cmd.CommandText = "select *from dt_Admin where id=@a";
@@ -115,7 +128,7 @@ namespace LibrarySystemBackEnd
 		{
 			if (getUsersBasic(user.UserId) != null)
 				return false;
-			using (SqlConnection con = new SqlConnection(builder.ConnectionString))
+			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
 			{
 				SqlCommand cmd = con.CreateCommand();
 				cmd.CommandText = "insert into dt_UserBasic values(@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k)";
@@ -149,7 +162,7 @@ namespace LibrarySystemBackEnd
 		{
 			if (getAdmin(admin.Id) != null)
 				return false;
-			using (SqlConnection con = new SqlConnection(builder.ConnectionString))
+			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
 			{
 				SqlCommand cmd = con.CreateCommand();
 				cmd.CommandText = "insert into dt_Admin values(@a,@b,@c,@d,@e)";
@@ -176,7 +189,7 @@ namespace LibrarySystemBackEnd
 		public bool AddBook(ClassBook bk)
 		{
 			bool res = false;
-			using (SqlConnection con = new SqlConnection(builder.ConnectionString))
+			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
 			{
 				con.Open();
 				SqlTransaction tra = null;

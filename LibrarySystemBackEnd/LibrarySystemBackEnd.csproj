@@ -52,7 +52,6 @@
     <Compile Include="ClassBackEnd.cs" />
     <Compile Include="ClassBook.cs" />
     <Compile Include="ClassMain.cs" />
-    <Compile Include="ClassUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClassSQL.cs" />
     <Compile Include="ClassUserBasic.cs" />
