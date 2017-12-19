@@ -84,83 +84,54 @@ namespace LibrarySystemBackEnd
 				try
 				{
 					tra = con.BeginTransaction();
-					string sqlstr = "select *from dt_UserBasic with(TABLOCKX) where userId='" + userid + "' and userPassword='" + password + "'";
-					DataSet ds = new DataSet();
-					SqlDataAdapter adp = new SqlDataAdapter(sqlstr, con);
-					adp.SelectCommand.Transaction = tra;
+					string sqlstr1 = "update dt_UserBasic set userCurrentBorrowedAmount=userCurrentBorrowedAmount+1 where userId='" + userid + "' and userPassword='" + password + "' and userCurrentBorrowedAmount<userCurrentMaxBorrowableAmount";
+					SqlCommand cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
 
-					SqlCommandBuilder cb = new SqlCommandBuilder(adp);
-					adp.Fill(ds);
-
-					DataRow dr = ds.Tables[0].Rows[0];
-					int tmp1 = Convert.ToInt32(dr["userCurrentBorrowedAmount"]);
-					int tmp2 = Convert.ToInt32(dr["userCurrentMaxBorrowableAmount"]);
-					if (tmp1 >= tmp2)
+					if (cmd1.ExecuteNonQuery()<=0)
 					{
 						res = 1;//借阅数量上限
 						throw new Exception();
 					}
-					tmp1++;
-					dr["userCurrentBorrowedAmount"] = tmp1.ToString();
+					
+					string sqlstr2 = @"update dt_abook 
+									set bookState = 1,
+									borrowUserId = '"+userid+
+									"', borrowTime = '"+DateTime.Now+
+									@"', returnTime = '"+(DateTime.Now+ClassUserBasicInfo.DefaultDate)+
+									"'where bookIsbn like '"+bookid+
+									"%' and (bookState = 2 and borrowUserId = '"+userid+"')";
 
-					adp.Update(ds.GetChanges());
-					ds.AcceptChanges();
+					SqlCommand cmd2 = new SqlCommand();
+					cmd2.Connection = con;
+					cmd2.Transaction = tra;
+					cmd2.CommandText = sqlstr2;
 
-
-					sqlstr = "select *from dt_abook with(TABLOCKX) where bookIsbn like '" + bookid + "%'";
-					ds = new DataSet();
-					adp = new SqlDataAdapter(sqlstr, con);
-					adp.SelectCommand.Transaction = tra;
-
-					cb = new SqlCommandBuilder(adp);
-					adp.Fill(ds);
-					if (ds.Tables[0].Rows.Count == 0)
+					if (cmd2.ExecuteNonQuery()<=0)
 					{
-						res = 2;//没书可借
-						throw new Exception();
-					}
+						string sqlstr3 = @"SET ROWCOUNT 1 update dt_abook 
+									set bookState = 1,
+									borrowUserId = '" + userid +
+									   "', borrowTime = '" + DateTime.Now +
+									   @"', returnTime = '" + (DateTime.Now + ClassUserBasicInfo.DefaultDate) +
+									   "'where bookIsbn like '" + bookid +
+									   "%' and bookState = 0 SET ROWCOUNT 0";
 
-					bool hasfin = false;
-					foreach (DataRow rowtmp in ds.Tables[0].Rows)
-					{
-						if (rowtmp["borrorUserId"].ToString() == userid)
+						SqlCommand cmd3 = new SqlCommand();
+						cmd3.Connection = con;
+						cmd3.Transaction = tra;
+						cmd3.CommandText = sqlstr3;
+
+						if (cmd3.ExecuteNonQuery() <= 0)
 						{
-							BOOKSTATE thisstate = (BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), rowtmp["bookState"]);
-							if (thisstate == BOOKSTATE.Borrowed || thisstate == BOOKSTATE.Unavailable)
-							{
-								res = 3;
-								throw new Exception();
-							}
-							hasfin = true;
-							rowtmp["bookState"] = BOOKSTATE.Borrowed;
-							rowtmp["borrorUserId"] = userid;
-							rowtmp["borrowTime"] = DateTime.Now;
-							rowtmp["returnTime"] = DateTime.Now + ClassUserBasicInfo.DefaultDate;
-							break;
+							res = 2;//没书可借
+							throw new Exception();
 						}
 					}
-					if (!hasfin)
-					{
-						foreach (DataRow rowtmp in ds.Tables[0].Rows)
-						{
-							if ((BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), rowtmp["bookState"]) == BOOKSTATE.Available)
-							{
-								hasfin = true;
-								rowtmp["bookState"] = BOOKSTATE.Borrowed;
-								rowtmp["borrorUserId"] = userid;
-								rowtmp["borrowTime"] = DateTime.Now;
-								rowtmp["returnTime"] = DateTime.Now + ClassUserBasicInfo.DefaultDate;
-								break;
-							}
-						}
-					}
-					if (!hasfin)
-					{
-						res = 4;
-						throw new Exception();
-					}
-					adp.Update(ds.GetChanges());
-					ds.AcceptChanges();
+
+					
 					tra.Commit();
 					res = 0;
 				}
