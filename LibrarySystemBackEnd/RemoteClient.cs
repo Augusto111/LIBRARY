@@ -79,13 +79,11 @@ namespace NetWorkApp
 			ProtocolHelper helper = new ProtocolHelper(pro);
 			FileProtocol protocol = helper.GetProtocol();
 
-			if(protocol.Mode==FileRequestMode.Send)
+			if(protocol.Mode==RequestMode.UserLogin)
 			{
-				receiveFile(protocol);
-			}
-			else if(protocol.Mode==FileRequestMode.Receive)
-			{
-				//sendFile(protocol);
+				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
+
+				bk.Login(protocol.UserName, protocol.UserPassword);
 			}
 		}
 
@@ -108,7 +106,7 @@ namespace NetWorkApp
 				return;
 			}
 			NetworkStream streamToClient = localClient.GetStream();
-			string path = Environment.CurrentDirectory + "/" + generateFileName(protocol.FileName);
+			string path = Environment.CurrentDirectory + "/" + generateFileName(protocol.UserName);
 			byte[] fileBuffer = new byte[1024];
 			FileStream fs = new FileStream(path, FileMode.CreateNew, FileAccess.Write);
 

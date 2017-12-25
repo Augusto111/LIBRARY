@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
-	class ClassMain
+	/*class ClassMain
 	{
 		public static void Main(string[] args)
 		{
@@ -25,5 +25,5 @@ namespace LibrarySystemBackEnd
 
 			Console.ReadKey();
 		}
-	}
+	}*/
 }

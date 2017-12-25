@@ -6,28 +6,36 @@ using System.Threading.Tasks;
 
 namespace NetWorkApp
 {
-	public enum FileRequestMode
+	public enum RequestMode
 	{
 		UserLogin=0,
 		UserRegist=1,
-		SearchBook=2,
-		BookLoad=3,
+		UserSearchBook=2,
+		UserBookLoad=3,
+		UserBookStateLoad=4,
+		UserBookCommentLoad=5,
+		UserBorrowBook=6,
+		UserCommentBook=7,
+		UserDelCommentBook=8,
+		UserReturnBook=9,
 
 	}
 	class FileProtocol
 	{
-		private readonly FileRequestMode mode;
+		private readonly RequestMode mode;
 		private readonly int port;
-		private readonly string fileName;
+		private readonly string userName;
+		private readonly string userPassword;
 
-		public FileProtocol(FileRequestMode mode, int port, string fileName)
+		public FileProtocol(RequestMode mode, int port, string userName,string userPassword)
 		{
 			this.mode = mode;
 			this.port = port;
-			this.fileName = fileName;
+			this.userName = userName;
+			this.userPassword = userPassword;
 		}
 
-		public FileRequestMode Mode
+		public RequestMode Mode
 		{
 			get { return mode; }
 		}
@@ -37,15 +45,26 @@ namespace NetWorkApp
 			get { return port; }
 		}
 
-		public string FileName
+		public string UserName
 		{
-			get { return fileName; }
+			get
+			{
+				return userName;
+			}
+		}
+
+		public string UserPassword
+		{
+			get
+			{
+				return userPassword;
+			}
 		}
 
 		public override string ToString()
 		{
-			return String.Format("<protocol><file name=\"{0}\" mode=\"{1}\" port=\"{2}\" /></protocol>"
-				, fileName, mode, port);
+			return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" userName=\"{2}\" userPassword=\"{3}\" /></protocol>"
+				, mode, port, UserName, UserPassword);
 		}
 	}
 }

@@ -21,27 +21,29 @@ namespace NetWorkApp
 		}
 
 		// 此时的protocal一定为单条完整protocal
-		private FileRequestMode GetFileMode()
+		private RequestMode GetFileMode()
 		{
 			string mode = fileNode.Attributes["mode"].Value;
 			mode = mode.ToLower();
-			if (mode == "send")
-				return FileRequestMode.Send;
-			else
-				return FileRequestMode.Receive;
+			
+				return RequestMode.UserLogin;
 		}
 
 		// 获取单条协议包含的信息
 		public FileProtocol GetProtocol()
 		{
-			FileRequestMode mode = GetFileMode();
-			string fileName = "";
+			RequestMode mode = GetFileMode();
 			int port = 0;
+			string userName = "";
+			string userPassword = "";
 
-			fileName = fileNode.Attributes["name"].Value;
+			mode = (RequestMode)Enum.Parse(typeof(RequestMode), fileNode.Attributes["mode"].Value, false);
 			port = Convert.ToInt32(fileNode.Attributes["port"].Value);
+			userName = fileNode.Attributes["userName"].Value;
+			userPassword = fileNode.Attributes["userPassword"].Value;
 
-			return new FileProtocol(mode, port, fileName);
+
+			return new FileProtocol(mode, port, userName, userPassword);
 		}
 	}
 }
