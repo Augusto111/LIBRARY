@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LibrarySystemBackEnd;
 
 namespace NetWorkApp
 {
@@ -11,7 +12,7 @@ namespace NetWorkApp
 	/// </summary>
 	public enum RequestMode
 	{
-		UserLogin=0,
+		UserLogin = 0,
 		UserRegist,
 		UserSearchBook,
 
@@ -30,21 +31,21 @@ namespace NetWorkApp
 		UserBorrowHis,
 		UserBadRecord,
 
+		UserAbookLoad,
+		UserReturnBook,
+		UserDelayBook,
 	}
 	class FileProtocol
 	{
-		private readonly RequestMode mode;
-		private readonly int port;
-		private readonly string userName;
-		private readonly string userPassword;
-		private readonly bool loginRes;
+		private RequestMode mode;
+		private int port;
+		private LibrarySystemBackEnd.ClassUserBasicInfo userinfo;
+		private int retval;
 
-		public FileProtocol(RequestMode mode, int port, string userName,string userPassword)
+		public FileProtocol(RequestMode mode, int port)
 		{
 			this.mode = mode;
 			this.port = port;
-			this.userName = userName;
-			this.userPassword = userPassword;
 		}
 
 		public RequestMode Mode
@@ -57,26 +58,82 @@ namespace NetWorkApp
 			get { return port; }
 		}
 
-		public string UserName
+		public ClassUserBasicInfo Userinfo
 		{
 			get
 			{
-				return userName;
+				return userinfo;
+			}
+
+			set
+			{
+				userinfo = value;
 			}
 		}
 
-		public string UserPassword
+		public int Retval
 		{
 			get
 			{
-				return userPassword;
+				return retval;
+			}
+
+			set
+			{
+				retval = value;
 			}
 		}
 
 		public override string ToString()
 		{
-			return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" userName=\"{2}\" userPassword=\"{3}\" /></protocol>"
-				, mode, port, UserName, UserPassword);
+			switch (mode)
+			{
+				case RequestMode.UserLogin:
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, retval);
+					}
+				case RequestMode.UserRegist:
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, retval);
+					}
+				case RequestMode.UserSearchBook:
+					break;
+				case RequestMode.UserBookLoad:
+					break;
+				case RequestMode.UserBookStateLoad:
+					break;
+				case RequestMode.UserBookCommentLoad:
+					break;
+				case RequestMode.UserBorrowBook:
+					break;
+				case RequestMode.UserCommentBook:
+					break;
+				case RequestMode.UserDelComment:
+					break;
+				case RequestMode.UserOrderBook:
+					break;
+				case RequestMode.UserInfoLoad:
+					break;
+				case RequestMode.UserInfoChange:
+					break;
+				case RequestMode.UserNotificationLoad:
+					break;
+				case RequestMode.UserBorrowedBook:
+					break;
+				case RequestMode.UserBorrowHis:
+					break;
+				case RequestMode.UserBadRecord:
+					break;
+				case RequestMode.UserAbookLoad:
+					break;
+				case RequestMode.UserReturnBook:
+					break;
+				case RequestMode.UserDelayBook:
+					break;
+				default:
+					break;
+			}
+
 		}
 	}
 }

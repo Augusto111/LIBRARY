@@ -83,9 +83,11 @@ namespace NetWorkApp
 			{
 				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
 
-				int res=bk.Login(protocol.UserName, protocol.UserPassword);
+				int res=bk.Login(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword);
 
+				protocol.Retval = res;
 
+				
 			}
 		}
 
@@ -108,7 +110,7 @@ namespace NetWorkApp
 				return;
 			}
 			NetworkStream streamToClient = localClient.GetStream();
-			string path = Environment.CurrentDirectory + "/" + generateFileName(protocol.UserName);
+			string path = "";// Environment.CurrentDirectory + "/" + generateFileName(protocol.UserName);
 			byte[] fileBuffer = new byte[1024];
 			FileStream fs = new FileStream(path, FileMode.CreateNew, FileAccess.Write);
 

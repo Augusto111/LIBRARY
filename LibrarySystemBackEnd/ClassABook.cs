@@ -363,5 +363,10 @@ namespace LibrarySystemBackEnd
 			this.Delayed = (bool)dr["delayed"];
 			this.Deleted = (bool)dr["deleted"];
 		}
+
+		public override string ToString()
+		{
+			return String.Format()
+		}
 	}
 }

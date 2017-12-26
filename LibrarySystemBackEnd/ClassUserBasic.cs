@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace LibrarySystemBackEnd
 {
@@ -282,5 +283,19 @@ namespace LibrarySystemBackEnd
 			this.userCredit = (int)dr["userCredit"];
 			this.userRegisterDate = (DateTime)dr["userRegisterDate"];
 		}
+
+		public override string ToString()
+		{
+			return String.Format("<UserBasic userId=\"{0}\" userName=\"{1}\" userPassword=\"{2}\" userSchool=\"{3}\" userType=\"{4}\" userCurrentScheduleAmount=\"{5}\" userCurrentBorrowedAmount=\"{6}\" userCurrentMaxBorrowableAmount=\"{7}\" userCredit=\"{8}\" userRegisterDate=\"{9}\">", UserId, UserName, UserPassword, UserType, UserCurrentScheduleAmount, UserCurrentBorrowedAmount, UserCurrentMaxBorrowableAmount, UserCredit);
+		}
+		internal ClassUserBasicInfo(XmlNode node)
+		{
+			userId = node.Attributes["userId"].Value;
+			userName = node.Attributes["userName"].Value;
+			userPassword = node.Attributes["userPassword"].Value;
+			userSchool = node.Attributes["userSchool"].Value;
+			userCredit = Convert.ToInt32(node.Attributes["userCredit"].Value);
+		}
+
 	}
 }

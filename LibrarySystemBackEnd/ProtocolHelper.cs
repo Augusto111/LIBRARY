@@ -21,29 +21,71 @@ namespace NetWorkApp
 		}
 
 		// 此时的protocal一定为单条完整protocal
-		private RequestMode GetFileMode()
-		{
-			string mode = fileNode.Attributes["mode"].Value;
-			mode = mode.ToLower();
-			
-				return RequestMode.UserLogin;
-		}
-
 		// 获取单条协议包含的信息
 		public FileProtocol GetProtocol()
 		{
-			RequestMode mode = GetFileMode();
-			int port = 0;
-			string userName = "";
-			string userPassword = "";
+			RequestMode mode = (RequestMode)Enum.Parse(typeof(RequestMode), fileNode.Attributes["mode"].Value, false);
+			int port = Convert.ToInt32(fileNode.Attributes["port"].Value);
+			FileProtocol pro = new FileProtocol(mode, port);
 
-			mode = (RequestMode)Enum.Parse(typeof(RequestMode), fileNode.Attributes["mode"].Value, false);
-			port = Convert.ToInt32(fileNode.Attributes["port"].Value);
-			userName = fileNode.Attributes["userName"].Value;
-			userPassword = fileNode.Attributes["userPassword"].Value;
+			switch (mode)
+			{
+				case RequestMode.UserLogin:
+				{
+					XmlNode usernode = root.SelectSingleNode("UserBasic");
+					LibrarySystemBackEnd.ClassUserBasicInfo user = new LibrarySystemBackEnd.ClassUserBasicInfo(usernode);
+					pro.Userinfo = user;
+					break;
+				}
+				case RequestMode.UserRegist:
+				{
+					XmlNode usernode = root.SelectSingleNode("UserBasic");
+					LibrarySystemBackEnd.ClassUserBasicInfo user = new LibrarySystemBackEnd.ClassUserBasicInfo(usernode);
+					pro.Userinfo = user;
+					break;
+				}
+				case RequestMode.UserSearchBook:
+				{
+					break;
+				}
+				case RequestMode.UserBookLoad:
+				break;
+				case RequestMode.UserBookStateLoad:
+				break;
+				case RequestMode.UserBookCommentLoad:
+				break;
+				case RequestMode.UserBorrowBook:
+				break;
+				case RequestMode.UserCommentBook:
+				break;
+				case RequestMode.UserDelComment:
+				break;
+				case RequestMode.UserOrderBook:
+				break;
+				case RequestMode.UserInfoLoad:
+				break;
+				case RequestMode.UserInfoChange:
+				break;
+				case RequestMode.UserNotificationLoad:
+				break;
+				case RequestMode.UserBorrowedBook:
+				break;
+				case RequestMode.UserBorrowHis:
+				break;
+				case RequestMode.UserBadRecord:
+				break;
+				case RequestMode.UserAbookLoad:
+				break;
+				case RequestMode.UserReturnBook:
+				break;
+				case RequestMode.UserDelayBook:
+				break;
+				default:
+				break;
+			}
 
 
-			return new FileProtocol(mode, port, userName, userPassword);
+			return pro;
 		}
 	}
 }
