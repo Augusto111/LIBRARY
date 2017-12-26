@@ -83,7 +83,9 @@ namespace NetWorkApp
 			{
 				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
 
-				bk.Login(protocol.UserName, protocol.UserPassword);
+				int res=bk.Login(protocol.UserName, protocol.UserPassword);
+
+
 			}
 		}
 
