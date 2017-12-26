@@ -32,14 +32,14 @@ namespace NetWorkApp
 			{
 				case RequestMode.UserLogin:
 				{
-					XmlNode usernode = root.SelectSingleNode("UserBasic");
+					XmlNode usernode = root.SelectSingleNode("userBasic");
 					LibrarySystemBackEnd.ClassUserBasicInfo user = new LibrarySystemBackEnd.ClassUserBasicInfo(usernode);
 					pro.Userinfo = user;
 					break;
 				}
 				case RequestMode.UserRegist:
 				{
-					XmlNode usernode = root.SelectSingleNode("UserBasic");
+					XmlNode usernode = root.SelectSingleNode("userBasic");
 					LibrarySystemBackEnd.ClassUserBasicInfo user = new LibrarySystemBackEnd.ClassUserBasicInfo(usernode);
 					pro.Userinfo = user;
 					break;

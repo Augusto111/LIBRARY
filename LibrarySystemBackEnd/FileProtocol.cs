@@ -133,7 +133,7 @@ namespace NetWorkApp
 				default:
 					break;
 			}
-
+			return "";
 		}
 	}
 }

@@ -87,7 +87,17 @@ namespace NetWorkApp
 
 				protocol.Retval = res;
 
-				
+				SendMessage(protocol.ToString());
+			}
+			else if(protocol.Mode==RequestMode.UserRegist)
+			{
+				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
+
+				bool res = bk.RegisterUser(protocol.Userinfo.UserId, protocol.Userinfo.UserName, protocol.Userinfo.UserPassword, protocol.Userinfo.UserSchool, protocol.Userinfo.UserType);
+
+				protocol.Retval = Convert.ToInt32(res);
+
+				SendMessage(protocol.ToString());
 			}
 		}
 
@@ -135,6 +145,26 @@ namespace NetWorkApp
 		{
 			DateTime now = DateTime.Now;
 			return String.Format("{0}_{1}_{2}_{3}", now.Minute, now.Second, now.Millisecond, fileName);
+		}
+
+		public void SendMessage(string msg)
+		{
+			//msg = String.Format("[length={0}]{1}", msg.Length, msg);
+
+			byte[] tmp = Encoding.Unicode.GetBytes(msg);
+			try
+			{
+				lock (streamToClient)
+				{
+					streamToClient.Write(tmp, 0, tmp.Length);
+				}
+				Console.WriteLine("Sent: {0}", msg);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				return;
+			}
 		}
 	}
 }

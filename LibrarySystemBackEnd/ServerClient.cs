@@ -18,6 +18,7 @@ namespace NetClient
 		private byte[] buffer;
 		private TcpClient client;
 		private NetworkStream steamToServe;
+		private ProtocolHandler handler;
 		private string msg = "Welcome To .Net Sockets!";
 		private string remoteServerIp = "10.206.16.141";
 		private int remoteServerPort = 6000;
@@ -101,7 +102,7 @@ namespace NetClient
 			int listeningPort = endpoint.Port;
 
 			string fileName = Path.GetFileName(filePath);
-			FileProtocol protocol = new FileProtocol(RequestMode.Send, listeningPort, fileName);
+			FileProtocol protocol = new FileProtocol(RequestMode.UserAbookLoad, listeningPort);
 			string pro = protocol.ToString();
 
 			SendMessage(pro);
@@ -154,5 +155,66 @@ namespace NetClient
 			//ParameterizedThreadStart start = new ParameterizedThreadStart(BeginSendFile);
 			//start.BeginInvoke(filePath, null, null);
 		}
+
+		public void BeginRead()
+		{
+			AsyncCallback callBack = new AsyncCallback(OnReadComplete);
+			steamToServe.BeginRead(buffer, 0, BufferSize, callBack, null);
+		}
+
+		private void OnReadComplete(IAsyncResult ar)
+		{
+			int bytesRead = 0;
+			try
+			{
+				lock (steamToServe)
+				{
+					bytesRead = steamToServe.EndRead(ar);
+					Console.WriteLine("Reading Data, {0} bytes", bytesRead);
+				}
+
+				string msg = Encoding.Unicode.GetString(buffer, 0, bytesRead);
+				Array.Clear(buffer, 0, buffer.Length);
+
+				string[] protocolArray = handler.GetProtocol(msg);
+
+				foreach (string pro in protocolArray)
+				{
+					Thread thr = new Thread(handleProtocol);
+					thr.Start(pro);
+				}
+
+				lock (steamToServe)
+				{
+					AsyncCallback callback = new AsyncCallback(OnReadComplete);
+					steamToServe.BeginRead(buffer, 0, BufferSize, callback, null);
+				}
+			}
+			catch (Exception e)
+			{
+				//Console.WriteLine(e.Message);
+				if (steamToServe != null) steamToServe.Dispose();
+				client.Close();
+			}
+		}
+
+		private void handleProtocol(object obj)
+		{
+			string pro = obj as string;
+			ProtocolHelper helper = new ProtocolHelper(pro);
+			FileProtocol protocol = helper.GetProtocol();
+
+			if (protocol.Mode == RequestMode.UserLogin)
+			{
+				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
+
+				int res = bk.Login(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword);
+
+				protocol.Retval = res;
+
+				SendMessage(protocol.ToString());
+			}
+		}
+
 	}
 }

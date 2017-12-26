@@ -366,7 +366,8 @@ namespace LibrarySystemBackEnd
 
 		public override string ToString()
 		{
-			return String.Format()
+			//return String.Format()
+			return "";
 		}
 	}
 }

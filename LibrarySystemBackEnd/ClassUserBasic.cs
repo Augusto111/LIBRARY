@@ -290,11 +290,12 @@ namespace LibrarySystemBackEnd
 		}
 		internal ClassUserBasicInfo(XmlNode node)
 		{
-			userId = node.Attributes["userId"].Value;
-			userName = node.Attributes["userName"].Value;
-			userPassword = node.Attributes["userPassword"].Value;
-			userSchool = node.Attributes["userSchool"].Value;
-			userCredit = Convert.ToInt32(node.Attributes["userCredit"].Value);
+			userId = node.Attributes["userId"]==null?"": node.Attributes["userId"].Value;
+			userName = node.Attributes["userName"]==null?"": node.Attributes["userName"].Value;
+			userPassword = node.Attributes["userPassword"]==null?"": node.Attributes["userPassword"].Value;
+			userSchool = node.Attributes["userSchool"]==null?"": node.Attributes["userSchool"].Value;
+			userType = (USERTYPE)Enum.Parse(typeof(USERTYPE), node.Attributes["userType"] == null ? "Student" : node.Attributes["userType"].Value);
+			userCredit = Convert.ToInt32(node.Attributes["userCredit"]==null?"0": node.Attributes["userCredit"].Value);
 		}
 
 	}
