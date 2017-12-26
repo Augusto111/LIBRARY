@@ -6,18 +6,29 @@ using System.Threading.Tasks;
 
 namespace NetWorkApp
 {
+	/// <summary>
+	/// 协议类型字段
+	/// </summary>
 	public enum RequestMode
 	{
 		UserLogin=0,
-		UserRegist=1,
-		UserSearchBook=2,
-		UserBookLoad=3,
-		UserBookStateLoad=4,
-		UserBookCommentLoad=5,
-		UserBorrowBook=6,
-		UserCommentBook=7,
-		UserDelCommentBook=8,
-		UserReturnBook=9,
+		UserRegist,
+		UserSearchBook,
+
+		UserBookLoad,
+		UserBookStateLoad,
+		UserBookCommentLoad,
+		UserBorrowBook,
+		UserCommentBook,
+		UserDelComment,
+		UserOrderBook,
+
+		UserInfoLoad,
+		UserInfoChange,
+		UserNotificationLoad,
+		UserBorrowedBook,
+		UserBorrowHis,
+		UserBadRecord,
 
 	}
 	class FileProtocol
@@ -26,6 +37,7 @@ namespace NetWorkApp
 		private readonly int port;
 		private readonly string userName;
 		private readonly string userPassword;
+		private readonly bool loginRes;
 
 		public FileProtocol(RequestMode mode, int port, string userName,string userPassword)
 		{
