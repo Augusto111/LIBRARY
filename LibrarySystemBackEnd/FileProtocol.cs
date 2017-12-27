@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LibrarySystemBackEnd;
 
-namespace NetWorkApp
+namespace LibrarySystemBackEnd
 {
 	/// <summary>
 	/// 协议类型字段
@@ -39,8 +39,12 @@ namespace NetWorkApp
 	{
 		private RequestMode mode;
 		private int port;
-		private LibrarySystemBackEnd.ClassUserBasicInfo userinfo;
-		private int retval;
+		private ClassUserBasicInfo userinfo;
+		private string searchWords;
+		private int searchCat;
+		private int curNum, endNum;
+		private int returnVal;
+		private ClassBook[] resBook;
 
 		public FileProtocol(RequestMode mode, int port)
 		{
@@ -75,12 +79,77 @@ namespace NetWorkApp
 		{
 			get
 			{
-				return retval;
+				return returnVal;
 			}
 
 			set
 			{
-				retval = value;
+				returnVal = value;
+			}
+		}
+
+		public string SearchWords
+		{
+			get
+			{
+				return searchWords;
+			}
+
+			set
+			{
+				searchWords = value;
+			}
+		}
+
+		public int SearchCat
+		{
+			get
+			{
+				return searchCat;
+			}
+
+			set
+			{
+				searchCat = value;
+			}
+		}
+
+		public int CurNum
+		{
+			get
+			{
+				return curNum;
+			}
+
+			set
+			{
+				curNum = value;
+			}
+		}
+
+		public int EndNum
+		{
+			get
+			{
+				return endNum;
+			}
+
+			set
+			{
+				endNum = value;
+			}
+		}
+
+		public ClassBook[] Resbook
+		{
+			get
+			{
+				return resBook;
+			}
+
+			set
+			{
+				resBook = value;
 			}
 		}
 
@@ -90,14 +159,24 @@ namespace NetWorkApp
 			{
 				case RequestMode.UserLogin:
 					{
-						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, retval);
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
 					}
 				case RequestMode.UserRegist:
 					{
-						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, retval);
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
 					}
 				case RequestMode.UserSearchBook:
-					break;
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+						ret += String.Format("<usersearchbook curnum=\"{0}\" endnum=\"{1}\" thisnum=\"{2}\" />", curNum, endNum, resBook.Length);
+						for(int i=0;i<resBook.Length;i++)
+						{
+							ret += String.Format("<book bookisbn=\"{0}\" bookname=\"{1}\" bookauthor=\"{2}\" bookpublisher=\"{3}\" >");
+						}
+						ret += "</protocol>";
+						return ret;
+					}
 				case RequestMode.UserBookLoad:
 					break;
 				case RequestMode.UserBookStateLoad:

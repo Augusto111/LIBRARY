@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace NetWorkApp
+namespace LibrarySystemBackEnd
 {
 	class ProtocolHelper
 	{
@@ -31,57 +31,63 @@ namespace NetWorkApp
 			switch (mode)
 			{
 				case RequestMode.UserLogin:
-				{
-					XmlNode usernode = root.SelectSingleNode("userBasic");
-					LibrarySystemBackEnd.ClassUserBasicInfo user = new LibrarySystemBackEnd.ClassUserBasicInfo(usernode);
-					pro.Userinfo = user;
-					break;
-				}
+					{
+						XmlNode usernode = root.SelectSingleNode("userBasic");
+						ClassUserBasicInfo user = new ClassUserBasicInfo(usernode);
+						pro.Userinfo = user;
+						break;
+					}
 				case RequestMode.UserRegist:
-				{
-					XmlNode usernode = root.SelectSingleNode("userBasic");
-					LibrarySystemBackEnd.ClassUserBasicInfo user = new LibrarySystemBackEnd.ClassUserBasicInfo(usernode);
-					pro.Userinfo = user;
-					break;
-				}
+					{
+						XmlNode usernode = root.SelectSingleNode("userBasic");
+						ClassUserBasicInfo user = new ClassUserBasicInfo(usernode);
+						pro.Userinfo = user;
+						break;
+					}
 				case RequestMode.UserSearchBook:
-				{
-					break;
-				}
+					{
+						XmlNode searchnode = root.SelectSingleNode("usersearchbook");
+						pro.SearchWords = searchnode.Attributes["searchwords"].Value;
+						pro.SearchCat = Convert.ToInt32(searchnode.Attributes["searchcat"].Value);
+						pro.CurNum = Convert.ToInt32(searchnode.Attributes["curnum"].Value);
+						break;
+					}
 				case RequestMode.UserBookLoad:
-				break;
+					{
+						break;
+					}
 				case RequestMode.UserBookStateLoad:
-				break;
+					break;
 				case RequestMode.UserBookCommentLoad:
-				break;
+					break;
 				case RequestMode.UserBorrowBook:
-				break;
+					break;
 				case RequestMode.UserCommentBook:
-				break;
+					break;
 				case RequestMode.UserDelComment:
-				break;
+					break;
 				case RequestMode.UserOrderBook:
-				break;
+					break;
 				case RequestMode.UserInfoLoad:
-				break;
+					break;
 				case RequestMode.UserInfoChange:
-				break;
+					break;
 				case RequestMode.UserNotificationLoad:
-				break;
+					break;
 				case RequestMode.UserBorrowedBook:
-				break;
+					break;
 				case RequestMode.UserBorrowHis:
-				break;
+					break;
 				case RequestMode.UserBadRecord:
-				break;
+					break;
 				case RequestMode.UserAbookLoad:
-				break;
+					break;
 				case RequestMode.UserReturnBook:
-				break;
+					break;
 				case RequestMode.UserDelayBook:
-				break;
+					break;
 				default:
-				break;
+					break;
 			}
 
 

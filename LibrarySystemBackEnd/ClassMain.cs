@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
-	/*class ClassMain
+	class ClassMain
 	{
 		public static void Main(string[] args)
 		{
@@ -21,9 +21,9 @@ namespace LibrarySystemBackEnd
 			//sql.AddBook(kb);
 
 			ClassBackEnd be = new ClassBackEnd();
-			be.BorrowBook("2015211255", "xzxxzx", "2332332332333");
+			//be.BorrowBook("2015211255", "xzxxzx", "2332332332333");
 
 			Console.ReadKey();
 		}
-	}*/
+	}
 }

@@ -11,7 +11,7 @@ namespace LibrarySystemBackEnd
 	public class ClassBackEnd
 	{
 		private ClassSQL sql;
-
+		
 		#region 私有方法
 		/// <summary>
 		/// 在数据库中精确查找用户
@@ -341,10 +341,112 @@ namespace LibrarySystemBackEnd
 			}
 			return res;
 		}
+		/// <summary>
+		/// 书籍条件检索方法,将符合条件的书籍载入到book list中
+		/// </summary>
+		/// <param name="type">检索条件种类，1 全部条件，2 isbn，3 书名，4 作者，5 出版社，6标签</param>
+		/// <param name="searchInfo">检索关键词</param>
+		/// <param name="curnum">目前的访问序号</param>
+		/// <returns></returns>
+		public ClassBook[] SearchBook(int type, string searchInfo, int curnum, ref int linenum)
+		{
+			List<ClassBook> bk = new List<ClassBook>(); 
 
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				SqlCommand cmd = con.CreateCommand();
+				switch (type)
+				{
+					case 1:
+						{
+							cmd.CommandText = "select count(*) from dt_book where (bookIsbn LIKE @a or bookPublisher like @a or bookAuthor like @a or bookName like @a or bookLable1 like @a or bookLable2 like @a or bookLable3 like @a)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
+							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top "+(curnum+10)+"from dy_book where (bookIsbn LIKE @a or bookPublisher like @a or bookAuthor like @a or bookName like @a or bookLable1 like @a or bookLable2 like @a or bookLable3 like @a) order by bookIsbn dsc)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
 
+							break;
+						}
+					case 2:
+						{
+							cmd.CommandText = "select count(*) from dt_book where (bookIsbn LIKE @a)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+							linenum = Convert.ToInt32(cmd.ExecuteScalar());
+
+							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookIsbn LIKE @a) order by bookIsbn dsc)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+
+							break;
+						}
+					case 3:
+						{
+							cmd.CommandText = "select count(*) from dt_book where (bookName like @a)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+							linenum = Convert.ToInt32(cmd.ExecuteScalar());
+
+							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookName like @a) order by bookIsbn dsc)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+
+							break;
+						}
+					case 4:
+						{
+							cmd.CommandText = "select count(*) from dt_book where (bookAuthor like @a)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+							linenum = Convert.ToInt32(cmd.ExecuteScalar());
+
+							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookAuthor like @a) order by bookIsbn dsc)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+
+							break;
+						}
+					case 5:
+						{
+							cmd.CommandText = "select count(*) from dt_book where (bookPublisher like @a)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+							linenum = Convert.ToInt32(cmd.ExecuteScalar());
+
+							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookPublisher like @a) order by bookIsbn dsc)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+
+							break;
+						}
+					case 6:
+						{
+							cmd.CommandText = "select count(*) from dt_book where (bookLable1 like @a or bookLable2 like @a or bookLable3 like @a)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+							linenum = Convert.ToInt32(cmd.ExecuteScalar());
+
+							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where ( bookLable1 like @a or bookLable2 like @a or bookLable3 like @a) order by bookIsbn dsc)";
+							cmd.Parameters.Clear();
+							cmd.Parameters.AddWithValue("@a", searchInfo);
+
+							break;
+						}
+					default:
+						break;
+				}
+
+				SqlDataReader rd = cmd.ExecuteReader();
+				while (rd.HasRows && rd.Read())
+				{
+					bk.Add(new ClassBook(rd));
+				}
+			}
+			return bk.ToArray();
+		}
 		#endregion
-
 	}
 }

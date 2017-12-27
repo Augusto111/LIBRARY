@@ -317,483 +317,483 @@ namespace LibrarySystemBackEnd
 
 
 
-	//	/// <summary>
-	//	/// 从文件构造类classbook，只载入基本信息
-	//	/// </summary>
-	//	/// <param name="sr">StreamReader</param>
-	//	internal ClassBook(StreamReader sr)
-	//	{
-	//		BookIsbn = sr.ReadLine();
-	//		BookName = sr.ReadLine();
-	//		BookPublisher = sr.ReadLine();
-	//		BookAuthor = sr.ReadLine();
-	//		BookLable1 = sr.ReadLine();
-	//		BookLable2 = sr.ReadLine();
-	//		BookLable3 = sr.ReadLine();
-	//	}
-	//	/// <summary>
-	//	/// 载入详细信息，如果没有载入基本信息，会返回false
-	//	/// </summary>
-	//	internal bool LoadDetailInformation()
-	//	{
-	//		books.Clear();
-	//		scheduleQueue.Clear();
+		//	/// <summary>
+		//	/// 从文件构造类classbook，只载入基本信息
+		//	/// </summary>
+		//	/// <param name="sr">StreamReader</param>
+		//	internal ClassBook(StreamReader sr)
+		//	{
+		//		BookIsbn = sr.ReadLine();
+		//		BookName = sr.ReadLine();
+		//		BookPublisher = sr.ReadLine();
+		//		BookAuthor = sr.ReadLine();
+		//		BookLable1 = sr.ReadLine();
+		//		BookLable2 = sr.ReadLine();
+		//		BookLable3 = sr.ReadLine();
+		//	}
+		//	/// <summary>
+		//	/// 载入详细信息，如果没有载入基本信息，会返回false
+		//	/// </summary>
+		//	internal bool LoadDetailInformation()
+		//	{
+		//		books.Clear();
+		//		scheduleQueue.Clear();
 
-	//		if (BookIsbn == "") return false;
-	//		FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
-	//		fs = new FileStream(ClassBackEnd.BookDirectory + BookIsbn + ".lbs", FileMode.Open);
-	//		zip = new GZipStream(fs, CompressionMode.Decompress);
-	//		sr = new StreamReader(zip);
-	//		BookIsbn = sr.ReadLine();
-	//		BookName = sr.ReadLine();
-	//		BookPublisher = sr.ReadLine();
-	//		BookAuthor = sr.ReadLine();
-	//		BookLable1 = sr.ReadLine();
-	//		BookLable2 = sr.ReadLine();
-	//		BookLable3 = sr.ReadLine();
-	//		BookImage = sr.ReadLine();
-	//		var a = Convert.ToInt32(sr.ReadLine());
+		//		if (BookIsbn == "") return false;
+		//		FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
+		//		fs = new FileStream(ClassBackEnd.BookDirectory + BookIsbn + ".lbs", FileMode.Open);
+		//		zip = new GZipStream(fs, CompressionMode.Decompress);
+		//		sr = new StreamReader(zip);
+		//		BookIsbn = sr.ReadLine();
+		//		BookName = sr.ReadLine();
+		//		BookPublisher = sr.ReadLine();
+		//		BookAuthor = sr.ReadLine();
+		//		BookLable1 = sr.ReadLine();
+		//		BookLable2 = sr.ReadLine();
+		//		BookLable3 = sr.ReadLine();
+		//		BookImage = sr.ReadLine();
+		//		var a = Convert.ToInt32(sr.ReadLine());
 
-	//		BookIntroduction = "";
-	//		while (a-- > 0)
-	//		{
-	//			bookIntroduction += sr.ReadLine();
-	//			if (a != 0) bookIntroduction += "\r\n";
-	//		}
+		//		BookIntroduction = "";
+		//		while (a-- > 0)
+		//		{
+		//			bookIntroduction += sr.ReadLine();
+		//			if (a != 0) bookIntroduction += "\r\n";
+		//		}
 
-	//		BookAmount = Convert.ToInt32(sr.ReadLine());
+		//		BookAmount = Convert.ToInt32(sr.ReadLine());
 
-	//		var count = Convert.ToInt32(sr.ReadLine());//each list amount
-	//		for (int i = 0; i < count; i++) //load bookstate list
-	//		{
-	//			Book.Add(new ABook(sr));
-	//		}
+		//		var count = Convert.ToInt32(sr.ReadLine());//each list amount
+		//		for (int i = 0; i < count; i++) //load bookstate list
+		//		{
+		//			Book.Add(new ABook(sr));
+		//		}
 
-	//		count = Convert.ToInt32(sr.ReadLine());
-	//		for (int i = 0; i < count; i++) //load schedulequeue list
-	//		{
-	//			scheduleQueue.AddLast(sr.ReadLine());
-	//		}
-	//		if (sr != null) sr.Close();
-	//		if (zip != null) zip.Close();
-	//		if (fs != null) fs.Close();
-	//		return true;
-	//	}
-	//	/// <summary>
-	//	///  载入详细信息，无需提前载入基本信息
-	//	/// </summary>
-	//	/// <param name="bookisbn">书籍编号</param>
-	//	/// <returns></returns>
-	//	public ClassBook(string bookisbn)
-	//	{
-	//		FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
-	//		try
-	//		{
-	//			fs = new FileStream(ClassBackEnd.BookDirectory + bookisbn + ".lbs", FileMode.Open);
-	//			zip = new GZipStream(fs, CompressionMode.Decompress);
-	//			sr = new StreamReader(zip);
+		//		count = Convert.ToInt32(sr.ReadLine());
+		//		for (int i = 0; i < count; i++) //load schedulequeue list
+		//		{
+		//			scheduleQueue.AddLast(sr.ReadLine());
+		//		}
+		//		if (sr != null) sr.Close();
+		//		if (zip != null) zip.Close();
+		//		if (fs != null) fs.Close();
+		//		return true;
+		//	}
+		//	/// <summary>
+		//	///  载入详细信息，无需提前载入基本信息
+		//	/// </summary>
+		//	/// <param name="bookisbn">书籍编号</param>
+		//	/// <returns></returns>
+		//	public ClassBook(string bookisbn)
+		//	{
+		//		FileStream fs = null; GZipStream zip = null; StreamReader sr = null;
+		//		try
+		//		{
+		//			fs = new FileStream(ClassBackEnd.BookDirectory + bookisbn + ".lbs", FileMode.Open);
+		//			zip = new GZipStream(fs, CompressionMode.Decompress);
+		//			sr = new StreamReader(zip);
 
-	//			BookIsbn = sr.ReadLine();
-	//			BookName = sr.ReadLine();
-	//			BookPublisher = sr.ReadLine();
-	//			BookAuthor = sr.ReadLine();
-	//			BookLable1 = sr.ReadLine();
-	//			BookLable2 = sr.ReadLine();
-	//			BookLable3 = sr.ReadLine();
-	//			BookImage = sr.ReadLine();
+		//			BookIsbn = sr.ReadLine();
+		//			BookName = sr.ReadLine();
+		//			BookPublisher = sr.ReadLine();
+		//			BookAuthor = sr.ReadLine();
+		//			BookLable1 = sr.ReadLine();
+		//			BookLable2 = sr.ReadLine();
+		//			BookLable3 = sr.ReadLine();
+		//			BookImage = sr.ReadLine();
 
-	//			var a = Convert.ToInt32(sr.ReadLine());
+		//			var a = Convert.ToInt32(sr.ReadLine());
 
-	//			BookIntroduction = "";
-	//			while (a-- > 0)
-	//			{
-	//				bookIntroduction += sr.ReadLine();
-	//				if (a != 0) bookIntroduction += "\r\n";
-	//			}
+		//			BookIntroduction = "";
+		//			while (a-- > 0)
+		//			{
+		//				bookIntroduction += sr.ReadLine();
+		//				if (a != 0) bookIntroduction += "\r\n";
+		//			}
 
-	//			BookAmount = Convert.ToInt32(sr.ReadLine());
+		//			BookAmount = Convert.ToInt32(sr.ReadLine());
 
-	//			var count = Convert.ToInt32(sr.ReadLine());//each list amount
-	//			for (int i = 0; i < count; i++) //load bookstate list
-	//			{
-	//				Book.Add(new ABook(sr));
-	//			}
+		//			var count = Convert.ToInt32(sr.ReadLine());//each list amount
+		//			for (int i = 0; i < count; i++) //load bookstate list
+		//			{
+		//				Book.Add(new ABook(sr));
+		//			}
 
-	//			count = Convert.ToInt32(sr.ReadLine());
-	//			for (int i = 0; i < count; i++) //load schedulequeue list
-	//			{
-	//				scheduleQueue.AddLast(sr.ReadLine());
-	//			}
-	//		}
-	//		catch (Exception e) { return; }
-	//		finally
-	//		{
-	//			if (sr != null) sr.Close();
-	//			if (zip != null) zip.Close();
-	//			if (fs != null) fs.Close();
-	//		}
-	//	}
-
-		
-
-	//	/// <summary>
-	//	/// 将类classbook存入文件中,并且覆盖源文件
-	//	/// </summary>
-	//	/// <param name="path">文件路径</param>
-	//	/// <returns>存储成功返回true</returns>
-	//	internal bool SaveDetailInformation(string path)
-	//	{
-	//		path = path + BookIsbn + ".lbs";
-	//		FileStream fs = null; GZipStream zip = null; StreamWriter sw = null;
-
-	//		fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-	//		zip = new GZipStream(fs, CompressionMode.Compress);
-	//		sw = new StreamWriter(zip);
-	//		sw.WriteLine(BookIsbn);
-	//		sw.WriteLine(BookName);
-	//		sw.WriteLine(BookPublisher);
-	//		sw.WriteLine(BookAuthor);
-	//		sw.WriteLine(BookLable1);
-	//		sw.WriteLine(BookLable2);
-	//		sw.WriteLine(BookLable3);
-	//		sw.WriteLine(BookImage);
-	//		int tmp = 1;
-	//		for (int i = 0; i < bookIntroduction.Length; i++)
-	//		{
-	//			if (bookIntroduction[i] == '\n')
-	//				tmp++;
-	//		}
-	//		sw.WriteLine(tmp);
-	//		sw.WriteLine(BookIntroduction);
-	//		sw.WriteLine(BookAmount.ToString());
-
-	//		sw.WriteLine(Book.Count.ToString());
-	//		foreach (var a in Book)
-	//		{
-	//			a.SaveToFile(sw);
-	//		}
-
-	//		sw.WriteLine(scheduleQueue.Count.ToString());
-	//		foreach (var tt in scheduleQueue)
-	//		{
-	//			sw.WriteLine(tt);
-	//		}
+		//			count = Convert.ToInt32(sr.ReadLine());
+		//			for (int i = 0; i < count; i++) //load schedulequeue list
+		//			{
+		//				scheduleQueue.AddLast(sr.ReadLine());
+		//			}
+		//		}
+		//		catch (Exception e) { return; }
+		//		finally
+		//		{
+		//			if (sr != null) sr.Close();
+		//			if (zip != null) zip.Close();
+		//			if (fs != null) fs.Close();
+		//		}
+		//	}
 
 
-	//		if (sw != null) sw.Close();
-	//		if (zip != null) zip.Close();
-	//		if (fs != null) fs.Close();
-	//		return true;
-	//	}
-	//	/// <summary>
-	//	/// 储存基本信息
-	//	/// </summary>
-	//	/// <param name="sw">StreamWriter</param>
-	//	internal void SaveBasicInformation(StreamWriter sw)
-	//	{
-	//		sw.WriteLine(BookIsbn);
-	//		sw.WriteLine(BookName);
-	//		sw.WriteLine(BookPublisher);
-	//		sw.WriteLine(BookAuthor);
-	//		sw.WriteLine(BookLable1);
-	//		sw.WriteLine(BookLable2);
-	//		sw.WriteLine(BookLable3);
 
-	//	}
-	//	/// <summary>
-	//	/// 添加书的数量
-	//	/// </summary>
-	//	/// <param name="n">数量</param>
-	//	/// <param name="time">购入时间</param>
-	//	/// <param name="_adminid">管理员ID</param>
-	//	internal void AddBook(int n, DateTime time, string _adminid)
-	//	{
-	//		int oldamount = Book.Count;
-	//		BookAmount += n;
+		//	/// <summary>
+		//	/// 将类classbook存入文件中,并且覆盖源文件
+		//	/// </summary>
+		//	/// <param name="path">文件路径</param>
+		//	/// <returns>存储成功返回true</returns>
+		//	internal bool SaveDetailInformation(string path)
+		//	{
+		//		path = path + BookIsbn + ".lbs";
+		//		FileStream fs = null; GZipStream zip = null; StreamWriter sw = null;
 
-	//		int lastisbn = Convert.ToInt32((Book.Last().Extisbn).Substring(10, 4));
-	//		for (int i = 0; i < n; i++)
-	//		{
-	//			lastisbn++;
-	//			Book.Add(new ABook(BOOKSTATE.Available, "", time, BookIsbn + lastisbn.ToString("D4")));
-	//			UpdateHistory(Book.Last().Extisbn, new ClassBookHis(time, _adminid, 0));
-	//		}
+		//		fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+		//		zip = new GZipStream(fs, CompressionMode.Compress);
+		//		sw = new StreamWriter(zip);
+		//		sw.WriteLine(BookIsbn);
+		//		sw.WriteLine(BookName);
+		//		sw.WriteLine(BookPublisher);
+		//		sw.WriteLine(BookAuthor);
+		//		sw.WriteLine(BookLable1);
+		//		sw.WriteLine(BookLable2);
+		//		sw.WriteLine(BookLable3);
+		//		sw.WriteLine(BookImage);
+		//		int tmp = 1;
+		//		for (int i = 0; i < bookIntroduction.Length; i++)
+		//		{
+		//			if (bookIntroduction[i] == '\n')
+		//				tmp++;
+		//		}
+		//		sw.WriteLine(tmp);
+		//		sw.WriteLine(BookIntroduction);
+		//		sw.WriteLine(BookAmount.ToString());
 
-	//		//通知预约者
-	//		for (int i = oldamount; i < BookAmount; i++)
-	//		{
-	//			InformToScheduler(i);
-	//		}
-	//	}
-	//	/// <summary>
-	//	/// 减少书的数量
-	//	/// </summary>
-	//	/// <param name="n">数量</param>
-	//	/// <returns>成功返回1，失败(有书正在被借)返回0</returns>
-	//	internal bool DeleteBook(int n)
-	//	{
-	//		int tt = 0;
-	//		for (int i = 0; i < BookAmount; i++)
-	//		{
-	//			if (Book[i].Bookstate == BOOKSTATE.Available)
-	//			{
-	//				tt++;
-	//			}
-	//		}
-	//		if (tt < n) return false;
-	//		else
-	//		{
-	//			for (int i = BookAmount - 1; i >= 0; i--)
-	//			{
-	//				if (Book[i].Bookstate == BOOKSTATE.Available)
-	//				{
-	//					Book.RemoveAt(i);
-	//				}
-	//			}
-	//			BookAmount -= n;
-	//			return true;
-	//		}
-	//	}
-	//	/// <summary>
-	//	/// 返回一个可借的书的序号，优先返回该用户已经预约的书
-	//	/// </summary>
-	//	/// <returns>序号</returns>
-	//	internal int GetAnAvailableBook(string id)
-	//	{
-	//		for (int i = 0; i < BookAmount; i++)
-	//		{
-	//			if (Book[i].Bookstate == BOOKSTATE.Scheduled && Book[i].Borrowuserid == id) return i;
-	//		}
-	//		for (int i = 0; i < BookAmount; i++)
-	//		{
-	//			if (Book[i].Bookstate == BOOKSTATE.Available) return i;
-	//		}
-	//		return -1;
-	//	}
-	//	/// <summary>
-	//	/// 当预约人数到达可用书籍的2倍时，该书籍不可预约
-	//	/// </summary>
-	//	/// <returns>可以/不可以</returns>
-	//	internal bool Scheduleable()
-	//	{
-	//		int k = 0;
-	//		for (int i = 0; i < books.Count; i++)
-	//		{
-	//			if (books[i].Bookstate != BOOKSTATE.Unavailable)
-	//				k++;
-	//		}
-	//		int sch = scheduleQueue.Count;
-	//		if (sch > 2 * k) return false;
-	//		else return true;
-	//	}
-	//	/// <summary>
-	//	/// 借书
-	//	/// </summary>
-	//	/// <param name="n">书在数组的序号</param>
-	//	/// <param name="userid">用户id</param>
-	//	/// <returns>成功返回1，失败(n越界)返回0</returns>
-	//	internal bool BorrowBook(int n, string userid)
-	//	{
-	//		if (n < 0 || n >= BookAmount) return false;
+		//		sw.WriteLine(Book.Count.ToString());
+		//		foreach (var a in Book)
+		//		{
+		//			a.SaveToFile(sw);
+		//		}
 
-	//		if (Book[n].Bookstate == BOOKSTATE.Available ||
-	//			(Book[n].Bookstate == BOOKSTATE.Scheduled && Book[n].Borrowuserid == userid))
-	//		{
-	//			Book[n].Bookstate = BOOKSTATE.Borrowed;
-	//			Book[n].Borrowuserid = userid;
-	//			UpdateHistory(Book[n].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 1));
-	//			return true;
-	//		}
-	//		return false;
-
-	//	}
-	//	/// <summary>
-	//	/// 将人添加到预约队列
-	//	/// </summary>
-	//	/// <param name="userid">用户id</param>
-	//	/// <returns></returns>
-	//	internal void ScheduleBook(string userid)
-	//	{
-	//		scheduleQueue.AddLast(userid);
-	//	}
-	//	/// <summary>
-	//	/// 还书
-	//	/// </summary>
-	//	/// <param name="userid">用户id</param>
-	//	/// <returns>成功返回1失败返回0</returns>
-	//	internal bool ReturnBook(string userid)
-	//	{
-	//		int id = -1;
-	//		for (int i = 0; i < BookAmount; i++)
-	//			if (Book[i].Borrowuserid == userid)
-	//			{
-	//				id = i;
-	//				break;
-	//			}
-	//		if (id == -1) return false;
-	//		Book[id].Bookstate = BOOKSTATE.Available;
-	//		Book[id].Borrowuserid = "";
-
-	//		UpdateHistory(Book[id].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 2));
-
-	//		InformToScheduler(id);
-	//		return true;
-	//	}
-	//	/// <summary>
-	//	/// 将还的书分配给预约人
-	//	/// </summary>
-	//	/// <param name="bookid"></param>
-	//	/// <returns></returns>
-	//	private bool InformToScheduler(int bookid)
-	//	{
-	//		if (scheduleQueue.Any())
-	//		{
-	//			Book[bookid].Bookstate = BOOKSTATE.Scheduled;
-	//			string ss = scheduleQueue.First();
-	//			scheduleQueue.RemoveFirst();
-	//			Book[bookid].Borrowuserid = ss;
-
-	//			UpdateHistory(Book[bookid].Extisbn, new ClassBookHis(ClassTime.systemTime, ss, 3));
-
-	//			//通知预约者，写入文件
-	//			ClassUser us = new ClassUser("", ss, "", "", USERTYPE.Guest);
-	//			us.ReadDetailInformation(ClassBackEnd.UserDetailDictory);
-	//			us.bookget(BookIsbn);
-	//			us.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
-
-	//			return true;
-	//		}
-	//		return false;
-	//	}
-	//	/// <summary>
-	//	/// 取预约书
-	//	/// </summary>
-	//	/// <param name="userid">用户id</param>
-	//	/// <returns>成功返回1，失败(没找到用户的预约)返回0</returns>
-	//	internal bool GetScheduledBook(string userid)
-	//	{
-	//		for (int i = 0; i < BookAmount; i++)
-	//		{
-	//			if (Book[i].Borrowuserid == userid && Book[i].Bookstate == BOOKSTATE.Scheduled)
-	//			{
-	//				Book[i].Bookstate = BOOKSTATE.Borrowed;
-	//				UpdateHistory(Book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 1));
-	//				return true;
-	//			}
-	//		}
-	//		return false;
-	//	}
-	//	/// <summary>
-	//	/// 取消预约
-	//	/// </summary>
-	//	/// <param name="userid">用户id</param>
-	//	/// <returns>成功返回1，失败(没找到该用户的预约)返回0</returns>
-	//	internal bool CancelScheduleBook(string userid)
-	//	{
-	//		for (int i = 0; i < BookAmount; i++)
-	//		{
-	//			if (Book[i].Bookstate == BOOKSTATE.Scheduled)
-	//				if (Book[i].Borrowuserid == userid)
-	//				{
-	//					Book[i].Borrowuserid = "";
-	//					scheduleQueue.Remove(userid);
-	//					UpdateHistory(Book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 4));
-
-	//					if (!InformToScheduler(i))
-	//					{
-	//						Book[i].Bookstate = BOOKSTATE.Available;
-	//					}
-	//					return true;
-	//				}
-	//		}
-	//		return scheduleQueue.Remove(userid);
-	//	}
-	//	/// <summary>
-	//	/// 获取扩展isbn号
-	//	/// </summary>
-	//	/// <param name="i">book数组中第i个</param>
-	//	/// <returns>扩展isbn号</returns>
-	//	internal string GetExIsbn(int i)
-	//	{
-	//		return Book[i].Extisbn;
-	//	}
-	//	/// <summary>
-	//	/// 修改书籍状态
-	//	/// </summary>
-	//	/// <param name="state">状态数组，保证长度为书籍数量</param>
-	//	/// <param name="Id">管理员Id</param>
-	//	/// <returns>成功/失败</returns>
-	//	internal bool ChangeBookState(List<BOOKSTATE> state, string Id)
-	//	{
-	//		if (state.Count != Book.Count) return false;
-	//		for (int i = 0; i < Book.Count; i++)
-	//		{
-	//			if (state[i] == BOOKSTATE.Unavailable && books[i].Bookstate != BOOKSTATE.Borrowed)
-	//			{
-
-	//				if (books[i].Bookstate == BOOKSTATE.Scheduled)
-	//				{
-	//					scheduleQueue.AddFirst(books[i].Borrowuserid);
-	//					UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, books[i].Borrowuserid, 4));
-	//					ClassUser tmp = new ClassUser(books[i].Borrowuserid);
-	//					tmp.ReadDetailInformation(ClassBackEnd.UserDetailDictory);
-	//					tmp.MaintainSheduleBook(books[i].Extisbn);
-	//					tmp.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
-
-	//				}
-	//				if (books[i].Bookstate != BOOKSTATE.Unavailable)
-	//				{
-	//					books[i].Bookstate = BOOKSTATE.Unavailable;
-	//					UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 5));
-	//				}
+		//		sw.WriteLine(scheduleQueue.Count.ToString());
+		//		foreach (var tt in scheduleQueue)
+		//		{
+		//			sw.WriteLine(tt);
+		//		}
 
 
-	//			}
-	//		}
-	//		for (int i = 0; i < Book.Count; i++)
-	//		{
-	//			if (books[i].Bookstate == BOOKSTATE.Unavailable && state[i] == BOOKSTATE.Available)
-	//			{
-	//				books[i].Bookstate = BOOKSTATE.Available;
-	//				UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 6));
-	//				InformToScheduler(i);
-	//			}
-	//			if (books[i].Bookstate == BOOKSTATE.Available)
-	//			{
-	//				InformToScheduler(i);
-	//			}
-	//		}
+		//		if (sw != null) sw.Close();
+		//		if (zip != null) zip.Close();
+		//		if (fs != null) fs.Close();
+		//		return true;
+		//	}
+		//	/// <summary>
+		//	/// 储存基本信息
+		//	/// </summary>
+		//	/// <param name="sw">StreamWriter</param>
+		//	internal void SaveBasicInformation(StreamWriter sw)
+		//	{
+		//		sw.WriteLine(BookIsbn);
+		//		sw.WriteLine(BookName);
+		//		sw.WriteLine(BookPublisher);
+		//		sw.WriteLine(BookAuthor);
+		//		sw.WriteLine(BookLable1);
+		//		sw.WriteLine(BookLable2);
+		//		sw.WriteLine(BookLable3);
 
-	//		return SaveDetailInformation(ClassBackEnd.BookDirectory);
-	//	}
-	//	/// <summary>
-	//	/// 获取书籍状态
-	//	/// </summary>
-	//	/// <param name="state">状态数组，函数内部会清空state</param>
-	//	internal void GetBookState(ref List<BOOKSTATE> state)
-	//	{
-	//		state.Clear();
-	//		foreach (ABook tmp in books)
-	//		{
-	//			state.Add(tmp.Bookstate);
-	//		}
-	//	}
-	//	internal bool DelBook()
-	//	{
-	//		foreach (ABook tmp in books)
-	//		{
-	//			if (tmp.Bookstate != BOOKSTATE.Unavailable)
-	//			{
-	//				return false;
-	//			}
-	//		}
-	//		foreach (string person in scheduleQueue)
-	//		{
-	//			ClassUser tmp = new ClassUser(person);
-	//			tmp.deletebook(this.BookIsbn);
-	//			tmp.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
-	//		}
-	//		return true;
-	//	}
+		//	}
+		//	/// <summary>
+		//	/// 添加书的数量
+		//	/// </summary>
+		//	/// <param name="n">数量</param>
+		//	/// <param name="time">购入时间</param>
+		//	/// <param name="_adminid">管理员ID</param>
+		//	internal void AddBook(int n, DateTime time, string _adminid)
+		//	{
+		//		int oldamount = Book.Count;
+		//		BookAmount += n;
+
+		//		int lastisbn = Convert.ToInt32((Book.Last().Extisbn).Substring(10, 4));
+		//		for (int i = 0; i < n; i++)
+		//		{
+		//			lastisbn++;
+		//			Book.Add(new ABook(BOOKSTATE.Available, "", time, BookIsbn + lastisbn.ToString("D4")));
+		//			UpdateHistory(Book.Last().Extisbn, new ClassBookHis(time, _adminid, 0));
+		//		}
+
+		//		//通知预约者
+		//		for (int i = oldamount; i < BookAmount; i++)
+		//		{
+		//			InformToScheduler(i);
+		//		}
+		//	}
+		//	/// <summary>
+		//	/// 减少书的数量
+		//	/// </summary>
+		//	/// <param name="n">数量</param>
+		//	/// <returns>成功返回1，失败(有书正在被借)返回0</returns>
+		//	internal bool DeleteBook(int n)
+		//	{
+		//		int tt = 0;
+		//		for (int i = 0; i < BookAmount; i++)
+		//		{
+		//			if (Book[i].Bookstate == BOOKSTATE.Available)
+		//			{
+		//				tt++;
+		//			}
+		//		}
+		//		if (tt < n) return false;
+		//		else
+		//		{
+		//			for (int i = BookAmount - 1; i >= 0; i--)
+		//			{
+		//				if (Book[i].Bookstate == BOOKSTATE.Available)
+		//				{
+		//					Book.RemoveAt(i);
+		//				}
+		//			}
+		//			BookAmount -= n;
+		//			return true;
+		//		}
+		//	}
+		//	/// <summary>
+		//	/// 返回一个可借的书的序号，优先返回该用户已经预约的书
+		//	/// </summary>
+		//	/// <returns>序号</returns>
+		//	internal int GetAnAvailableBook(string id)
+		//	{
+		//		for (int i = 0; i < BookAmount; i++)
+		//		{
+		//			if (Book[i].Bookstate == BOOKSTATE.Scheduled && Book[i].Borrowuserid == id) return i;
+		//		}
+		//		for (int i = 0; i < BookAmount; i++)
+		//		{
+		//			if (Book[i].Bookstate == BOOKSTATE.Available) return i;
+		//		}
+		//		return -1;
+		//	}
+		//	/// <summary>
+		//	/// 当预约人数到达可用书籍的2倍时，该书籍不可预约
+		//	/// </summary>
+		//	/// <returns>可以/不可以</returns>
+		//	internal bool Scheduleable()
+		//	{
+		//		int k = 0;
+		//		for (int i = 0; i < books.Count; i++)
+		//		{
+		//			if (books[i].Bookstate != BOOKSTATE.Unavailable)
+		//				k++;
+		//		}
+		//		int sch = scheduleQueue.Count;
+		//		if (sch > 2 * k) return false;
+		//		else return true;
+		//	}
+		//	/// <summary>
+		//	/// 借书
+		//	/// </summary>
+		//	/// <param name="n">书在数组的序号</param>
+		//	/// <param name="userid">用户id</param>
+		//	/// <returns>成功返回1，失败(n越界)返回0</returns>
+		//	internal bool BorrowBook(int n, string userid)
+		//	{
+		//		if (n < 0 || n >= BookAmount) return false;
+
+		//		if (Book[n].Bookstate == BOOKSTATE.Available ||
+		//			(Book[n].Bookstate == BOOKSTATE.Scheduled && Book[n].Borrowuserid == userid))
+		//		{
+		//			Book[n].Bookstate = BOOKSTATE.Borrowed;
+		//			Book[n].Borrowuserid = userid;
+		//			UpdateHistory(Book[n].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 1));
+		//			return true;
+		//		}
+		//		return false;
+
+		//	}
+		//	/// <summary>
+		//	/// 将人添加到预约队列
+		//	/// </summary>
+		//	/// <param name="userid">用户id</param>
+		//	/// <returns></returns>
+		//	internal void ScheduleBook(string userid)
+		//	{
+		//		scheduleQueue.AddLast(userid);
+		//	}
+		//	/// <summary>
+		//	/// 还书
+		//	/// </summary>
+		//	/// <param name="userid">用户id</param>
+		//	/// <returns>成功返回1失败返回0</returns>
+		//	internal bool ReturnBook(string userid)
+		//	{
+		//		int id = -1;
+		//		for (int i = 0; i < BookAmount; i++)
+		//			if (Book[i].Borrowuserid == userid)
+		//			{
+		//				id = i;
+		//				break;
+		//			}
+		//		if (id == -1) return false;
+		//		Book[id].Bookstate = BOOKSTATE.Available;
+		//		Book[id].Borrowuserid = "";
+
+		//		UpdateHistory(Book[id].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 2));
+
+		//		InformToScheduler(id);
+		//		return true;
+		//	}
+		//	/// <summary>
+		//	/// 将还的书分配给预约人
+		//	/// </summary>
+		//	/// <param name="bookid"></param>
+		//	/// <returns></returns>
+		//	private bool InformToScheduler(int bookid)
+		//	{
+		//		if (scheduleQueue.Any())
+		//		{
+		//			Book[bookid].Bookstate = BOOKSTATE.Scheduled;
+		//			string ss = scheduleQueue.First();
+		//			scheduleQueue.RemoveFirst();
+		//			Book[bookid].Borrowuserid = ss;
+
+		//			UpdateHistory(Book[bookid].Extisbn, new ClassBookHis(ClassTime.systemTime, ss, 3));
+
+		//			//通知预约者，写入文件
+		//			ClassUser us = new ClassUser("", ss, "", "", USERTYPE.Guest);
+		//			us.ReadDetailInformation(ClassBackEnd.UserDetailDictory);
+		//			us.bookget(BookIsbn);
+		//			us.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
+
+		//			return true;
+		//		}
+		//		return false;
+		//	}
+		//	/// <summary>
+		//	/// 取预约书
+		//	/// </summary>
+		//	/// <param name="userid">用户id</param>
+		//	/// <returns>成功返回1，失败(没找到用户的预约)返回0</returns>
+		//	internal bool GetScheduledBook(string userid)
+		//	{
+		//		for (int i = 0; i < BookAmount; i++)
+		//		{
+		//			if (Book[i].Borrowuserid == userid && Book[i].Bookstate == BOOKSTATE.Scheduled)
+		//			{
+		//				Book[i].Bookstate = BOOKSTATE.Borrowed;
+		//				UpdateHistory(Book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 1));
+		//				return true;
+		//			}
+		//		}
+		//		return false;
+		//	}
+		//	/// <summary>
+		//	/// 取消预约
+		//	/// </summary>
+		//	/// <param name="userid">用户id</param>
+		//	/// <returns>成功返回1，失败(没找到该用户的预约)返回0</returns>
+		//	internal bool CancelScheduleBook(string userid)
+		//	{
+		//		for (int i = 0; i < BookAmount; i++)
+		//		{
+		//			if (Book[i].Bookstate == BOOKSTATE.Scheduled)
+		//				if (Book[i].Borrowuserid == userid)
+		//				{
+		//					Book[i].Borrowuserid = "";
+		//					scheduleQueue.Remove(userid);
+		//					UpdateHistory(Book[i].Extisbn, new ClassBookHis(ClassTime.systemTime, userid, 4));
+
+		//					if (!InformToScheduler(i))
+		//					{
+		//						Book[i].Bookstate = BOOKSTATE.Available;
+		//					}
+		//					return true;
+		//				}
+		//		}
+		//		return scheduleQueue.Remove(userid);
+		//	}
+		//	/// <summary>
+		//	/// 获取扩展isbn号
+		//	/// </summary>
+		//	/// <param name="i">book数组中第i个</param>
+		//	/// <returns>扩展isbn号</returns>
+		//	internal string GetExIsbn(int i)
+		//	{
+		//		return Book[i].Extisbn;
+		//	}
+		//	/// <summary>
+		//	/// 修改书籍状态
+		//	/// </summary>
+		//	/// <param name="state">状态数组，保证长度为书籍数量</param>
+		//	/// <param name="Id">管理员Id</param>
+		//	/// <returns>成功/失败</returns>
+		//	internal bool ChangeBookState(List<BOOKSTATE> state, string Id)
+		//	{
+		//		if (state.Count != Book.Count) return false;
+		//		for (int i = 0; i < Book.Count; i++)
+		//		{
+		//			if (state[i] == BOOKSTATE.Unavailable && books[i].Bookstate != BOOKSTATE.Borrowed)
+		//			{
+
+		//				if (books[i].Bookstate == BOOKSTATE.Scheduled)
+		//				{
+		//					scheduleQueue.AddFirst(books[i].Borrowuserid);
+		//					UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, books[i].Borrowuserid, 4));
+		//					ClassUser tmp = new ClassUser(books[i].Borrowuserid);
+		//					tmp.ReadDetailInformation(ClassBackEnd.UserDetailDictory);
+		//					tmp.MaintainSheduleBook(books[i].Extisbn);
+		//					tmp.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
+
+		//				}
+		//				if (books[i].Bookstate != BOOKSTATE.Unavailable)
+		//				{
+		//					books[i].Bookstate = BOOKSTATE.Unavailable;
+		//					UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 5));
+		//				}
+
+
+		//			}
+		//		}
+		//		for (int i = 0; i < Book.Count; i++)
+		//		{
+		//			if (books[i].Bookstate == BOOKSTATE.Unavailable && state[i] == BOOKSTATE.Available)
+		//			{
+		//				books[i].Bookstate = BOOKSTATE.Available;
+		//				UpdateHistory(books[i].Extisbn, new ClassBookHis(ClassTime.systemTime, Id, 6));
+		//				InformToScheduler(i);
+		//			}
+		//			if (books[i].Bookstate == BOOKSTATE.Available)
+		//			{
+		//				InformToScheduler(i);
+		//			}
+		//		}
+
+		//		return SaveDetailInformation(ClassBackEnd.BookDirectory);
+		//	}
+		//	/// <summary>
+		//	/// 获取书籍状态
+		//	/// </summary>
+		//	/// <param name="state">状态数组，函数内部会清空state</param>
+		//	internal void GetBookState(ref List<BOOKSTATE> state)
+		//	{
+		//		state.Clear();
+		//		foreach (ABook tmp in books)
+		//		{
+		//			state.Add(tmp.Bookstate);
+		//		}
+		//	}
+		//	internal bool DelBook()
+		//	{
+		//		foreach (ABook tmp in books)
+		//		{
+		//			if (tmp.Bookstate != BOOKSTATE.Unavailable)
+		//			{
+		//				return false;
+		//			}
+		//		}
+		//		foreach (string person in scheduleQueue)
+		//		{
+		//			ClassUser tmp = new ClassUser(person);
+		//			tmp.deletebook(this.BookIsbn);
+		//			tmp.SaveDetailInformation(ClassBackEnd.UserDetailDictory);
+		//		}
+		//		return true;
+		//	}
 	}
 }

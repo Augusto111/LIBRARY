@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetWorkApp
+namespace LibrarySystemBackEnd
 {
 	class RemoteClient
 	{
@@ -79,26 +79,9 @@ namespace NetWorkApp
 			ProtocolHelper helper = new ProtocolHelper(pro);
 			FileProtocol protocol = helper.GetProtocol();
 
-			if(protocol.Mode==RequestMode.UserLogin)
-			{
-				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
+			Response.dealRequest(ref protocol);
 
-				int res=bk.Login(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword);
-
-				protocol.Retval = res;
-
-				SendMessage(protocol.ToString());
-			}
-			else if(protocol.Mode==RequestMode.UserRegist)
-			{
-				LibrarySystemBackEnd.ClassBackEnd bk = new LibrarySystemBackEnd.ClassBackEnd();
-
-				bool res = bk.RegisterUser(protocol.Userinfo.UserId, protocol.Userinfo.UserName, protocol.Userinfo.UserPassword, protocol.Userinfo.UserSchool, protocol.Userinfo.UserType);
-
-				protocol.Retval = Convert.ToInt32(res);
-
-				SendMessage(protocol.ToString());
-			}
+			SendMessage(protocol.ToString());
 		}
 
 		private void receiveFile(FileProtocol protocol)

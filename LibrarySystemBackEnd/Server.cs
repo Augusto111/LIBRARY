@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace NetWorkApp
+namespace LibrarySystemBackEnd
 {
 	class Server
 	{
@@ -19,7 +19,9 @@ namespace NetWorkApp
 			server.Start();
 			while (true)
 			{
+				Console.WriteLine("Waiting for client...");
 				TcpClient remoteClient = server.AcceptTcpClient();
+
 				RemoteClient wapper = new RemoteClient(remoteClient);
 
 				wapper.BeginRead();

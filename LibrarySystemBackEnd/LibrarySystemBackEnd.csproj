@@ -60,10 +60,9 @@
     <Compile Include="ProtocolHandler.cs" />
     <Compile Include="ProtocolHelper.cs" />
     <Compile Include="RemoteClient.cs" />
-    <Compile Include="RequestHandler.cs" />
+    <Compile Include="Response.cs" />
     <Compile Include="SendStatus.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="ServerClient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
