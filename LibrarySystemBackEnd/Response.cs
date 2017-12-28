@@ -18,7 +18,7 @@ namespace LibrarySystemBackEnd
 				int res = bk.Login(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword);
 
 				protocol.Retval = res;
-				Thread.Sleep(5000);
+				Thread.Sleep(3000);
 			}
 			else if (protocol.Mode == RequestMode.UserRegist)
 			{
@@ -28,7 +28,7 @@ namespace LibrarySystemBackEnd
 
 				protocol.Retval = Convert.ToInt32(res);
 
-				Thread.Sleep(5000);
+				Thread.Sleep(3000);
 			}
 			else if (protocol.Mode == RequestMode.UserSearchBook)
 			{
@@ -37,7 +37,7 @@ namespace LibrarySystemBackEnd
 				protocol.Resbook = bk.SearchBook(protocol.SearchCat, protocol.SearchWords, protocol.CurNum, ref k);
 				protocol.EndNum = k;
 
-				Thread.Sleep(5000);
+				Thread.Sleep(3000);
 			}
 		}
 	}

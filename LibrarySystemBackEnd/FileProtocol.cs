@@ -169,10 +169,10 @@ namespace LibrarySystemBackEnd
 					{
 						string ret = "<protocol>";
 						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
-						ret += String.Format("<usersearchbook curnum=\"{0}\" endnum=\"{1}\" thisnum=\"{2}\" />", curNum, endNum, resBook.Length);
+						ret += String.Format("<usersearchbook curnum=\"{0}\" endnum=\"{1}\" amo=\"{2}\" />", curNum, endNum, resBook.Length);
 						for(int i=0;i<resBook.Length;i++)
 						{
-							ret += String.Format("<book bookisbn=\"{0}\" bookname=\"{1}\" bookauthor=\"{2}\" bookpublisher=\"{3}\" >");
+							ret += String.Format("<book bookisbn=\"{0}\" bookname=\"{1}\" bookauthor=\"{2}\" bookpublisher=\"{3}\" />", resBook[i].BookIsbn, resBook[i].BookName, resBook[i].BookAuthor, resBook[i].BookPublisher);
 						}
 						ret += "</protocol>";
 						return ret;

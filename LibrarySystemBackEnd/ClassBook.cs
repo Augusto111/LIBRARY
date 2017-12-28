@@ -306,7 +306,7 @@ namespace LibrarySystemBackEnd
 			this.bookImage = (byte[])dr["bookImage"];
 			this.bookIntroduction = dr["bookIntroduction"].ToString();
 			this.BookPublishTime = (DateTime)dr["bookPublishTime"];
-			this.bookAmount = (int)dr["bookAmount"];
+			this.bookAmount = Convert.ToInt32(dr["bookAmount"]);
 			this.bookLable = new string[3];
 			this.BookLable1 = dr["bookLable1"].ToString();
 			this.BookLable2 = dr["bookLable2"].ToString();

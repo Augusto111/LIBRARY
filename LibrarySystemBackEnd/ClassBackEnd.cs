@@ -11,7 +11,7 @@ namespace LibrarySystemBackEnd
 	public class ClassBackEnd
 	{
 		private ClassSQL sql;
-		
+
 		#region 私有方法
 		/// <summary>
 		/// 在数据库中精确查找用户
@@ -220,26 +220,26 @@ namespace LibrarySystemBackEnd
 					cmd1.Transaction = tra;
 					cmd1.CommandText = sqlstr1;
 
-					if (cmd1.ExecuteNonQuery()<=0)
+					if (cmd1.ExecuteNonQuery() <= 0)
 					{
 						res = 1;//借阅数量上限
 						throw new Exception();
 					}
-					
+
 					string sqlstr2 = @"update dt_abook 
 									set bookState = 1,
-									borrowUserId = '"+userid+
-									"', borrowTime = '"+DateTime.Now+
-									@"', returnTime = '"+(DateTime.Now+ClassUserBasicInfo.DefaultDate)+
-									"'where bookIsbn like '"+bookid+
-									"%' and (bookState = 2 and borrowUserId = '"+userid+"')";
+									borrowUserId = '" + userid +
+									"', borrowTime = '" + DateTime.Now +
+									@"', returnTime = '" + (DateTime.Now + ClassUserBasicInfo.DefaultDate) +
+									"'where bookIsbn like '" + bookid +
+									"%' and (bookState = 2 and borrowUserId = '" + userid + "')";
 
 					SqlCommand cmd2 = new SqlCommand();
 					cmd2.Connection = con;
 					cmd2.Transaction = tra;
 					cmd2.CommandText = sqlstr2;
 
-					if (cmd2.ExecuteNonQuery()<=0)
+					if (cmd2.ExecuteNonQuery() <= 0)
 					{
 						string sqlstr3 = "SET ROWCOUNT 1 update dt_abook set bookState = 1,borrowUserId = '" + userid + "', borrowTime = '" + DateTime.Now + "', returnTime = '" + (DateTime.Now + "'where bookIsbn like '" + bookid + "%' and bookState = 0 SET ROWCOUNT 0");
 
@@ -255,7 +255,7 @@ namespace LibrarySystemBackEnd
 						}
 					}
 
-					
+
 					tra.Commit();
 					res = 0;
 				}
@@ -276,7 +276,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="adminPassword"></param>
 		/// <param name="bk"></param>
 		/// <returns></returns>
-		public bool AddBook(string adminId,string adminPassword, ClassBook bk)
+		public bool AddBook(string adminId, string adminPassword, ClassBook bk)
 		{
 			bool res = false;
 			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
@@ -350,88 +350,65 @@ namespace LibrarySystemBackEnd
 		/// <returns></returns>
 		public ClassBook[] SearchBook(int type, string searchInfo, int curnum, ref int linenum)
 		{
-			List<ClassBook> bk = new List<ClassBook>(); 
+			List<ClassBook> bk = new List<ClassBook>();
 
 			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
 			{
+				con.Open();
 				SqlCommand cmd = con.CreateCommand();
 				switch (type)
 				{
 					case 1:
 						{
-							cmd.CommandText = "select count(*) from dt_book where (bookIsbn LIKE @a or bookPublisher like @a or bookAuthor like @a or bookName like @a or bookLable1 like @a or bookLable2 like @a or bookLable3 like @a)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select count(*) from dt_book where (bookIsbn LIKE '%" + searchInfo + "%' or bookPublisher like '%" + searchInfo + "%' or bookAuthor like '%" + searchInfo + "%' or bookName like '%" + searchInfo + "%' or bookLable1 like '%" + searchInfo + "%' or bookLable2 like '%" + searchInfo + "%' or bookLable3 like '%" + searchInfo + "%')";
 							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top "+(curnum+10)+"from dy_book where (bookIsbn LIKE @a or bookPublisher like @a or bookAuthor like @a or bookName like @a or bookLable1 like @a or bookLable2 like @a or bookLable3 like @a) order by bookIsbn dsc)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_book where (bookIsbn LIKE '%" + searchInfo + "%' or bookPublisher like '%" + searchInfo + "%' or bookAuthor like '%" + searchInfo + "%' or bookName like '%" + searchInfo + "%' or bookLable1 like '%" + searchInfo + "%' or bookLable2 like '%" + searchInfo + "%' or bookLable3 like '%" + searchInfo + "%'))t where rn between " + curnum + " and " + (curnum + 9);
 
 							break;
 						}
 					case 2:
 						{
-							cmd.CommandText = "select count(*) from dt_book where (bookIsbn LIKE @a)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select count(*) from dt_book where (bookIsbn LIKE '%" + searchInfo + "%')";
 							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookIsbn LIKE @a) order by bookIsbn dsc)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_book where (bookIsbn LIKE '%" + searchInfo + "%'))t where rn between " + curnum + " and " + (curnum + 9);
 
 							break;
 						}
 					case 3:
 						{
-							cmd.CommandText = "select count(*) from dt_book where (bookName like @a)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select count(*) from dt_book where (bookName like '%" + searchInfo + "%')";
 							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookName like @a) order by bookIsbn dsc)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_book where (bookName like '%" + searchInfo + "%'))t where rn between " + curnum + " and " + (curnum + 9);
 
 							break;
 						}
 					case 4:
 						{
-							cmd.CommandText = "select count(*) from dt_book where (bookAuthor like @a)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select count(*) from dt_book where (bookAuthor like '%" + searchInfo + "%')";
 							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookAuthor like @a) order by bookIsbn dsc)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_book where (bookAuthor like '%" + searchInfo + "%'))t where rn between " + curnum + " and " + (curnum + 9);
 
 							break;
 						}
 					case 5:
 						{
-							cmd.CommandText = "select count(*) from dt_book where (bookPublisher like @a)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select count(*) from dt_book where (bookPublisher like '%" + searchInfo + "%')";
 							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where (bookPublisher like @a) order by bookIsbn dsc)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_book where (bookPublisher like '%" + searchInfo + "%'))t where rn between " + curnum + " and " + (curnum + 9);
 
 							break;
 						}
 					case 6:
 						{
-							cmd.CommandText = "select count(*) from dt_book where (bookLable1 like @a or bookLable2 like @a or bookLable3 like @a)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select count(*) from dt_book where (bookLable1 like '%" + searchInfo + "%'" + " or bookLable2 like '%" + searchInfo + "%'" + " or bookLable3 like '%" + searchInfo + "%')";
 							linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-							cmd.CommandText = "select TOP " + 10 + "from dt_book where bookIsbn not in (select top " + (curnum + 10) + "from dy_book where ( bookLable1 like @a or bookLable2 like @a or bookLable3 like @a) order by bookIsbn dsc)";
-							cmd.Parameters.Clear();
-							cmd.Parameters.AddWithValue("@a", searchInfo);
+							cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_book where (bookLable1 like '%" + searchInfo + "%'" + " or bookLable2 like '%" + searchInfo + "%'" + " or bookLable3 like '%" + searchInfo + "%'))t where rn between " + curnum + " and " + (curnum + 9);
 
 							break;
 						}
