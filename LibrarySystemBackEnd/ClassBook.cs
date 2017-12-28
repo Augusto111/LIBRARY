@@ -296,7 +296,10 @@ namespace LibrarySystemBackEnd
 				//UpdateHistory(Book.Last().BookIsbn, new ClassBookHis(broughtTime, adminId, 0));
 			}
 		}
-
+		internal ClassBook(string bookIsbn)
+		{
+			this.bookIsbn = bookIsbn;
+		}
 		public ClassBook(DbDataReader dr)
 		{
 			this.bookName = dr["bookName"].ToString();

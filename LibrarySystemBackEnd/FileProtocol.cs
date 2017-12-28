@@ -45,6 +45,7 @@ namespace LibrarySystemBackEnd
 		private int curNum, endNum;
 		private int returnVal;
 		private ClassBook[] resBook;
+		private ClassBook nowBook;
 
 		public FileProtocol(RequestMode mode, int port)
 		{
@@ -153,6 +154,19 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		public ClassBook NowBook
+		{
+			get
+			{
+				return nowBook;
+			}
+
+			set
+			{
+				nowBook = value;
+			}
+		}
+
 		public override string ToString()
 		{
 			switch (mode)
@@ -178,9 +192,21 @@ namespace LibrarySystemBackEnd
 						return ret;
 					}
 				case RequestMode.UserBookLoad:
-					break;
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+						ret += String.Format("<book bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookamo=\"{4}\" booklable1=\"{5}\" booklable2=\"{6}\" booklable3=\"{7}\" bookintroduction=\"{8}\" bookpic=\"{9}\" />", nowBook.BookName, nowBook.BookAuthor, nowBook.BookPublisher, nowBook.BookIsbn, nowBook.BookAmount, nowBook.BookLable1, nowBook.BookLable2, nowBook.BookLable3, nowBook.BookIntroduction, nowBook.BookImage);
+						ret += "</protocol>";
+						break;
+					}
 				case RequestMode.UserBookStateLoad:
-					break;
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+						ret += String.Format("<book bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookamo=\"{4}\" booklable1=\"{5}\" booklable2=\"{6}\" booklable3=\"{7}\" bookintroduction=\"{8}\" bookpic=\"{9}\" bookpublishtime=\"{10}\" />", nowBook.BookName, nowBook.BookAuthor, nowBook.BookPublisher, nowBook.BookIsbn, nowBook.BookAmount, nowBook.BookLable1, nowBook.BookLable2, nowBook.BookLable3, nowBook.BookIntroduction, nowBook.BookImage, nowBook.BookPublishTime);
+						ret += "</protocol>";
+						break;
+					}
 				case RequestMode.UserBookCommentLoad:
 					break;
 				case RequestMode.UserBorrowBook:

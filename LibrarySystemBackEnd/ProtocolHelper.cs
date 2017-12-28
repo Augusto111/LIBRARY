@@ -54,6 +54,8 @@ namespace LibrarySystemBackEnd
 					}
 				case RequestMode.UserBookLoad:
 					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
 						break;
 					}
 				case RequestMode.UserBookStateLoad:

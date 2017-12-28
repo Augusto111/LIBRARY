@@ -39,6 +39,11 @@ namespace LibrarySystemBackEnd
 
 				Thread.Sleep(3000);
 			}
+			else if(protocol.Mode==RequestMode.UserBookLoad)
+			{
+				ClassBackEnd bk = new ClassBackEnd();
+				protocol.NowBook = bk.GetBookDetail(protocol.NowBook.BookIsbn);
+			}
 		}
 	}
 }

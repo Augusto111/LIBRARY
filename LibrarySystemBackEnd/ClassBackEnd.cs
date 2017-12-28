@@ -424,6 +424,29 @@ namespace LibrarySystemBackEnd
 			}
 			return bk.ToArray();
 		}
+
+		public ClassBook GetBookDetail(string bookIsbn)
+		{
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				SqlCommand cmd = con.CreateCommand();
+				cmd.CommandText = "select * from dt_book where bookIsbn=@a";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", bookIsbn);
+
+				con.Open();
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						return new ClassBook(dr);
+					}
+				}
+				else throw new Exception("请求的书号不存在！");
+			}
+			return null;
+		}
 		#endregion
 	}
 }
