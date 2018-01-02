@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Reflection;
 using System.Data.Common;
+using System.Security.Cryptography;
 
 namespace LibrarySystemBackEnd
 {
@@ -201,6 +202,28 @@ namespace LibrarySystemBackEnd
 			set
 			{
 				bookLable[2] = value;
+			}
+		}
+
+		public string BookPicHash
+		{
+			get
+			{
+				MD5 md5 = MD5.Create();
+				byte[] data = md5.ComputeHash(bookImage);
+
+				// 创建一个 Stringbuilder 来收集字节并创建字符串  
+				StringBuilder sBuilder = new StringBuilder();
+
+				// 循环遍历哈希数据的每一个字节并格式化为十六进制字符串  
+				for (int i = 0; i < data.Length; i++)
+				{
+					sBuilder.Append(data[i].ToString("x2"));
+				}
+				// 返回十六进制字符串
+				string fileName = sBuilder.ToString();
+
+				return fileName;
 			}
 		}
 

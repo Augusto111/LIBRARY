@@ -264,6 +264,10 @@ namespace LibrarySystemBackEnd
 			else if (this.userType == USERTYPE.Lecturer) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 20;
 			else UserCurrentMaxBorrowableAmount = 0;
 		}
+		public ClassUserBasicInfo(string id)
+		{
+			this.userId = id;
+		}
 
 		/// <summary>
 		/// 数据库构造函数

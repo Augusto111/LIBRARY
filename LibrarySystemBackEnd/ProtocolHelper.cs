@@ -52,16 +52,41 @@ namespace LibrarySystemBackEnd
 						pro.CurNum = Convert.ToInt32(searchnode.Attributes["curnum"].Value);
 						break;
 					}
-				case RequestMode.UserBookLoad:
+				case RequestMode.UserBookDetailLoad:
 					{
 						XmlNode booknode = root.SelectSingleNode("book");
 						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
 						break;
 					}
 				case RequestMode.UserBookStateLoad:
-					break;
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
+						XmlNode usernode = root.SelectSingleNode("userBasic");
+						pro.Userinfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						break;
+					}
 				case RequestMode.UserBookCommentLoad:
-					break;
+					{
+						//XmlNode commentnode = root.SelectSingleNode("bookcomment");
+						//pro.NowBook = new ClassBook(commentnode.Attributes["bookisbn"].Value);
+						//pro.CurNum = Convert.ToInt32(commentnode.Attributes["curnum"].Value);
+						break;
+					}
+				case RequestMode.UserBookLoad:
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value); XmlNode usernode = root.SelectSingleNode("userBasic");
+						pro.Userinfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						break;
+					}
+				case RequestMode.PicSend:
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
+						
+						break;
+					}
 				case RequestMode.UserBorrowBook:
 					break;
 				case RequestMode.UserCommentBook:

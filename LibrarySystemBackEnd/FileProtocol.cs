@@ -16,7 +16,7 @@ namespace LibrarySystemBackEnd
 		UserRegist,
 		UserSearchBook,
 
-		UserBookLoad,
+		UserBookDetailLoad,
 		UserBookStateLoad,
 		UserBookCommentLoad,
 		UserBorrowBook,
@@ -34,6 +34,10 @@ namespace LibrarySystemBackEnd
 		UserAbookLoad,
 		UserReturnBook,
 		UserDelayBook,
+
+		UserBookLoad,
+		PicReceive,
+		PicSend
 	}
 	class FileProtocol
 	{
@@ -44,8 +48,10 @@ namespace LibrarySystemBackEnd
 		private int searchCat;
 		private int curNum, endNum;
 		private int returnVal;
+		private string fileName;
 		private ClassBook[] resBook;
 		private ClassBook nowBook;
+		private ClassABook[] eachBookState;
 
 		public FileProtocol(RequestMode mode, int port)
 		{
@@ -167,6 +173,32 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		public ClassABook[] Bks
+		{
+			get
+			{
+				return eachBookState;
+			}
+
+			set
+			{
+				eachBookState = value;
+			}
+		}
+
+		public string FileName
+		{
+			get
+			{
+				return fileName;
+			}
+
+			set
+			{
+				fileName = value;
+			}
+		}
+
 		public override string ToString()
 		{
 			switch (mode)
@@ -191,24 +223,66 @@ namespace LibrarySystemBackEnd
 						ret += "</protocol>";
 						return ret;
 					}
-				case RequestMode.UserBookLoad:
-					{
-						string ret = "<protocol>";
-						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
-						ret += String.Format("<book bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookamo=\"{4}\" booklable1=\"{5}\" booklable2=\"{6}\" booklable3=\"{7}\" bookintroduction=\"{8}\" bookpic=\"{9}\" />", nowBook.BookName, nowBook.BookAuthor, nowBook.BookPublisher, nowBook.BookIsbn, nowBook.BookAmount, nowBook.BookLable1, nowBook.BookLable2, nowBook.BookLable3, nowBook.BookIntroduction, nowBook.BookImage);
-						ret += "</protocol>";
-						break;
-					}
-				case RequestMode.UserBookStateLoad:
+				case RequestMode.UserBookDetailLoad:
 					{
 						string ret = "<protocol>";
 						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
 						ret += String.Format("<book bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookamo=\"{4}\" booklable1=\"{5}\" booklable2=\"{6}\" booklable3=\"{7}\" bookintroduction=\"{8}\" bookpic=\"{9}\" bookpublishtime=\"{10}\" />", nowBook.BookName, nowBook.BookAuthor, nowBook.BookPublisher, nowBook.BookIsbn, nowBook.BookAmount, nowBook.BookLable1, nowBook.BookLable2, nowBook.BookLable3, nowBook.BookIntroduction, nowBook.BookImage, nowBook.BookPublishTime);
 						ret += "</protocol>";
-						break;
+						return ret;
+					}
+				case RequestMode.UserBookStateLoad:
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" retval={2} />", mode, port, Retval);
+						ret += String.Format("<book bookisbn=\"{0}\" bookamount=\"{1}\" />", nowBook.BookIsbn,Bks.Length);
+						for(int i=0;i<eachBookState.Length;i++)
+						{
+							ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookName, eachBookState[i].BookState);
+						}
+						ret += "</protocol>";
+						return ret;
 					}
 				case RequestMode.UserBookCommentLoad:
-					break;
+					{
+						//string ret = "<protocol>";
+						//ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+						//ret += String.Format("<book bookisbn=\"{0}\" bookamount=\"{1}\" />", nowBook.BookIsbn, Bks.Length);
+						//for (int i = 0; i < eachBookState.Length; i++)
+						//{
+						//	ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookName, eachBookState[i].BookState);
+						//}
+						//ret += "</protocol>";
+						break;
+					}
+				case RequestMode.UserBookLoad:
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" />", mode, port, Retval);
+
+						ret += String.Format("<book bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookamo=\"{4}\" booklable1=\"{5}\" booklable2=\"{6}\" booklable3=\"{7}\" bookintroduction=\"{8}\" bookpic=\"{9}\" bookpublishtime=\"{10}\" />", nowBook.BookName, nowBook.BookAuthor, nowBook.BookPublisher, nowBook.BookIsbn, nowBook.BookAmount, nowBook.BookLable1, nowBook.BookLable2, nowBook.BookLable3, nowBook.BookIntroduction, NowBook.BookPicHash, nowBook.BookPublishTime);
+						
+						for (int i = 0; i < eachBookState.Length; i++)
+						{
+							ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookIsbn, eachBookState[i].BookState);
+						}
+						ret += "</protocol>";
+						return ret;
+					}
+				case RequestMode.PicSend:
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" filename=\"{2}\" />", mode, port, fileName);
+						ret += "</protocol>";
+						return ret;
+					}
+				case RequestMode.PicReceive:
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" filename=\"{2}\" />", mode, port, fileName);
+						ret += "</protocol>";
+						return ret;
+					}
 				case RequestMode.UserBorrowBook:
 					break;
 				case RequestMode.UserCommentBook:

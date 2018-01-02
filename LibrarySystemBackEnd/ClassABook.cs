@@ -354,7 +354,7 @@ namespace LibrarySystemBackEnd
 			this.BookAuthor = dr["bookAuthor"].ToString();
 			this.BookImage = (byte[])dr["bookImage"];
 			this.BookPublishDate = (DateTime)dr["bookPublishDate"];
-			this.BookBroughtTime = (DateTime)dr["broughtTime"];
+			this.BookBroughtTime = (DateTime)dr["bookBroughtTime"];
 
 			this.BookState = (BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), dr["bookState"]);
 			this.BorrowUserId = dr["borrowUserId"].ToString();
