@@ -51,6 +51,7 @@
     <Compile Include="ClassAdministrator.cs" />
     <Compile Include="ClassBackEnd.cs" />
     <Compile Include="ClassBook.cs" />
+    <Compile Include="ClassComment.cs" />
     <Compile Include="ClassMain.cs" />
     <Compile Include="ClassServer.cs" />
     <Compile Include="FileProtocol.cs" />

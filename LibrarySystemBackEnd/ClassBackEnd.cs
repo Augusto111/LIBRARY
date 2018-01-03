@@ -563,6 +563,97 @@ namespace LibrarySystemBackEnd
 			}
 			return null;
 		}
-		#endregion
+
+		public ClassComment[] GetComment(string bookIsbn, int curnum, ref int linenum)
+		{
+			List<ClassComment> comment = new List<ClassComment>();
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlCommand cmd = new SqlCommand();
+				cmd.Connection = con;
+				cmd.CommandText = "select count(*) from dt_Comment where (bookIsbn LIKE '%" + bookIsbn + "%')";
+
+				linenum = Convert.ToInt32(cmd.ExecuteScalar());
+
+				cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_Comment where (bookIsbn LIKE '%" + bookIsbn + "%'))t where rn between " + curnum + " and " + (curnum + 9);
+
+
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						comment.Add(new ClassComment(dr));
+					}
+				}
+				dr.Close();
+			}
+			return comment.ToArray();
+		}
+
+		public bool AddComment(string bookIsbn, string userId, string text)
+		{
+			bool res = false;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlTransaction tra = null;
+				try
+				{
+					tra = con.BeginTransaction();
+					SqlCommand cmd = new SqlCommand();
+					cmd.Transaction = tra;
+					cmd.Connection = con;
+
+					cmd.CommandText = "select count(*) from dt_Comment where (bookIsbn LIKE '%" + bookIsbn + "%')";
+
+					int amo = Convert.ToInt32(cmd.ExecuteScalar());
+
+					cmd.CommandText = "insert into dt_Comment values(@a,@b,@c,@d)";
+					cmd.Parameters.Clear();
+					cmd.Parameters.AddWithValue("@a", bookIsbn + amo.ToString("D4"));
+					cmd.Parameters.AddWithValue("@b", userId);
+					cmd.Parameters.AddWithValue("@c", text);
+					cmd.Parameters.AddWithValue("@d", DateTime.Now);
+
+					if (cmd.ExecuteNonQuery() <= 0)
+						throw new Exception();
+
+					tra.Commit();
+					res = true;
+				}
+				catch (Exception e)
+				{
+					res = false;
+					tra.Rollback();
+				}
+			}
+			return res;
+		}
+
+		public bool DelComment(string commentIsbn)
+		{
+			bool res = false;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+
+				SqlCommand cmd = new SqlCommand();
+				cmd.Connection = con;
+
+				cmd.CommandText = "delete from dt_Comment where (commentIsbn = @a)";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", commentIsbn);
+
+				if (cmd.ExecuteNonQuery() <= 0)
+					res = false;
+				else
+					res = true;
+
+			}
+			return res;
+		}
 	}
+	#endregion
 }

@@ -52,6 +52,8 @@ namespace LibrarySystemBackEnd
 		private ClassBook[] resBook;
 		private ClassBook nowBook;
 		private ClassABook[] eachBookState;
+		private ClassComment nowComment;
+		private ClassComment[] comments;
 
 		public FileProtocol(RequestMode mode, int port)
 		{
@@ -199,6 +201,32 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		public ClassComment NowComment
+		{
+			get
+			{
+				return nowComment;
+			}
+
+			set
+			{
+				nowComment = value;
+			}
+		}
+
+		public ClassComment[] Comments
+		{
+			get
+			{
+				return comments;
+			}
+
+			set
+			{
+				comments = value;
+			}
+		}
+
 		public override string ToString()
 		{
 			switch (mode)
@@ -216,7 +244,7 @@ namespace LibrarySystemBackEnd
 						string ret = "<protocol>";
 						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
 						ret += String.Format("<usersearchbook curnum=\"{0}\" endnum=\"{1}\" amo=\"{2}\" />", curNum, endNum, resBook.Length);
-						for(int i=0;i<resBook.Length;i++)
+						for (int i = 0; i < resBook.Length; i++)
 						{
 							ret += String.Format("<book bookisbn=\"{0}\" bookname=\"{1}\" bookauthor=\"{2}\" bookpublisher=\"{3}\" />", resBook[i].BookIsbn, resBook[i].BookName, resBook[i].BookAuthor, resBook[i].BookPublisher);
 						}
@@ -235,8 +263,8 @@ namespace LibrarySystemBackEnd
 					{
 						string ret = "<protocol>";
 						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" retval={2} />", mode, port, Retval);
-						ret += String.Format("<book bookisbn=\"{0}\" bookamount=\"{1}\" />", nowBook.BookIsbn,Bks.Length);
-						for(int i=0;i<eachBookState.Length;i++)
+						ret += String.Format("<book bookisbn=\"{0}\" bookamount=\"{1}\" />", nowBook.BookIsbn, Bks.Length);
+						for (int i = 0; i < eachBookState.Length; i++)
 						{
 							ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookName, eachBookState[i].BookState);
 						}
@@ -245,14 +273,14 @@ namespace LibrarySystemBackEnd
 					}
 				case RequestMode.UserBookCommentLoad:
 					{
-						//string ret = "<protocol>";
-						//ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
-						//ret += String.Format("<book bookisbn=\"{0}\" bookamount=\"{1}\" />", nowBook.BookIsbn, Bks.Length);
-						//for (int i = 0; i < eachBookState.Length; i++)
-						//{
-						//	ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookName, eachBookState[i].BookState);
-						//}
-						//ret += "</protocol>";
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+
+						for (int i = 0; i < eachBookState.Length; i++)
+						{
+							ret += String.Format("<comment commentisbn=\"{0}\" userid=\"{1}\" text=\"{2}\" commenttime=\"{3}\" />", this.comments[i].CommentIsbn, this.comments[i].UserId, this.comments[i].Text, this.comments[i].CommentTime);
+						}
+						ret += "</protocol>";
 						break;
 					}
 				case RequestMode.UserBookLoad:
@@ -261,7 +289,7 @@ namespace LibrarySystemBackEnd
 						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" />", mode, port, Retval);
 
 						ret += String.Format("<book bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookamo=\"{4}\" booklable1=\"{5}\" booklable2=\"{6}\" booklable3=\"{7}\" bookintroduction=\"{8}\" bookpic=\"{9}\" bookpublishtime=\"{10}\" />", nowBook.BookName, nowBook.BookAuthor, nowBook.BookPublisher, nowBook.BookIsbn, nowBook.BookAmount, nowBook.BookLable1, nowBook.BookLable2, nowBook.BookLable3, nowBook.BookIntroduction, NowBook.BookPicHash, nowBook.BookPublishTime);
-						
+
 						for (int i = 0; i < eachBookState.Length; i++)
 						{
 							ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookIsbn, eachBookState[i].BookState);
@@ -286,9 +314,13 @@ namespace LibrarySystemBackEnd
 				case RequestMode.UserBorrowBook:
 					break;
 				case RequestMode.UserCommentBook:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				case RequestMode.UserDelComment:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				case RequestMode.UserOrderBook:
 					break;
 				case RequestMode.UserInfoLoad:

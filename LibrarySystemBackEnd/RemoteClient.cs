@@ -125,8 +125,10 @@ namespace LibrarySystemBackEnd
 			}
 			else if (protocol.Mode == RequestMode.UserBookCommentLoad)
 			{
-				//ClassBackEnd bk = new ClassBackEnd();
-				//protocol.Bks = bk.GetBookState(protocol.NowBook.BookIsbn);
+				ClassBackEnd bk = new ClassBackEnd();
+				int linenum = 0;
+				protocol.Comments = bk.GetComment(protocol.NowBook.BookIsbn, protocol.CurNum, ref linenum);
+				protocol.EndNum = linenum;
 			}
 			else if (protocol.Mode == RequestMode.UserBookLoad)
 			{
@@ -163,6 +165,16 @@ namespace LibrarySystemBackEnd
 				}
 
 				return;
+			}
+			else if(protocol.Mode==RequestMode.UserCommentBook)
+			{
+				ClassBackEnd bk = new ClassBackEnd();
+				protocol.Retval = Convert.ToInt32(bk.AddComment(protocol.NowComment.CommentIsbn, protocol.NowComment.UserId, protocol.NowComment.Text));
+			}
+			else if(protocol.Mode==RequestMode.UserDelComment)
+			{
+				ClassBackEnd bk = new ClassBackEnd();
+				protocol.Retval = Convert.ToInt32(bk.DelComment(protocol.NowComment.CommentIsbn));
 			}
 
 			SendMessage(protocol.ToString());

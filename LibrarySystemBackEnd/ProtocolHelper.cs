@@ -68,9 +68,9 @@ namespace LibrarySystemBackEnd
 					}
 				case RequestMode.UserBookCommentLoad:
 					{
-						//XmlNode commentnode = root.SelectSingleNode("bookcomment");
-						//pro.NowBook = new ClassBook(commentnode.Attributes["bookisbn"].Value);
-						//pro.CurNum = Convert.ToInt32(commentnode.Attributes["curnum"].Value);
+						XmlNode commentnode = root.SelectSingleNode("commentload");
+						pro.NowBook = new ClassBook(commentnode.Attributes["bookisbn"].Value);
+						pro.CurNum = Convert.ToInt32(commentnode.Attributes["curnum"].Value);
 						break;
 					}
 				case RequestMode.UserBookLoad:
@@ -90,9 +90,21 @@ namespace LibrarySystemBackEnd
 				case RequestMode.UserBorrowBook:
 					break;
 				case RequestMode.UserCommentBook:
-					break;
+					{
+						XmlNode commentnode = root.SelectSingleNode("commentnode");
+						pro.NowComment = new ClassComment();
+						pro.NowComment.Text = commentnode.Attributes["text"].Value;
+						pro.NowComment.UserId = commentnode.Attributes["userid"].Value;
+						pro.NowComment.CommentIsbn = commentnode.Attributes["bookisbn"].Value;
+						break;
+					}
 				case RequestMode.UserDelComment:
-					break;
+					{
+						XmlNode commentnode = root.SelectSingleNode("commentnode");
+						pro.NowComment = new ClassComment();
+						pro.NowComment.CommentIsbn = commentnode.Attributes["commentisbn"].Value;
+						break;
+					}
 				case RequestMode.UserOrderBook:
 					break;
 				case RequestMode.UserInfoLoad:
