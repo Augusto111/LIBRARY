@@ -606,7 +606,7 @@ namespace LibrarySystemBackEnd
 					cmd.Transaction = tra;
 					cmd.Connection = con;
 
-					cmd.CommandText = "select count(*) from dt_Comment where (bookIsbn LIKE '%" + bookIsbn + "%')";
+					cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn LIKE '%" + bookIsbn + "%')";
 
 					int amo = Convert.ToInt32(cmd.ExecuteScalar());
 
@@ -618,6 +618,14 @@ namespace LibrarySystemBackEnd
 					cmd.Parameters.AddWithValue("@d", DateTime.Now);
 
 					if (cmd.ExecuteNonQuery() <= 0)
+						throw new Exception();
+
+					cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn=@a)";
+					cmd.Parameters.Clear();
+					cmd.Parameters.AddWithValue("@a", bookIsbn + amo.ToString("D4"));
+					amo = Convert.ToInt32(cmd.ExecuteScalar());
+
+					if (amo != 1)
 						throw new Exception();
 
 					tra.Commit();
