@@ -72,7 +72,7 @@ namespace LibrarySystemBackEnd
 		}
 		public ClassComment(DbDataReader dr)
 		{
-			this.commentIsbn = dr["bookIsbn"].ToString();
+			this.commentIsbn = dr["commentIsbn"].ToString();
 			this.userId = dr["userId"].ToString();
 			this.text = dr["text"].ToString();
 			this.commentTime = (DateTime)dr["commentTime"];

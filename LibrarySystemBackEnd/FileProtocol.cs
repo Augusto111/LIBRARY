@@ -275,13 +275,13 @@ namespace LibrarySystemBackEnd
 					{
 						string ret = "<protocol>";
 						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
-
-						for (int i = 0; i < eachBookState.Length; i++)
+						ret += String.Format("<commentsum curnum=\"{0}\" endnum=\"{1}\" amo=\"{2}\" />", CurNum, EndNum, comments.Length);
+						for (int i = 0; i < comments.Length; i++)
 						{
 							ret += String.Format("<comment commentisbn=\"{0}\" userid=\"{1}\" text=\"{2}\" commenttime=\"{3}\" />", this.comments[i].CommentIsbn, this.comments[i].UserId, this.comments[i].Text, this.comments[i].CommentTime);
 						}
 						ret += "</protocol>";
-						break;
+						return ret;
 					}
 				case RequestMode.UserBookLoad:
 					{
@@ -312,7 +312,9 @@ namespace LibrarySystemBackEnd
 						return ret;
 					}
 				case RequestMode.UserBorrowBook:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				case RequestMode.UserCommentBook:
 					{
 						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
@@ -322,7 +324,9 @@ namespace LibrarySystemBackEnd
 						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
 					}
 				case RequestMode.UserOrderBook:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				case RequestMode.UserInfoLoad:
 					break;
 				case RequestMode.UserInfoChange:

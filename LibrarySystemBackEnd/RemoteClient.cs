@@ -37,6 +37,7 @@ namespace LibrarySystemBackEnd
 		{
 			AsyncCallback callBack = new AsyncCallback(OnReadComplete);
 			streamToClient.BeginRead(buffer, 0, BufferSize, callBack, null);
+
 		}
 
 		private void OnReadComplete(IAsyncResult ar)
@@ -49,7 +50,7 @@ namespace LibrarySystemBackEnd
 					bytesRead = streamToClient.EndRead(ar);
 					Console.WriteLine("Reading Data, {0} bytes", bytesRead);
 				}
-
+				if (bytesRead == 0) return;
 				string msg = Encoding.Unicode.GetString(buffer, 0, bytesRead);
 				Array.Clear(buffer, 0, buffer.Length);
 
@@ -129,6 +130,7 @@ namespace LibrarySystemBackEnd
 				int linenum = 0;
 				protocol.Comments = bk.GetComment(protocol.NowBook.BookIsbn, protocol.CurNum, ref linenum);
 				protocol.EndNum = linenum;
+				Thread.Sleep(500);
 			}
 			else if (protocol.Mode == RequestMode.UserBookLoad)
 			{
@@ -163,18 +165,26 @@ namespace LibrarySystemBackEnd
 					streamToClient.Dispose();
 					client.Close();
 				}
-
 				return;
 			}
-			else if(protocol.Mode==RequestMode.UserCommentBook)
+			else if (protocol.Mode == RequestMode.UserCommentBook)
 			{
 				ClassBackEnd bk = new ClassBackEnd();
 				protocol.Retval = Convert.ToInt32(bk.AddComment(protocol.NowComment.CommentIsbn, protocol.NowComment.UserId, protocol.NowComment.Text));
 			}
-			else if(protocol.Mode==RequestMode.UserDelComment)
+			else if (protocol.Mode == RequestMode.UserDelComment)
 			{
 				ClassBackEnd bk = new ClassBackEnd();
 				protocol.Retval = Convert.ToInt32(bk.DelComment(protocol.NowComment.CommentIsbn));
+			}
+			else if (protocol.Mode == RequestMode.UserBorrowBook)
+			{
+				ClassBackEnd bk = new ClassBackEnd();
+				protocol.Retval = Convert.ToInt32(bk.BorrowBook(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword, protocol.NowBook.BookIsbn));
+			}
+			else if (protocol.Mode == RequestMode.UserOrderBook)
+			{
+
 			}
 
 			SendMessage(protocol.ToString());
@@ -182,11 +192,12 @@ namespace LibrarySystemBackEnd
 
 		public void SendMessage(string msg)
 		{
-			//msg = String.Format("[length={0}]{1}", msg.Length, msg);
-
-			byte[] tmp = Encoding.Unicode.GetBytes(msg);
 			try
 			{
+				//msg = String.Format("[length={0}]{1}", msg.Length, msg);
+
+				byte[] tmp = Encoding.Unicode.GetBytes(msg);
+
 				lock (streamToClient)
 				{
 					streamToClient.Write(tmp, 0, tmp.Length);
@@ -196,7 +207,13 @@ namespace LibrarySystemBackEnd
 			catch (Exception e)
 			{
 				Console.WriteLine(e.Message);
-				return;
+			}
+			finally
+			{
+				if(client.Client.Connected)
+					Console.WriteLine("Closed {0}<--{1}", client.Client.LocalEndPoint, client.Client.RemoteEndPoint);
+				streamToClient.Close();
+				client.Close();
 			}
 		}
 

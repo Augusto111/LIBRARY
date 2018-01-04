@@ -28,9 +28,9 @@ namespace LibrarySystemBackEnd
 				input = partialProtocal + input;
 			string pattern= "(^<protocol>.*?</protocol>)";
 
-			if (Regex.IsMatch(input,pattern))
+			if (Regex.IsMatch(input,pattern,RegexOptions.Singleline))
 			{
-				string match = Regex.Match(input, pattern).Groups[0].Value;
+				string match = Regex.Match(input, pattern, RegexOptions.Singleline).Groups[0].Value;
 				outputList.Add(match);
 				partialProtocal = "";
 

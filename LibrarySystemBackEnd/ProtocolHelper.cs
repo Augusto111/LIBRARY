@@ -88,10 +88,16 @@ namespace LibrarySystemBackEnd
 						break;
 					}
 				case RequestMode.UserBorrowBook:
-					break;
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
+						XmlNode usernode = root.SelectSingleNode("userBasic");
+						pro.Userinfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						break;
+					}
 				case RequestMode.UserCommentBook:
 					{
-						XmlNode commentnode = root.SelectSingleNode("commentnode");
+						XmlNode commentnode = root.SelectSingleNode("comment");
 						pro.NowComment = new ClassComment();
 						pro.NowComment.Text = commentnode.Attributes["text"].Value;
 						pro.NowComment.UserId = commentnode.Attributes["userid"].Value;
@@ -100,7 +106,7 @@ namespace LibrarySystemBackEnd
 					}
 				case RequestMode.UserDelComment:
 					{
-						XmlNode commentnode = root.SelectSingleNode("commentnode");
+						XmlNode commentnode = root.SelectSingleNode("comment");
 						pro.NowComment = new ClassComment();
 						pro.NowComment.CommentIsbn = commentnode.Attributes["commentisbn"].Value;
 						break;

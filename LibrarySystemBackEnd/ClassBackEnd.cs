@@ -413,7 +413,7 @@ namespace LibrarySystemBackEnd
 							break;
 						}
 					default:
-						break;
+						throw new Exception("No Search Info!");
 				}
 
 				SqlDataReader rd = cmd.ExecuteReader();
@@ -572,11 +572,11 @@ namespace LibrarySystemBackEnd
 				con.Open();
 				SqlCommand cmd = new SqlCommand();
 				cmd.Connection = con;
-				cmd.CommandText = "select count(*) from dt_Comment where (bookIsbn LIKE '%" + bookIsbn + "%')";
+				cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn LIKE '%" + bookIsbn + "%')";
 
 				linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-				cmd.CommandText = "select * from  (select row_number() over(order by getdate()) 'rn',* from dt_Comment where (bookIsbn LIKE '%" + bookIsbn + "%'))t where rn between " + curnum + " and " + (curnum + 9);
+				cmd.CommandText = "select * from  (select row_number() over(order by commentTime desc) 'rn',* from dt_Comment where (commentIsbn LIKE '%" + bookIsbn + "%'))t where rn between " + curnum + " and " + (curnum + 4);
 
 
 				SqlDataReader dr = cmd.ExecuteReader();
@@ -612,7 +612,8 @@ namespace LibrarySystemBackEnd
 
 					cmd.CommandText = "insert into dt_Comment values(@a,@b,@c,@d)";
 					cmd.Parameters.Clear();
-					cmd.Parameters.AddWithValue("@a", bookIsbn + amo.ToString("D4"));
+					string newcommentid = bookIsbn + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+					cmd.Parameters.AddWithValue("@a", newcommentid);
 					cmd.Parameters.AddWithValue("@b", userId);
 					cmd.Parameters.AddWithValue("@c", text);
 					cmd.Parameters.AddWithValue("@d", DateTime.Now);
@@ -622,7 +623,7 @@ namespace LibrarySystemBackEnd
 
 					cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn=@a)";
 					cmd.Parameters.Clear();
-					cmd.Parameters.AddWithValue("@a", bookIsbn + amo.ToString("D4"));
+					cmd.Parameters.AddWithValue("@a", newcommentid);
 					amo = Convert.ToInt32(cmd.ExecuteScalar());
 
 					if (amo != 1)
@@ -659,6 +660,70 @@ namespace LibrarySystemBackEnd
 				else
 					res = true;
 
+			}
+			return res;
+		}
+
+		public int OrderBook(string userId, string userPassword, string bookIsbn)
+		{
+			int res = 0;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlTransaction tra = null;
+				try
+				{
+					tra = con.BeginTransaction();
+
+					string sqlstr1 = "select count(*) from dt_UserBasic where (userId='" + userId + "' and userPassword='" + userPassword + "')";
+
+					SqlCommand cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+
+					if ((int)cmd1.ExecuteScalar() <= 0)
+					{
+						res = 2;//无此用户
+						throw new Exception();
+					}
+
+					sqlstr1 = "select count(*) from dt_Schedule where userId='" + userId + "'";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+
+					if ((int)cmd1.ExecuteScalar() >= 10)
+					{
+						res = 1;//预约数量上限
+						throw new Exception();
+					}
+
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = "insert into dt_Schedule values(@a,@b,@c)";
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+					cmd1.Parameters.AddWithValue("@b", userId);
+					cmd1.Parameters.AddWithValue("@c", DateTime.Now);
+
+					if (cmd1.ExecuteNonQuery() <= 0)
+					{
+						res = 2;//预约数量上限
+						throw new Exception();
+					}
+
+					tra.Commit();
+					res = 0;
+				}
+				catch (Exception e)
+				{
+					if (res == 0)
+						res = 2;
+					tra.Rollback();
+				}
 			}
 			return res;
 		}
