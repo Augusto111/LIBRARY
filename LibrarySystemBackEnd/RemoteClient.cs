@@ -80,53 +80,53 @@ namespace LibrarySystemBackEnd
 		{
 			string pro = obj as string;
 			ProtocolHelper helper = new ProtocolHelper(pro);
-			FileProtocol protocol = helper.GetProtocol();
+			Protocol protocol = helper.GetProtocol();
 
 			if (protocol.Mode == RequestMode.UserLogin)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 
-				int res = bk.Login(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword);
+				int res = bk.Login(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword);
 
 				protocol.Retval = res;
-				Thread.Sleep(3000);
+				Thread.Sleep(1000);
 			}
 			else if (protocol.Mode == RequestMode.UserRegist)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 
-				bool res = bk.RegisterUser(protocol.Userinfo.UserId, protocol.Userinfo.UserName, protocol.Userinfo.UserPassword, protocol.Userinfo.UserSchool, protocol.Userinfo.UserType);
+				bool res = bk.RegisterUser(protocol.UserInfo.UserId, protocol.UserInfo.UserName, protocol.UserInfo.UserPassword, protocol.UserInfo.UserSchool, protocol.UserInfo.UserType);
 
 				protocol.Retval = Convert.ToInt32(res);
 
-				Thread.Sleep(3000);
+				Thread.Sleep(1000);
 			}
 			else if (protocol.Mode == RequestMode.UserSearchBook)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				int k = 0;
 				protocol.Resbook = bk.SearchBook(protocol.SearchCat, protocol.SearchWords, protocol.CurNum, ref k);
 				protocol.EndNum = k;
 
-				Thread.Sleep(3000);
+				Thread.Sleep(1000);
 			}
 			else if (protocol.Mode == RequestMode.UserBookDetailLoad)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				protocol.NowBook = bk.GetBookDetail(protocol.NowBook.BookIsbn);
-				Thread.Sleep(3000);
+				Thread.Sleep(1000);
 			}
 			else if (protocol.Mode == RequestMode.UserBookStateLoad)
 			{
 				int retval = 0;
-				ClassBackEnd bk = new ClassBackEnd();
-				protocol.Bks = bk.GetBookState(protocol.NowBook.BookIsbn, protocol.Userinfo.UserId, ref retval);
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Bks = bk.GetBookState(protocol.NowBook.BookIsbn, protocol.UserInfo.UserId, ref retval);
 				protocol.Retval = retval;
-				Thread.Sleep(3000);
+				Thread.Sleep(1000);
 			}
 			else if (protocol.Mode == RequestMode.UserBookCommentLoad)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				int linenum = 0;
 				protocol.Comments = bk.GetComment(protocol.NowBook.BookIsbn, protocol.CurNum, ref linenum);
 				protocol.EndNum = linenum;
@@ -134,17 +134,18 @@ namespace LibrarySystemBackEnd
 			}
 			else if (protocol.Mode == RequestMode.UserBookLoad)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				protocol.NowBook = bk.GetBookDetail(protocol.NowBook.BookIsbn);
 
 				int retval = 0;
-				protocol.Bks = bk.GetBookState(protocol.NowBook.BookIsbn, protocol.Userinfo.UserId, ref retval);
+				protocol.Bks = bk.GetBookState(protocol.NowBook.BookIsbn, protocol.UserInfo.UserId, ref retval);
 				protocol.Retval = retval;
-				//Thread.Sleep(3000);
+				//Thread.Sleep(1000);
 			}
 			else if (protocol.Mode == RequestMode.PicSend)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				Thread.Sleep(5000);
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				string bookIsbn = protocol.NowBook.BookIsbn;
 				byte[] pic = bk.GetBookPic(bookIsbn);
 				try
@@ -169,24 +170,54 @@ namespace LibrarySystemBackEnd
 			}
 			else if (protocol.Mode == RequestMode.UserCommentBook)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				protocol.Retval = Convert.ToInt32(bk.AddComment(protocol.NowComment.CommentIsbn, protocol.NowComment.UserId, protocol.NowComment.Text));
 			}
 			else if (protocol.Mode == RequestMode.UserDelComment)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
+				ClassSQLConnecter bk = new ClassSQLConnecter();
 				protocol.Retval = Convert.ToInt32(bk.DelComment(protocol.NowComment.CommentIsbn));
 			}
 			else if (protocol.Mode == RequestMode.UserBorrowBook)
 			{
-				ClassBackEnd bk = new ClassBackEnd();
-				protocol.Retval = Convert.ToInt32(bk.BorrowBook(protocol.Userinfo.UserId, protocol.Userinfo.UserPassword, protocol.NowBook.BookIsbn));
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = bk.BorrowBook(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword, protocol.NowBook.BookIsbn);
 			}
 			else if (protocol.Mode == RequestMode.UserOrderBook)
 			{
-
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = bk.OrderBook(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword, protocol.NowBook.BookIsbn);
 			}
-
+			else if (protocol.Mode == RequestMode.UserInfoLoad)
+			{
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.User = bk.GetUserDetail(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword);
+			}
+			else if (protocol.Mode == RequestMode.UserInfoChange)
+			{
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = bk.ChangeUserDetail(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword, protocol.NewUserInfo);
+			}
+			else if (protocol.Mode == RequestMode.UserAbookLoad)
+			{
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.NowABook = bk.LoadABook(protocol.NowABook.BookIsbn);
+			}
+			else if (protocol.Mode == RequestMode.UserReturnBook)
+			{
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = bk.ReturnBook(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword, protocol.NowABook.BookIsbn);
+			}
+			else if (protocol.Mode == RequestMode.UserDelayBook)
+			{
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = bk.ReBorrowBook(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword, protocol.NowABook.BookIsbn);
+			}
+			else if(protocol.Mode==RequestMode.UserCancelScheduleBook)
+			{
+				ClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = bk.CancelScheduleBook(protocol.UserInfo.UserId, protocol.UserInfo.UserPassword, protocol.NowABook.BookIsbn);
+			}
 			SendMessage(protocol.ToString());
 		}
 
@@ -194,8 +225,6 @@ namespace LibrarySystemBackEnd
 		{
 			try
 			{
-				//msg = String.Format("[length={0}]{1}", msg.Length, msg);
-
 				byte[] tmp = Encoding.Unicode.GetBytes(msg);
 
 				lock (streamToClient)
@@ -210,7 +239,7 @@ namespace LibrarySystemBackEnd
 			}
 			finally
 			{
-				if(client.Client.Connected)
+				if (client.Client.Connected)
 					Console.WriteLine("Closed {0}<--{1}", client.Client.LocalEndPoint, client.Client.RemoteEndPoint);
 				streamToClient.Close();
 				client.Close();

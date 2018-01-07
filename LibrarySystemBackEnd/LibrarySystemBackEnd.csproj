@@ -49,21 +49,21 @@
   <ItemGroup>
     <Compile Include="ClassABook.cs" />
     <Compile Include="ClassAdministrator.cs" />
-    <Compile Include="ClassBackEnd.cs" />
+    <Compile Include="ClassSQLConnecter.cs" />
     <Compile Include="ClassBook.cs" />
+    <Compile Include="ClassBorrowHis.cs" />
     <Compile Include="ClassComment.cs" />
-    <Compile Include="ClassMain.cs" />
-    <Compile Include="ClassServer.cs" />
-    <Compile Include="FileProtocol.cs" />
+    <None Include="_ClassUser.cs" />
+    <Compile Include="ClassUser.cs" />
+    <Compile Include="Protocol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClassSQL.cs" />
     <Compile Include="ClassUserBasic.cs" />
     <Compile Include="ProtocolHandler.cs" />
     <Compile Include="ProtocolHelper.cs" />
     <Compile Include="RemoteClient.cs" />
-    <Compile Include="Response.cs" />
     <Compile Include="SendStatus.cs" />
-    <Compile Include="Server.cs" />
+    <Compile Include="ServerMain.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

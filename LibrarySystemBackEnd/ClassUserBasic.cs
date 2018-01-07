@@ -39,8 +39,7 @@ namespace LibrarySystemBackEnd
 
 	public class ClassUserBasicInfo
 	{
-		public static readonly TimeSpan DefaultDate = new TimeSpan(30, 0, 0, 0, 0);
-		public static readonly TimeSpan DefaultDelay = new TimeSpan(15, 0, 0, 0, 0);
+		
 		public static readonly int MaxScheduleAmount = 5;
 		public static readonly int MaxCredit = 100;
 

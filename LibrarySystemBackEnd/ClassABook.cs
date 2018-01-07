@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -260,6 +261,28 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		public string BookPicHash
+		{
+			get
+			{
+				MD5 md5 = MD5.Create();
+				byte[] data = md5.ComputeHash(bookImage);
+
+				// 创建一个 Stringbuilder 来收集字节并创建字符串  
+				StringBuilder sBuilder = new StringBuilder();
+
+				// 循环遍历哈希数据的每一个字节并格式化为十六进制字符串  
+				for (int i = 0; i < data.Length; i++)
+				{
+					sBuilder.Append(data[i].ToString("x2"));
+				}
+				// 返回十六进制字符串
+				string fileName = sBuilder.ToString();
+
+				return fileName;
+			}
+		}
+
 		#endregion
 
 		///// <summary>
@@ -346,6 +369,11 @@ namespace LibrarySystemBackEnd
 			this.Deleted = false;
 		}
 
+		public ClassABook(string bookIsbn)
+		{
+			this.bookIsbn = bookIsbn;
+		}
+
 		internal ClassABook(DbDataReader dr)
 		{
 			this.BookName = dr["bookName"].ToString();
@@ -362,12 +390,6 @@ namespace LibrarySystemBackEnd
 			this.ReturnTime = (DateTime)dr["returnTime"];
 			this.Delayed = (bool)dr["delayed"];
 			this.Deleted = (bool)dr["deleted"];
-		}
-
-		public override string ToString()
-		{
-			//return String.Format()
-			return "";
 		}
 	}
 }

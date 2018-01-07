@@ -37,25 +37,33 @@ namespace LibrarySystemBackEnd
 
 		UserBookLoad,
 		PicReceive,
-		PicSend
+		PicSend,
+		UserCancelScheduleBook,
 	}
-	class FileProtocol
+	class Protocol
 	{
 		private RequestMode mode;
 		private int port;
-		private ClassUserBasicInfo userinfo;
+		private ClassUserBasicInfo userInfo;
+		private ClassUserBasicInfo newUserInfo;
 		private string searchWords;
 		private int searchCat;
 		private int curNum, endNum;
 		private int returnVal;
 		private string fileName;
-		private ClassBook[] resBook;
+
 		private ClassBook nowBook;
+		private ClassBook[] resBook;
+
+		private ClassABook nowABook;
 		private ClassABook[] eachBookState;
+
 		private ClassComment nowComment;
 		private ClassComment[] comments;
 
-		public FileProtocol(RequestMode mode, int port)
+		private ClassUser user;
+
+		public Protocol(RequestMode mode, int port)
 		{
 			this.mode = mode;
 			this.port = port;
@@ -71,16 +79,16 @@ namespace LibrarySystemBackEnd
 			get { return port; }
 		}
 
-		public ClassUserBasicInfo Userinfo
+		public ClassUserBasicInfo UserInfo
 		{
 			get
 			{
-				return userinfo;
+				return userInfo;
 			}
 
 			set
 			{
-				userinfo = value;
+				userInfo = value;
 			}
 		}
 
@@ -227,6 +235,45 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		public ClassABook NowABook
+		{
+			get
+			{
+				return nowABook;
+			}
+
+			set
+			{
+				nowABook = value;
+			}
+		}
+
+		public ClassUser User
+		{
+			get
+			{
+				return user;
+			}
+
+			set
+			{
+				user = value;
+			}
+		}
+
+		public ClassUserBasicInfo NewUserInfo
+		{
+			get
+			{
+				return newUserInfo;
+			}
+
+			set
+			{
+				newUserInfo = value;
+			}
+		}
+
 		public override string ToString()
 		{
 			switch (mode)
@@ -262,11 +309,11 @@ namespace LibrarySystemBackEnd
 				case RequestMode.UserBookStateLoad:
 					{
 						string ret = "<protocol>";
-						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" retval={2} />", mode, port, Retval);
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" />", mode, port, Retval);
 						ret += String.Format("<book bookisbn=\"{0}\" bookamount=\"{1}\" />", nowBook.BookIsbn, Bks.Length);
 						for (int i = 0; i < eachBookState.Length; i++)
 						{
-							ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookName, eachBookState[i].BookState);
+							ret += String.Format("<bookstate bookisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookIsbn, eachBookState[i].BookState);
 						}
 						ret += "</protocol>";
 						return ret;
@@ -328,9 +375,51 @@ namespace LibrarySystemBackEnd
 						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
 					}
 				case RequestMode.UserInfoLoad:
-					break;
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+						ret += String.Format("<userbasicinfo username=\"{0}\" userschool=\"{1}\" usercredit=\"{2}\" usercurrentborrowedamount=\"{3}\" usercurrentmaxborrowableamount=\"{4}\" usercurrentscheduleamount=\"{5}\" userid=\"{6}\" />",
+							user.UserBasic.UserName,
+							user.UserBasic.UserSchool,
+							user.UserBasic.UserCredit,
+							user.UserBasic.UserCurrentBorrowedAmount,
+							user.UserBasic.UserCurrentMaxBorrowableAmount,
+							user.UserBasic.UserCurrentScheduleAmount,
+							user.UserBasic.UserId);
+						int k = user.Informations.Count;
+						ret += String.Format("<informations sum=\"{0}\" />", k);
+						for (int i = 0; i < k; i++)
+						{
+							ret += String.Format("<eachinformation content=\"{0}\" />", user.Informations[i]);
+						}
+						k = user.BorrowedBooks.Count;
+						ret += String.Format("<userborrowedbooks sum=\"{0}\" />", k);
+						for (int i = 0; i < k; i++)
+						{
+							ret += String.Format("<usereachborrowedbook bookname=\"{0}\" bookborrowdate=\"{1}\" borrowororder=\"{2}\" bookisbn=\"{3}\" bookreturndate=\"{4}\" />", user.BorrowedBooks[i].BookName, user.BorrowedBooks[i].BorrowTime, 0, user.BorrowedBooks[i].BookIsbn, user.BorrowedBooks[i].ReturnTime);
+						}
+
+						k = user.ScheduledBooks.Count;
+						ret += String.Format("<userscheduledbooks sum=\"{0}\" />", k);
+						for (int i = 0; i < k; i++)
+						{
+							ret += String.Format("<usereachscheduledbook bookname=\"{0}\" bookborrowdate=\"{1}\" borrowororder=\"{2}\" bookisbn=\"{3}\" />", user.ScheduledBooks[i].BookName, user.ScheduledBooks[i].BorrowTime, 1, user.ScheduledBooks[i].BookIsbn);
+						}
+						
+						k = user.BorrowHis.Count;
+						ret += String.Format("<userborrowhis sum=\"{0}\" />", k);
+						for (int i = 0; i < k; i++)
+						{
+							ret += String.Format("<usereachborrowhis bookname=\"{0}\" bookborrowdate=\"{1}\" bookisbn=\"{2}\" bookreturndate=\"{3}\" />", user.BorrowHis[i].BookName, user.BorrowHis[i].BorrowTime, user.BorrowHis[i].BookIsbn, user.BorrowHis[i].ReturnTime);
+						}
+
+						ret += "</protocol>";
+						return ret;
+					}
 				case RequestMode.UserInfoChange:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				case RequestMode.UserNotificationLoad:
 					break;
 				case RequestMode.UserBorrowedBook:
@@ -340,11 +429,25 @@ namespace LibrarySystemBackEnd
 				case RequestMode.UserBadRecord:
 					break;
 				case RequestMode.UserAbookLoad:
-					break;
+					{
+						string ret = "<protocol>";
+						ret += String.Format("<file mode=\"{0}\" port=\"{1}\" />", mode, port);
+						ret += String.Format("<abook bookname=\"{0}\" bookauthor=\"{1}\" bookpublisher=\"{2}\" bookisbn=\"{3}\" bookpic=\"{4}\" bookborrowtime=\"{5}\" bookreturntime=\"{6}\" />", nowABook.BookName, nowABook.BookAuthor, nowABook.BookPublisher, nowABook.BookIsbn, nowABook.BookPicHash, nowABook.BorrowTime, nowABook.ReturnTime);
+						ret += "</protocol>";
+						return ret;
+					}
 				case RequestMode.UserReturnBook:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				case RequestMode.UserDelayBook:
-					break;
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
+				case RequestMode.UserCancelScheduleBook:
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				default:
 					break;
 			}

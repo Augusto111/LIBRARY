@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
-	public class ClassBackEnd
+	public class ClassSQLConnecter
 	{
+		public static readonly TimeSpan DefaultDate = new TimeSpan(30, 0, 0, 0, 0);
+		public static readonly TimeSpan DefaultDelay = new TimeSpan(15, 0, 0, 0, 0);
 		private ClassSQL sql;
 
 		#region 私有方法
@@ -134,11 +136,10 @@ namespace LibrarySystemBackEnd
 		}
 		#endregion
 
-		#region 公有方法
 		/// <summary>
 		/// 构造，初始化SQL连接
 		/// </summary>
-		public ClassBackEnd()
+		public ClassSQLConnecter()
 		{
 			sql = new ClassSQL();
 		}
@@ -230,7 +231,7 @@ namespace LibrarySystemBackEnd
 									set bookState = 1,
 									borrowUserId = '" + userid +
 									"', borrowTime = '" + DateTime.Now +
-									@"', returnTime = '" + (DateTime.Now + ClassUserBasicInfo.DefaultDate) +
+									@"', returnTime = '" + (DateTime.Now + DefaultDate) +
 									"'where bookIsbn like '" + bookid +
 									"%' and (bookState = 2 and borrowUserId = '" + userid + "')";
 
@@ -241,7 +242,7 @@ namespace LibrarySystemBackEnd
 
 					if (cmd2.ExecuteNonQuery() <= 0)
 					{
-						string sqlstr3 = "SET ROWCOUNT 1 update dt_Abook set bookState = 1,borrowUserId = '" + userid + "', borrowTime = '" + DateTime.Now + "', returnTime = '" + (DateTime.Now + "'where bookIsbn like '" + bookid + "%' and bookState = 0 SET ROWCOUNT 0");
+						string sqlstr3 = "SET ROWCOUNT 1 update dt_Abook set bookState = 1,borrowUserId = '" + userid + "', borrowTime = '" + DateTime.Now + "', returnTime = '" + (DateTime.Now + DefaultDate) + "'where bookIsbn like '" + bookid + "%' and bookState = 0 SET ROWCOUNT 0";
 
 						SqlCommand cmd3 = new SqlCommand();
 						cmd3.Connection = con;
@@ -488,7 +489,7 @@ namespace LibrarySystemBackEnd
 				{
 					for (int i = 0; i < abk.Count; i++)
 					{
-						if (abk[i].BookState == BOOKSTATE.Available)
+						if (abk[i].BookState == BOOKSTATE.Available || (abk[i].BookState == BOOKSTATE.Scheduled && abk[i].BorrowUserId == curuserid)) 
 						{
 							retval = 2;//canborrow
 							return abk.ToArray();
@@ -497,7 +498,7 @@ namespace LibrarySystemBackEnd
 					if (retval == 0)
 					{
 						cmd = con.CreateCommand();
-						cmd.CommandText = "select * from dt_Shedule where bookIsbn='" + bookIsbn + "' and userId='" + curuserid + "'";
+						cmd.CommandText = "select * from dt_Schedule where bookIsbn='" + bookIsbn + "' and userId='" + curuserid + "'";
 						dr = cmd.ExecuteReader();
 						if (dr.HasRows)
 						{
@@ -507,7 +508,7 @@ namespace LibrarySystemBackEnd
 						else
 						{
 							cmd = con.CreateCommand();
-							cmd.CommandText = "select * from dt_Shedule where bookIsbn='" + bookIsbn + "'";
+							cmd.CommandText = "select * from dt_Schedule where bookIsbn='" + bookIsbn + "'";
 							dr.Close();
 							dr = cmd.ExecuteReader();
 							if (dr.HasRows)
@@ -663,7 +664,13 @@ namespace LibrarySystemBackEnd
 			}
 			return res;
 		}
-
+		/// <summary>
+		/// 预约书籍
+		/// </summary>
+		/// <param name="userId">用户Id</param>
+		/// <param name="userPassword">用户密码</param>
+		/// <param name="bookIsbn">书号</param>
+		/// <returns>0成功1超过预约上限2其他错误</returns>
 		public int OrderBook(string userId, string userPassword, string bookIsbn)
 		{
 			int res = 0;
@@ -705,13 +712,23 @@ namespace LibrarySystemBackEnd
 					cmd1.Transaction = tra;
 					cmd1.CommandText = "insert into dt_Schedule values(@a,@b,@c)";
 					cmd1.Parameters.Clear();
-					cmd1.Parameters.AddWithValue("@a", bookIsbn);
-					cmd1.Parameters.AddWithValue("@b", userId);
+					cmd1.Parameters.AddWithValue("@a", userId);
+					cmd1.Parameters.AddWithValue("@b", bookIsbn);
 					cmd1.Parameters.AddWithValue("@c", DateTime.Now);
 
 					if (cmd1.ExecuteNonQuery() <= 0)
 					{
-						res = 2;//预约数量上限
+						res = 2;//其他错误
+						throw new Exception();
+					}
+
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = "update dt_UserBasic set userCurrentScheduleAmount=userCurrentScheduleAmount+1 where userId='" + userId + "' and userPassword='" + userPassword + "'";
+					if (cmd1.ExecuteNonQuery() <= 0)
+					{
+						res = 2;//其他错误
 						throw new Exception();
 					}
 
@@ -727,6 +744,492 @@ namespace LibrarySystemBackEnd
 			}
 			return res;
 		}
+
+		public ClassUser GetUserDetail(string userId, string userPassword)
+		{
+			ClassUserBasicInfo userBasic = getUsersBasic(userId);
+			if (userPassword != userBasic.UserPassword)
+			{
+				return null;
+			}
+			ClassUser user = new ClassUser(userBasic);
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlCommand cmd = new SqlCommand();
+				cmd.Connection = con;
+				cmd.CommandText = "select * from dt_Abook where (borrowUserId = @a)";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", userId);
+
+				SqlDataReader dr = cmd.ExecuteReader();
+				user.BorrowedBooks = new List<ClassABook>();
+				user.Informations = new List<string>();
+				user.ScheduledBooks = new List<ClassABook>();
+				user.BorrowHis = new List<ClassABook>();
+
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						ClassABook abk = new ClassABook(dr);
+						if (abk.BookState == BOOKSTATE.Scheduled)
+						{
+							user.Informations.Add(String.Format("您的预约的书籍{0}({1})已可取，请尽快借阅！", abk.BookName, abk.BookIsbn));
+						}
+						else if (abk.BookState == BOOKSTATE.Borrowed)
+						{
+							if (abk.ReturnTime <= DateTime.Now)
+								user.Informations.Add(String.Format("您的借阅的书籍{0}({1})已过期，请尽快归还！", abk.BookName, abk.BookIsbn));
+							else
+							{
+								TimeSpan span = abk.ReturnTime - DateTime.Now;
+								if (span < TimeSpan.FromDays(5))
+								{
+									user.Informations.Add(String.Format("您的借阅的书籍{0}({1})即将过期，请尽快归还！", abk.BookName, abk.BookIsbn));
+								}
+							}
+							user.BorrowedBooks.Add(abk);
+						}
+					}
+				}
+				dr.Close();
+
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				cmd.CommandText = "select * from dt_Schedule where (userId = @a)";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", userId);
+
+				dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						ClassABook bk = new ClassABook(dr["bookIsbn"].ToString());
+						bk.BorrowTime = (DateTime)dr["scheduleDate"];
+						user.ScheduledBooks.Add(bk);
+					}
+				}
+				dr.Close();
+
+				for (int i = 0; i < user.ScheduledBooks.Count; i++)
+				{
+					SqlCommand ncmd = new SqlCommand();
+					ncmd.Connection = con;
+					ncmd.CommandText = "select [bookName] from dt_Book where (bookIsbn = @a)";
+					ncmd.Parameters.Clear();
+					ncmd.Parameters.AddWithValue("@a", user.ScheduledBooks[i].BookIsbn);
+					SqlDataReader drr = ncmd.ExecuteReader();
+					drr.Read();
+					user.ScheduledBooks[i].BookName = drr["bookname"].ToString();
+					drr.Close();
+				}
+
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				cmd.CommandText = "select * from dt_UserBorrowHis where (userId = @a)";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", userId);
+
+				dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						ClassABook bk = new ClassABook(dr["bookIsbn"].ToString());
+						bk.BorrowTime = (DateTime)dr["borrowdate"];
+						bk.ReturnTime = (DateTime)dr["returndate"];
+						user.BorrowHis.Add(bk);
+					}
+				}
+				dr.Close();
+
+				for (int i = 0; i < user.BorrowHis.Count; i++)
+				{
+					SqlCommand ncmd = new SqlCommand();
+					ncmd.Connection = con;
+					ncmd.CommandText = "select [bookName] from dt_Book where (bookIsbn = @a)";
+					ncmd.Parameters.Clear();
+					ncmd.Parameters.AddWithValue("@a", user.BorrowHis[i].BookIsbn.Substring(0,13));
+					SqlDataReader drr = ncmd.ExecuteReader();
+					drr.Read();
+					user.BorrowHis[i].BookName = drr["bookName"].ToString();
+					drr.Close();
+				}
+			}
+
+			return user;
+		}
+		/// <summary>
+		/// 修改用户信息
+		/// </summary>
+		/// <param name="userId">Id</param>
+		/// <param name="userPassword">老密码</param>
+		/// <param name="newUser">新用户，必须有用户名，密码，学院</param>
+		/// <returns>0成功1原密码错误2其他错误</returns>
+		public int ChangeUserDetail(string userId, string userPassword, ClassUserBasicInfo newUser)
+		{
+			ClassUserBasicInfo userBasic = getUsersBasic(userId);
+			if (userPassword != userBasic.UserPassword)
+			{
+				return 1;//password Error
+			}
+			int res = 0;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+
+				SqlCommand cmd1 = new SqlCommand();
+				cmd1.Connection = con;
+				cmd1.CommandText = "update dt_UserBasic set userPassword=@a, userSchool=@b, userName=@c where userId=@d ";
+				cmd1.Parameters.Clear();
+				cmd1.Parameters.AddWithValue("@a", newUser.UserPassword);
+				cmd1.Parameters.AddWithValue("@b", newUser.UserSchool);
+				cmd1.Parameters.AddWithValue("@c", newUser.UserName);
+				cmd1.Parameters.AddWithValue("@d", userId);
+
+				if (cmd1.ExecuteNonQuery() <= 0)
+				{
+					res = 2;//其他错误
+				}
+			}
+			return res;
+		}
+
+		public int ReturnBook(string userId, string userPassword, string bookIsbn)
+		{
+			ClassUserBasicInfo userBasic = getUsersBasic(userId);
+			if (userPassword != userBasic.UserPassword)
+			{
+				return 1;//password Error
+			}
+			int res = 0;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlTransaction tra = null; SqlCommand cmd1; SqlDataReader rd;
+				try
+				{
+					tra = con.BeginTransaction();
+
+					string sqlstr1 = "select * from dt_Abook where (bookIsbn='" + bookIsbn + "')";
+
+
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					rd = cmd1.ExecuteReader();
+					int curCredit = 0;
+					int maxAmount = 0;
+					int delayed = 0;
+					DateTime borrowTime;
+					if (rd.HasRows)
+					{
+						rd.Read();
+						borrowTime = DateTime.Parse(rd["borrowTime"].ToString());
+						DateTime shouldReturn = DateTime.Parse(rd["returnTime"].ToString());
+						DateTime nowTime = DateTime.Now;
+						curCredit = userBasic.UserCredit;
+						maxAmount = userBasic.UserMaxBorrowableAmount;
+						if (shouldReturn > nowTime)
+						{
+							delayed = 0;
+						}
+						else
+						{
+							TimeSpan dur = nowTime - shouldReturn;
+							delayed = (int)dur.TotalDays;
+						}
+						rd.Close();
+					}
+					else
+					{
+						rd.Close();
+						throw new Exception("书籍ISBN错误！");
+					}
+
+
+					sqlstr1 = "update dt_ABook set bookState = 0, delayed=0, borrowUserId='' where bookIsbn = @a";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+
+					if (cmd1.ExecuteNonQuery() != 1)
+					{
+						throw new Exception();
+					}
+
+					curCredit = (curCredit - delayed) < 0 ? 0 : (curCredit - delayed);
+
+					sqlstr1 = "update dt_UserBasic set userCurrentBorrowedAmount = userCurrentBorrowedAmount-1, userCredit=@a, userCurrentMaxBorrowableAmount=@b where userId = @c";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", curCredit);
+					cmd1.Parameters.AddWithValue("@b", (curCredit + 9) / 10);
+					cmd1.Parameters.AddWithValue("@c", userId);
+
+					if (cmd1.ExecuteNonQuery() != 1)
+					{
+						throw new Exception();
+					}
+
+					sqlstr1 = "insert into dt_userBorrowHis values(@a,@b,@c,@d)";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+					cmd1.Parameters.AddWithValue("@b", userId);
+					cmd1.Parameters.AddWithValue("@c", borrowTime);
+					cmd1.Parameters.AddWithValue("@d", DateTime.Now);
+					if (cmd1.ExecuteNonQuery() != 1)
+						throw new Exception("插入历史失败！");
+
+
+					sqlstr1 = "select * from dt_Schedule where bookIsbn = @a order by scheduleDate asc";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", bookIsbn.Substring(0, 13));
+					rd = cmd1.ExecuteReader();
+
+					string scheduleuser = "";
+
+					if (rd.HasRows)
+					{
+						rd.Read();
+						scheduleuser = rd["userId"].ToString();
+						rd.Close();
+					}
+					else
+					{
+						rd.Close();
+						Console.WriteLine("无人预约书籍" + bookIsbn);
+					}
+
+					if (scheduleuser != "")
+					{
+						sqlstr1 = "update dt_ABook set bookState=2,borrowUserId=@a where bookIsbn = @b";
+						cmd1 = new SqlCommand();
+						cmd1.Connection = con;
+						cmd1.Transaction = tra;
+						cmd1.CommandText = sqlstr1;
+						cmd1.Parameters.Clear();
+						cmd1.Parameters.AddWithValue("@a", scheduleuser);
+						cmd1.Parameters.AddWithValue("@b", bookIsbn);
+						if (cmd1.ExecuteNonQuery() != 1)
+						{
+							throw new Exception("预约异常！");
+						}
+
+						sqlstr1 = "delete from dt_Schedule where userId=@a and bookIsbn = @b";
+						cmd1 = new SqlCommand();
+						cmd1.Connection = con;
+						cmd1.Transaction = tra;
+						cmd1.CommandText = sqlstr1;
+						cmd1.Parameters.Clear();
+						cmd1.Parameters.AddWithValue("@a", scheduleuser);
+						cmd1.Parameters.AddWithValue("@b", bookIsbn.Substring(0, 13));
+						if (cmd1.ExecuteNonQuery() != 1)
+						{
+							throw new Exception("预约异常！");
+						}
+					}
+
+					tra.Commit();
+					res = 0;
+				}
+				catch (Exception e)
+				{
+					if (res == 0)
+						res = 2;
+					tra.Rollback();
+				}
+			}
+			return res;
+		}
+
+		public int CancelScheduleBook(string userId,string userPassword,string bookIsbn)
+		{
+			ClassUserBasicInfo userBasic = getUsersBasic(userId);
+			if (userPassword != userBasic.UserPassword)
+			{
+				return 1;//password Error
+			}
+			int res = 0;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlTransaction tra = null; SqlCommand cmd1; SqlDataReader rd;
+				try
+				{
+					tra = con.BeginTransaction();
+
+					string sqlstr1 = "delete from dt_Schedule where userId=@a and bookIsbn = @b";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", userId);
+					cmd1.Parameters.AddWithValue("@b", bookIsbn);
+					if (cmd1.ExecuteNonQuery() != 1)
+					{
+						throw new Exception("预约异常！");
+					}
+					
+					sqlstr1 = "update dt_UserBasic set userCurrentScheduleAmount = userCurrentScheduleAmount-1 where userId = @a";
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", userId);
+
+					if (cmd1.ExecuteNonQuery() != 1)
+					{
+						throw new Exception();
+					}
+
+					tra.Commit();
+					res = 0;
+				}
+				catch (Exception e)
+				{
+					if (res == 0)
+						res = 2;
+					tra.Rollback();
+				}
+			}
+			return res;
+
+		}
+
+		public int ReBorrowBook(string userId,string userPassword,string bookIsbn)
+		{
+			ClassUserBasicInfo userBasic = getUsersBasic(userId);
+			if (userPassword != userBasic.UserPassword)
+			{
+				return 1;//password Error
+			}
+			int res = 0;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlTransaction tra = null; SqlCommand cmd1; SqlDataReader rd;
+				try
+				{
+					tra = con.BeginTransaction();
+
+					string sqlstr1 = "select * from dt_Abook where (bookIsbn=@a and borrowUserId=@b and bookState=1)";
+					
+					cmd1 = new SqlCommand();
+					cmd1.Connection = con;
+					cmd1.Transaction = tra;
+					cmd1.CommandText = sqlstr1;
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+					cmd1.Parameters.AddWithValue("@b", userId);
+
+					rd = cmd1.ExecuteReader();
+					bool delayed = false;
+					DateTime shouldReturn, borrowTime;
+					if (rd.HasRows)
+					{
+						rd.Read();
+						borrowTime = DateTime.Parse(rd["borrowTime"].ToString());
+						shouldReturn = DateTime.Parse(rd["returnTime"].ToString());
+						DateTime nowTime = DateTime.Now;
+						delayed = Convert.ToBoolean(rd["delayed"].ToString());
+						if(delayed)
+						{
+							res = 4;//已续借，只能续借一次
+						}
+						else if (shouldReturn < nowTime)
+						{
+							res = 2;//书籍已过期
+						}
+						else
+						{
+							TimeSpan dur = shouldReturn- nowTime;
+							int delaydays = (int)dur.TotalDays;
+							if(delaydays>5)
+							{
+								res = 3;//5天以内方可续期
+							}
+						}
+						rd.Close();
+					}
+					else
+					{
+						rd.Close();
+						throw new Exception("书籍ISBN错误！");
+					}
+
+					if (res == 0)
+					{
+						shouldReturn += DefaultDelay;
+
+						sqlstr1 = "update dt_ABook set delayed=1,returnTime=@c where (bookIsbn=@a and borrowUserId=@b and bookState=1)";
+						cmd1 = new SqlCommand();
+						cmd1.Connection = con;
+						cmd1.Transaction = tra;
+						cmd1.CommandText = sqlstr1;
+						cmd1.Parameters.Clear();
+						cmd1.Parameters.AddWithValue("@a", bookIsbn);
+						cmd1.Parameters.AddWithValue("@b", userId);
+						cmd1.Parameters.AddWithValue("@c", shouldReturn);
+
+						if (cmd1.ExecuteNonQuery() != 1)
+						{
+							throw new Exception();
+						}
+					}
+					tra.Commit();
+					res = 0;
+				}
+				catch (Exception e)
+				{
+					if (res == 0)
+						res = 5;//其他错误
+					tra.Rollback();
+				}
+			}
+			return res;
+		}
+
+		public ClassABook LoadABook(string bookIsbn)
+		{
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				SqlCommand cmd = con.CreateCommand();
+				cmd.CommandText = "select * from dt_ABook where bookIsbn=@a";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", bookIsbn);
+
+				con.Open();
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						return new ClassABook(dr);
+					}
+				}
+				else throw new Exception("请求的书号不存在！");
+			}
+			return null;
+		}
 	}
-	#endregion
 }

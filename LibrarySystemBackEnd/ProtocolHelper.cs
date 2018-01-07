@@ -22,11 +22,11 @@ namespace LibrarySystemBackEnd
 
 		// 此时的protocal一定为单条完整protocal
 		// 获取单条协议包含的信息
-		public FileProtocol GetProtocol()
+		public Protocol GetProtocol()
 		{
 			RequestMode mode = (RequestMode)Enum.Parse(typeof(RequestMode), fileNode.Attributes["mode"].Value, false);
 			int port = Convert.ToInt32(fileNode.Attributes["port"].Value);
-			FileProtocol pro = new FileProtocol(mode, port);
+			Protocol pro = new Protocol(mode, port);
 
 			switch (mode)
 			{
@@ -34,14 +34,14 @@ namespace LibrarySystemBackEnd
 					{
 						XmlNode usernode = root.SelectSingleNode("userBasic");
 						ClassUserBasicInfo user = new ClassUserBasicInfo(usernode);
-						pro.Userinfo = user;
+						pro.UserInfo = user;
 						break;
 					}
 				case RequestMode.UserRegist:
 					{
 						XmlNode usernode = root.SelectSingleNode("userBasic");
 						ClassUserBasicInfo user = new ClassUserBasicInfo(usernode);
-						pro.Userinfo = user;
+						pro.UserInfo = user;
 						break;
 					}
 				case RequestMode.UserSearchBook:
@@ -63,7 +63,7 @@ namespace LibrarySystemBackEnd
 						XmlNode booknode = root.SelectSingleNode("book");
 						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
 						XmlNode usernode = root.SelectSingleNode("userBasic");
-						pro.Userinfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
 						break;
 					}
 				case RequestMode.UserBookCommentLoad:
@@ -77,22 +77,23 @@ namespace LibrarySystemBackEnd
 					{
 						XmlNode booknode = root.SelectSingleNode("book");
 						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value); XmlNode usernode = root.SelectSingleNode("userBasic");
-						pro.Userinfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
 						break;
 					}
 				case RequestMode.PicSend:
 					{
 						XmlNode booknode = root.SelectSingleNode("book");
 						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
-						
+
 						break;
 					}
 				case RequestMode.UserBorrowBook:
 					{
 						XmlNode booknode = root.SelectSingleNode("book");
 						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
-						XmlNode usernode = root.SelectSingleNode("userBasic");
-						pro.Userinfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						XmlNode usernode = root.SelectSingleNode("userbasic");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
 						break;
 					}
 				case RequestMode.UserCommentBook:
@@ -112,11 +113,34 @@ namespace LibrarySystemBackEnd
 						break;
 					}
 				case RequestMode.UserOrderBook:
-					break;
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
+						XmlNode usernode = root.SelectSingleNode("userbasic");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						break;
+					}
 				case RequestMode.UserInfoLoad:
-					break;
+					{
+						XmlNode usernode = root.SelectSingleNode("userbasic");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						break;
+					}
 				case RequestMode.UserInfoChange:
-					break;
+					{
+						XmlNode usernode = root.SelectSingleNode("userOld");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						usernode = root.SelectSingleNode("userNew");
+						pro.NewUserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.NewUserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						pro.NewUserInfo.UserSchool = usernode.Attributes["userschool"].Value;
+						pro.NewUserInfo.UserName = usernode.Attributes["username"].Value;
+
+						break;
+					}
 				case RequestMode.UserNotificationLoad:
 					break;
 				case RequestMode.UserBorrowedBook:
@@ -126,11 +150,42 @@ namespace LibrarySystemBackEnd
 				case RequestMode.UserBadRecord:
 					break;
 				case RequestMode.UserAbookLoad:
-					break;
+					{
+						XmlNode booknode = root.SelectSingleNode("abook");
+						pro.NowABook = new ClassABook(booknode.Attributes["bookisbn"].Value);
+
+						break;
+					}
 				case RequestMode.UserReturnBook:
-					break;
+					{
+						XmlNode booknode = root.SelectSingleNode("abook");
+						pro.NowABook = new ClassABook(booknode.Attributes["bookisbn"].Value);
+
+						XmlNode usernode = root.SelectSingleNode("userbasic");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						break;
+					}
 				case RequestMode.UserDelayBook:
-					break;
+					{
+						XmlNode booknode = root.SelectSingleNode("abook");
+						pro.NowABook = new ClassABook(booknode.Attributes["bookisbn"].Value);
+						
+						XmlNode usernode = root.SelectSingleNode("userbasic");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						break;
+					}
+				case RequestMode.UserCancelScheduleBook:
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowABook = new ClassABook(booknode.Attributes["bookisbn"].Value);
+
+						XmlNode usernode = root.SelectSingleNode("userbasic");
+						pro.UserInfo = new ClassUserBasicInfo(usernode.Attributes["userid"].Value);
+						pro.UserInfo.UserPassword = usernode.Attributes["userpassword"].Value;
+						break;
+					}
 				default:
 					break;
 			}
